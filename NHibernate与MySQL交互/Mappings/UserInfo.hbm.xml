@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Zfstu"
+                   namespace="Zfstu.Model">
+
+  <class name="UserInfo" table="user_info">
+    <id name="Uid" column="uid" type="String">
+      <generator class="assigned"></generator>
+    </id>
+    <property name="NickName" column="nickname" type="String"></property>
+    <property name="Phone" column="phone" type="String"></property>
+    <property name="Gold" column="gold" type="Int32"></property>
+    <property name="YuanBao" column="yuanbao" type="Int32"></property>
+    <property name="PlatForm" column="platform" type="Int32"></property>
+  </class>
+
+</hibernate-mapping>

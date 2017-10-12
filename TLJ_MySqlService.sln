@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TLJ_MySqlService", "TLJ_MySqlService\TLJ_MySqlService.csproj", "{74685689-ACA8-4087-B4A3-ACE58A62CE22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate与MySQL交互", "NHibernate与MySQL交互\NHibernate与MySQL交互.csproj", "{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "每周一更新签到数据", "每周一更新签到数据\每周一更新签到数据.csproj", "{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Debug|x64.Build.0 = Debug|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Debug|x86.Build.0 = Debug|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Release|x64.ActiveCfg = Release|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Release|x64.Build.0 = Release|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Release|x86.ActiveCfg = Release|Any CPU
+		{74685689-ACA8-4087-B4A3-ACE58A62CE22}.Release|x86.Build.0 = Release|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Debug|x64.Build.0 = Debug|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Debug|x86.Build.0 = Debug|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Release|x64.ActiveCfg = Release|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Release|x64.Build.0 = Release|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Release|x86.ActiveCfg = Release|Any CPU
+		{A27FCCEF-7CCF-4F5D-8609-268AFE33ED8A}.Release|x86.Build.0 = Release|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Debug|x64.Build.0 = Debug|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Debug|x86.Build.0 = Debug|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Release|x64.ActiveCfg = Release|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Release|x64.Build.0 = Release|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Release|x86.ActiveCfg = Release|Any CPU
+		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9237FEAD-7E2E-48E7-9827-5AF4D415FCFB}
+	EndGlobalSection
+EndGlobal

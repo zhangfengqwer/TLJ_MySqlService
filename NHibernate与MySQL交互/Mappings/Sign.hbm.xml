@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Zfstu"
+                   namespace="Zfstu.Model">
+
+  <class name="Sign" table="sign">
+    <id name="Uid" column="uid" type="String">
+      <generator class="assigned"></generator>
+    </id>
+    <property name="SignWeekDays" column="sign_week_days" type="Int32"></property>
+    <property name="UpdateTime" column="update_time" type="Timestamp"></property>
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-configuration xmlns="urn:nhibernate-configuration-2.2">
+  <session-factory>
+    <property name="connection.provider">NHibernate.Connection.DriverConnectionProvider</property>
+    <property name="dialect">NHibernate.Dialect.MySQL5Dialect</property> 
+    <property name="connection.driver_class">NHibernate.Driver.MySqlDataDriver</property> <!--使用mysql-->
+<!--    <property name="connection.connection_string">Server=127.0.0.1;Database=mygamedb;User ID=root;Password=root;</property>-->
+    <property name="connection.connection_string">Server=139.196.193.185;Database=new_tlj;User ID=root;Password=jinyou123;</property>
+
+    <property name="show_sql">true</property>
+  </session-factory>
+</hibernate-configuration>
+

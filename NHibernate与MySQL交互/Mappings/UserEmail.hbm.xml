@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Zfstu"
+                   namespace="Zfstu.Model">
+
+  <class name="UserEmail" table="user_email">
+    <id name="EmailId" column="email_id" type="Int32">
+      <generator class="native"></generator>
+    </id>
+    <property name="Content" column="content" type="String"></property>
+    <property name="Title" column="title" type="String"></property>
+    <property name="Uid" column="uid" type="String"></property>
+    <property name="Reward" column="reward" type="String"></property>
+    <property name="State" column="state" type="Int32"></property>
+    <property name="CreateTime" column="create_time" type="Timestamp"></property>
+  </class>
+
+</hibernate-mapping>
