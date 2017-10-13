@@ -10,6 +10,7 @@ namespace Zfstu.Manager
     interface IManager<T>
     {
         bool Add(T t);
+        bool AddOrUpdate(T t);
         bool Delete(T t);
         bool Update(T user);
         T GetById(int id);

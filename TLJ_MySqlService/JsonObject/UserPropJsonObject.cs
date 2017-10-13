@@ -9,5 +9,4 @@ using System.Threading.Tasks;
     {
         public int prop_id;
         public int prop_num;
-        public int type;
     }

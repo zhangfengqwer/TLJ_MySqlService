@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Zfstu"
+                   namespace="Zfstu.Model">
+
+  <class name="Notice" table="notice">
+    <id name="NoticeId" column="notice_id" type="Int32">
+      <generator class="native"></generator>
+    </id>
+    <property name="Content" column="content" type="String"></property>
+    <property name="Title" column="title" type="String"></property>
+    <property name="Type" column="type" type="Int32"></property>
+    <property name="EndTime" column="end_time" type="Timestamp"></property>
+    <property name="StartTime" column="start_time" type="Timestamp"></property>
+  </class>
+</hibernate-mapping>

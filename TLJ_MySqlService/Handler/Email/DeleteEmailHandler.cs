@@ -88,7 +88,7 @@ namespace TLJ_MySqlService.Handler
         }
 
         //数据库操作成功
-        private void OperatorSuccess( JObject responseData)
+        private void OperatorSuccess(JObject responseData)
         {
             responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
         }

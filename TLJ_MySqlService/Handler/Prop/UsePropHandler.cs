@@ -56,7 +56,7 @@ namespace TLJ_MySqlService.Handler
         private void UsePropSql(string uid, int propId, JObject responseData)
         {
             UserProp userProp = userPropManager.GetUserProp(uid, propId);
-            if (userProp == null || userProp.PropNum <= 0 || userProp.Type != 0)
+            if (userProp == null || userProp.PropNum <= 0 )
             {
                 MySqlService.log.Warn("没有该道具或者不能使用该道具");
                 OperatorFail(responseData);

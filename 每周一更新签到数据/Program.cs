@@ -20,6 +20,8 @@ namespace UpdateSignMonday
         private static MySqlManager<UserEmail> userEmailManager = new MySqlManager<UserEmail>();
         private static MySqlManager<UserGame> userGameManager = new MySqlManager<UserGame>();
         private static MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
+        private static MySqlManager<Notice> noticeManager = new MySqlManager<Notice>();
+        private static MySqlManager<UserNotice> userNoticeManager = new MySqlManager<UserNotice>();
         
         static void Main(string[] args)
         {
@@ -35,6 +37,9 @@ namespace UpdateSignMonday
             //            Console.WriteLine(DateTime.Now.ToLongDateString()+" "+ DateTime.Now.ToLongTimeString());
                 //            Console.ReadKey();
                 List<UserProp> userProps = userPropManager.GetListByUid("6506476654");
+            ICollection<Notice> collection = noticeManager.GetAll();
+            List<UserNotice> userNotices = userNoticeManager.GetListByUid("6506476654");
+            Console.WriteLine(collection.Count+" "+ userNotices.Count);
 //            //添加道具
 //            UserProp userProp1 = userPropManager.GetUserProp("6506476654",105);
 //            if (userProp1 == null)
@@ -57,10 +62,10 @@ namespace UpdateSignMonday
 //
 //            userPropManager.Add(userProp);
 
-//            foreach (var prop in userProps)
-//            {
-//                Console.WriteLine(prop.PropId);
-//            }
+            //            foreach (var prop in userProps)
+            //            {
+            //                Console.WriteLine(prop.PropId);
+            //            }
             Console.ReadKey();
             //            new Thread(UpdateSignDays).Start();
         }

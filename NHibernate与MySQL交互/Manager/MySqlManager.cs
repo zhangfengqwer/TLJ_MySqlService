@@ -48,6 +48,28 @@ namespace Zfstu.Manager
                 }
             }
         }
+
+        public bool AddOrUpdate(T t)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    try
+                    {
+                        Session.SaveOrUpdate(t);
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        return false;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// 删
         /// </summary>

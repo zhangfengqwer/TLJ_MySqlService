@@ -62,7 +62,6 @@ namespace TLJ_MySqlService.Handler
                     userPropJson = new UserPropJsonObject();
                     userPropJson.prop_id = prop.PropId;
                     userPropJson.prop_num = prop.PropNum;
-                    userPropJson.type = prop.Type;
                     //只有数量大于0的道具数据才会返回
                     if (userPropJson.prop_num > 0)
                     {

@@ -4,12 +4,12 @@
                    assembly="Zfstu"
                    namespace="Zfstu.Model">
 
-  <class name="UserProp" table="user_prop">
+  <class name="UserNotice" table="user_notice">
     <composite-id>
       <key-property  name="Uid" column="uid" type="String"></key-property>
-      <key-property  name="PropId" column="prop_id" type="Int32"></key-property>
+      <key-property  name="NoticeId" column="notice_id" type="Int32"></key-property>
     </composite-id>
-    <property name="PropNum" column="prop_num" type="Int32"></property>
+    <property name="State" column="state" type="Int32"></property>
   </class>
 
 </hibernate-mapping>

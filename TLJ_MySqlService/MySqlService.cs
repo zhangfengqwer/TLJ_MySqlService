@@ -90,6 +90,9 @@ namespace TLJ_MySqlService
 
             UsePropHandler usePropHandler = new UsePropHandler();
             handlerDic.Add(usePropHandler.tag, usePropHandler);
+
+            GetUseNoticeHandler getUseNoticeHandler = new GetUseNoticeHandler();
+            handlerDic.Add(getUseNoticeHandler.tag, getUseNoticeHandler);
         }
 
         public void InitLog()
