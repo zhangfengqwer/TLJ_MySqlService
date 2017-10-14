@@ -71,7 +71,11 @@
     <Compile Include="Handler\Email\OneKeyReadEmailHandler.cs" />
     <Compile Include="Handler\Email\ReadEmailHandler.cs" />
     <Compile Include="Handler\Email\GetEmailHandler.cs" />
+    <Compile Include="Handler\Goods\BuyGoodsHandler.cs" />
+    <Compile Include="Handler\Goods\GetGoodsHandler.cs" />
+    <Compile Include="Handler\Notice\ReadNoticeHandler.cs" />
     <Compile Include="Handler\Notice\GetUseNoticeHandler.cs" />
+    <Compile Include="Handler\Task\GetTaskHandler.cs" />
     <Compile Include="Handler\UserInfo\GetUserInfoHandler.cs" />
     <Compile Include="Handler\Sign\SignHandler.cs" />
     <Compile Include="Handler\Sign\GetSignRecordHandler.cs" />
@@ -82,9 +86,12 @@
     <Compile Include="JsonObject\UserGameJsonObject.cs" />
     <Compile Include="JsonObject\UserNoticeJsonObj.cs" />
     <Compile Include="JsonObject\UserPropJsonObject.cs" />
+    <Compile Include="JsonObject\UserTaskJsonObject.cs" />
+    <Compile Include="Model\BuyGoodReq.cs" />
     <Compile Include="Model\ReadEmailReq.cs" />
     <Compile Include="Model\Login.cs" />
     <Compile Include="Model\DefaultReqData.cs" />
+    <Compile Include="Model\ReadNoticeReq.cs" />
     <Compile Include="Model\UsePropReq.cs" />
     <Compile Include="Model\UserEmailData.cs" />
     <Compile Include="ProjectInstaller.cs">
@@ -99,6 +106,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\CommonUtil.cs" />
     <Compile Include="Utils\LogUtil.cs" />
     <Compile Include="Utils\MyCommon.cs" />
     <Compile Include="Utils\NetConfig.cs" />

@@ -186,6 +186,20 @@ namespace Zfstu.Manager
         }
 
         /// <summary>
+        /// 根据Uid查询
+        /// </summary>
+        public T GetGoods(int goodId)
+        {
+
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var criteria = Session.CreateCriteria(typeof(T));
+                var t = criteria.Add(Restrictions.Eq("goods_id", goodId)).UniqueResult<T>();
+                return t;
+            }
+        }
+
+        /// <summary>
         /// 得到未读取邮件
         /// </summary>
         /// <param name="uid"></param>
@@ -261,6 +275,19 @@ namespace Zfstu.Manager
                     .UniqueResult<UserProp>();
 
                 return userProp;
+            }
+        }
+
+        public UserNotice getUserNotice(string uid, int noticeId)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var userNotice = Session.CreateCriteria(typeof(UserNotice))
+                    .Add(Restrictions.Eq("NoticeId", noticeId))
+                    .Add(Restrictions.Eq("Uid", uid))
+                    .UniqueResult<UserNotice>();
+
+                return userNotice;
             }
         }
     }

@@ -22,9 +22,16 @@ namespace UpdateSignMonday
         private static MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
         private static MySqlManager<Notice> noticeManager = new MySqlManager<Notice>();
         private static MySqlManager<UserNotice> userNoticeManager = new MySqlManager<UserNotice>();
+        private static MySqlManager<Task> taskManager = new MySqlManager<Task>();
+        private static MySqlManager<UserTask> userTaskManager = new MySqlManager<UserTask>();
+
         
         static void Main(string[] args)
         {
+            ICollection<Task> collection = taskManager.GetAll();
+            ICollection<UserTask> collections = userTaskManager.GetListByUid("6506476654");
+            Console.WriteLine(collection.Count+" "+ collections.Count);
+
 //            UserProp userProp = userPropManager.GetUserProp("6506476654", 109);
 //            if (userProp == null || userProp.PropNum <= 0)
 //            {
@@ -36,10 +43,10 @@ namespace UpdateSignMonday
 //            }
             //            Console.WriteLine(DateTime.Now.ToLongDateString()+" "+ DateTime.Now.ToLongTimeString());
                 //            Console.ReadKey();
-                List<UserProp> userProps = userPropManager.GetListByUid("6506476654");
-            ICollection<Notice> collection = noticeManager.GetAll();
-            List<UserNotice> userNotices = userNoticeManager.GetListByUid("6506476654");
-            Console.WriteLine(collection.Count+" "+ userNotices.Count);
+//                List<UserProp> userProps = userPropManager.GetListByUid("6506476654");
+//            ICollection<Notice> collection = noticeManager.GetAll();
+//            List<UserNotice> userNotices = userNoticeManager.GetListByUid("6506476654");
+//            Console.WriteLine(collection.Count+" "+ userNotices.Count);
 //            //添加道具
 //            UserProp userProp1 = userPropManager.GetUserProp("6506476654",105);
 //            if (userProp1 == null)

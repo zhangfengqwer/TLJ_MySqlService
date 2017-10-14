@@ -93,6 +93,18 @@ namespace TLJ_MySqlService
 
             GetUseNoticeHandler getUseNoticeHandler = new GetUseNoticeHandler();
             handlerDic.Add(getUseNoticeHandler.tag, getUseNoticeHandler);
+
+            ReadNoticeHandler readNoticeHandler = new ReadNoticeHandler();
+            handlerDic.Add(readNoticeHandler.tag, readNoticeHandler);
+
+            GetGoodsHandler getGoodsHandler = new GetGoodsHandler();
+            handlerDic.Add(getGoodsHandler.tag, getGoodsHandler);
+
+            BuyGoodsHandler buyGoodsHandler = new BuyGoodsHandler();
+            handlerDic.Add(buyGoodsHandler.tag, buyGoodsHandler);
+
+            GetTaskHandler getTaskHandler = new GetTaskHandler();
+            handlerDic.Add(getTaskHandler.tag, getTaskHandler);
         }
 
         public void InitLog()

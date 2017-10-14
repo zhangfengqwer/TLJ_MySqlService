@@ -57,7 +57,10 @@
   <ItemGroup>
     <Compile Include="Manager\IManager.cs" />
     <Compile Include="Manager\MySqlManager.cs" />
+    <Compile Include="Model\Goods.cs" />
     <Compile Include="Model\Notice.cs" />
+    <Compile Include="Model\UserTask.cs" />
+    <Compile Include="Model\Task.cs" />
     <Compile Include="Model\UserGame.cs" />
     <Compile Include="Model\Sign.cs" />
     <Compile Include="Model\UserEmail.cs" />
@@ -76,6 +79,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Mappings\UserTask.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mappings\Task.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mappings\Goods.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mappings\UserNotice.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

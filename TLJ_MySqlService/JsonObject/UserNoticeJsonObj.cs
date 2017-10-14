@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TLJ_MySqlService.JsonObject
 {
@@ -13,7 +9,7 @@ namespace TLJ_MySqlService.JsonObject
         public string content;
         public int type;
         public int state;
-        public DateTime start_time;
-        public DateTime end_time;
+        public string start_time;
+        public string end_time;
     }
 }

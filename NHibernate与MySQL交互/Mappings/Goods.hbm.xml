@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Zfstu"
+                   namespace="Zfstu.Model">
+
+  <class name="Goods" table="goods">
+    <id name="goods_id" column="goods_id" type="Int32">
+      <generator class="native"></generator>
+    </id>
+    <property name="goods_type" column="goods_type" type="Int32"></property>
+    <property name="price" column="price" type="Int32"></property>
+    <property name="money_type" column="money_type" type="Int32"></property>
+    <property name="props" column="props" type="String"></property>
+    <property name="goods_name" column="goods_name" type="String"></property>
+  </class>
+</hibernate-mapping>

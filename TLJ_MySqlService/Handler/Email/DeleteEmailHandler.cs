@@ -49,7 +49,7 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.CONNID, connId);
             _responseData.Add(MyCommon.EMAIL_ID, emailId);
 
-            //读取邮件
+            //删除邮件
             DeleteEmailSql(emailId,uid,_responseData);
             return _responseData.ToString() ;
         }

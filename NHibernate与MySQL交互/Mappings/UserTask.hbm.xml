@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Zfstu"
+                   namespace="Zfstu.Model">
+
+  <class name="UserTask" table="user_task">
+    <composite-id>
+      <key-property  name="Uid" column="uid" type="String"></key-property>
+      <key-property  name="task_id" column="task_id" type="Int32"></key-property>
+    </composite-id>
+    <property name="progress" column="progress" type="Int32"></property>
+    <property name="isover" column="isover" type="Int32"></property>
+  </class>
+</hibernate-mapping>

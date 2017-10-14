@@ -34,4 +34,3 @@ C:\Users\Administrator\Desktop\TLJ_MySqlService\NHibernate与MySQL交互\bin\Deb
 C:\Users\Administrator\Desktop\TLJ_MySqlService\NHibernate与MySQL交互\obj\Debug\Zfstu.dll
 C:\Users\Administrator\Desktop\TLJ_MySqlService\NHibernate与MySQL交互\obj\Debug\Zfstu.pdb
 C:\Users\Administrator\Desktop\TLJ_MySqlService\NHibernate与MySQL交互\obj\Debug\NHibernate与MySQL交互.csproj.CoreCompileInputs.cache
-C:\Users\Administrator\Desktop\TLJ_MySqlService\NHibernate与MySQL交互\obj\Debug\NHibernate与MySQL交互.csprojResolveAssemblyReference.cache

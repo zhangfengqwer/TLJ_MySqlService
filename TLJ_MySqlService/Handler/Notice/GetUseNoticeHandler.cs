@@ -101,8 +101,8 @@ namespace TLJ_MySqlService.Handler
                             content = notice.Content,
                             type = notice.Type,
                             state = userNotice.State,
-                            start_time = notice.StartTime,
-                            end_time = notice.EndTime
+                            start_time = notice.StartTime.ToLongDateString(),
+                            end_time = notice.EndTime.ToLongDateString()
                         };
                         tempList.Add(userNoticeJsonObj);
                     }
