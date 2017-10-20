@@ -11,6 +11,7 @@
     <property name="NickName" column="nickname" type="String"></property>
     <property name="Phone" column="phone" type="String"></property>
     <property name="Gold" column="gold" type="Int32"></property>
+    <property name="Head" column="head" type="Int32"></property>
     <property name="YuanBao" column="yuanbao" type="Int32"></property>
     <property name="PlatForm" column="platform" type="Int32"></property>
   </class>

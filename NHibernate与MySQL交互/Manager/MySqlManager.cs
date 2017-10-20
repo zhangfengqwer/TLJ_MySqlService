@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NHibernate.Criterion;
 using Zfstu.Model;
+using Task = Zfstu.Model.Task;
 
 namespace Zfstu.Manager
 {
@@ -288,6 +289,42 @@ namespace Zfstu.Manager
                     .UniqueResult<UserNotice>();
 
                 return userNotice;
+            }
+        }
+
+        public UserTask GetUserTask(string uid, int taskId)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var userTask = Session.CreateCriteria(typeof(UserTask))
+                    .Add(Restrictions.Eq("task_id", taskId))
+                    .Add(Restrictions.Eq("Uid", uid))
+                    .UniqueResult<UserTask>();
+
+                return userTask;
+            }
+        }
+
+        public Task GetTask(int taskId)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var task = Session.CreateCriteria(typeof(Task))
+                    .Add(Restrictions.Eq("task_id", taskId))
+                    .UniqueResult<Task>();
+
+                return task;
+            }
+        }
+
+        public IList<UserInfo> getListOrderByJinbi()
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                IList<UserInfo> userInfos = Session.QueryOver<UserInfo>()
+                    .OrderBy(p => p.Gold).Asc
+                    .List();
+                return userInfos;
             }
         }
     }
