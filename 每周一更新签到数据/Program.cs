@@ -28,9 +28,9 @@ namespace UpdateSignMonday
         
         static void Main(string[] args)
         {
-            ICollection<Task> collection = taskManager.GetAll();
-            ICollection<UserTask> collections = userTaskManager.GetListByUid("6506476654");
-            Console.WriteLine(collection.Count+" "+ collections.Count);
+//            ICollection<Task> collection = taskManager.GetAll();
+//            ICollection<UserTask> collections = userTaskManager.GetListByUid("6506476654");
+//            Console.WriteLine(collection.Count+" "+ collections.Count);
 
 //            UserProp userProp = userPropManager.GetUserProp("6506476654", 109);
 //            if (userProp == null || userProp.PropNum <= 0)
@@ -73,8 +73,8 @@ namespace UpdateSignMonday
             //            {
             //                Console.WriteLine(prop.PropId);
             //            }
-            Console.ReadKey();
-            //            new Thread(UpdateSignDays).Start();
+//            Console.ReadKey();
+            new Thread(UpdateSignDays).Start();
         }
 
         private static void UpdateSignDays()
