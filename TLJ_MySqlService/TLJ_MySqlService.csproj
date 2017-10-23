@@ -76,6 +76,7 @@
     <Compile Include="Handler\Notice\ReadNoticeHandler.cs" />
     <Compile Include="Handler\Notice\GetUseNoticeHandler.cs" />
     <Compile Include="Handler\Task\GetTaskHandler.cs" />
+    <Compile Include="Handler\UserInfo\GetOtherUserInfoHandler.cs" />
     <Compile Include="Handler\UserInfo\GetUserInfoHandler.cs" />
     <Compile Include="Handler\Sign\SignHandler.cs" />
     <Compile Include="Handler\Sign\GetSignRecordHandler.cs" />

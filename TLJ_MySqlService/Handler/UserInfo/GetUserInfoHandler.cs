@@ -114,7 +114,7 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.PHONE, userInfo.Phone);
             responseData.Add(MyCommon.GOLD, userInfo.Gold);
             responseData.Add(MyCommon.YUANBAO, userInfo.YuanBao);
-            responseData.Add("head", userInfo.Head);
+            responseData.Add(MyCommon.HEAD, userInfo.Head);
             responseData.Add(MyCommon.GAMEDATA, JsonConvert.SerializeObject(userGameJsonObject));
         }
 

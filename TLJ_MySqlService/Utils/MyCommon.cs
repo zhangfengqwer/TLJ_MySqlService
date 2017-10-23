@@ -26,6 +26,7 @@
     public static readonly string PHONE = "phone";
     public static readonly string GOLD = "gold";
     public static readonly string YUANBAO = "yuanbao";
+    public static readonly string HEAD = "head";
     public static readonly string GAMEDATA = "gameData";
     public static readonly string PLATFORM = "platform";
     public static readonly string EMAIL_ID = "email_id";

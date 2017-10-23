@@ -105,6 +105,9 @@ namespace TLJ_MySqlService
 
             GetTaskHandler getTaskHandler = new GetTaskHandler();
             handlerDic.Add(getTaskHandler.tag, getTaskHandler);
+
+            GetOtherUserInfoHandler getOtherUserInfoHandler = new GetOtherUserInfoHandler();
+            handlerDic.Add(getOtherUserInfoHandler.tag, getOtherUserInfoHandler);
         }
 
         public void InitLog()
