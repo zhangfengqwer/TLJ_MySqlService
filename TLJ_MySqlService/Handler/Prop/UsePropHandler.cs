@@ -18,7 +18,7 @@ namespace TLJ_MySqlService.Handler
             tag = Consts.Tag_UseProp;
         }
 
-        public override string OnResponse(string data)
+        public override string OnResponse(string data) 
         {
             UsePropReq defaultReqData = null;
             try
@@ -30,6 +30,7 @@ namespace TLJ_MySqlService.Handler
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
             }
+
             string Tag = defaultReqData.tag;
             int ConnId = defaultReqData.connId;
             string Uid = defaultReqData.uid;
@@ -82,6 +83,17 @@ namespace TLJ_MySqlService.Handler
                             userGame.RunCount = 0;
                             userGameManager.Update(userGame);
                             break;
+
+                        //记牌器
+                        case 101:
+                        //加倍卡
+                        case 102:
+                        //出牌发光
+                        case 105:
+                            userProp.BuffNum++;
+                            userPropManager.Update(userProp);
+                            break;
+
                     }
                     OperatorSuccess(responseData);
                 }

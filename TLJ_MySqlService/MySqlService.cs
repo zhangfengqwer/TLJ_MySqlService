@@ -108,6 +108,12 @@ namespace TLJ_MySqlService
 
             GetOtherUserInfoHandler getOtherUserInfoHandler = new GetOtherUserInfoHandler();
             handlerDic.Add(getOtherUserInfoHandler.tag, getOtherUserInfoHandler);
+
+            RealNameHandler realNameHandler = new RealNameHandler();
+            handlerDic.Add(realNameHandler.tag, realNameHandler);
+
+            UseLaBaHandler useLaBaHandler = new UseLaBaHandler();
+            handlerDic.Add(useLaBaHandler.tag, useLaBaHandler);
         }
 
         public void InitLog()

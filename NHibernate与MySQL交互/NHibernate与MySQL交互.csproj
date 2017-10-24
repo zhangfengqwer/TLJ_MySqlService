@@ -59,6 +59,7 @@
     <Compile Include="Manager\MySqlManager.cs" />
     <Compile Include="Model\Goods.cs" />
     <Compile Include="Model\Notice.cs" />
+    <Compile Include="Model\UserRealName.cs" />
     <Compile Include="Model\UserTask.cs" />
     <Compile Include="Model\Task.cs" />
     <Compile Include="Model\UserGame.cs" />
@@ -79,6 +80,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Mappings\UserRealName.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mappings\UserTask.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

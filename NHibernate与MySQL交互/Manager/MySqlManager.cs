@@ -317,12 +317,18 @@ namespace Zfstu.Manager
             }
         }
 
-        public IList<UserInfo> getListOrderByJinbi()
+        /// <summary>
+        /// 获得金币排行榜
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
+        public IList<UserInfo> GetListOrderByLimit(int num)
         {
             using (var Session = NHibernateHelper.OpenSession())
             {
                 IList<UserInfo> userInfos = Session.QueryOver<UserInfo>()
-                    .OrderBy(p => p.Gold).Asc
+                    .OrderBy(p => p.Gold).Desc
+                    .Take(num)
                     .List();
                 return userInfos;
             }

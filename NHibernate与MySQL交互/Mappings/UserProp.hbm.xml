@@ -10,6 +10,7 @@
       <key-property  name="PropId" column="prop_id" type="Int32"></key-property>
     </composite-id>
     <property name="PropNum" column="prop_num" type="Int32"></property>
+    <property name="BuffNum" column="buff_num" type="Int32"></property>
   </class>
 
 </hibernate-mapping>

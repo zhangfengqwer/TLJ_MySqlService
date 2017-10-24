@@ -1,24 +1,21 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using TLJCommon;
 using Zfstu.Manager;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
-    class GetUserInfoHandler : BaseHandler
+    class GetOtherUserInfoHandler : BaseHandler
     {
         private static MySqlManager<UserInfo> userInfoManager = new MySqlManager<UserInfo>();
         private static MySqlManager<UserGame> userGameManager = new MySqlManager<UserGame>();
         private static MySqlManager<User> userManager = new MySqlManager<User>();
-        private static MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
-        private static MySqlManager<UserRealName> userRealNameManager = new MySqlManager<UserRealName>();
 
-        public GetUserInfoHandler()
+        public GetOtherUserInfoHandler()
         {
-            tag = Consts.Tag_UserInfo;
+            tag = Consts.Tag_UserInfo_Game;
         }
 
         public override string OnResponse(string data)
@@ -47,15 +44,16 @@ namespace TLJ_MySqlService.Handler
             JObject responseData = new JObject();
             responseData.Add(MyCommon.TAG, Tag);
             responseData.Add(MyCommon.CONNID, connId);
+            responseData.Add(MyCommon.UID, uid);
 
-            GetUserInfoSql(uid, responseData);
+
+            GetOtherUserInfoSql(uid, responseData);
             return responseData.ToString();
         }
 
-        private void GetUserInfoSql(string uid, JObject responseData)
+        private void GetOtherUserInfoSql(string uid, JObject responseData)
         {
             User user = userManager.GetByUid(uid);
-            List<UserBuffJsonObject> userBuffJsonObjects = new List<UserBuffJsonObject>();
             if (user == null)
             {
                 OperatorFail(responseData);
@@ -92,7 +90,7 @@ namespace TLJ_MySqlService.Handler
 
                     if (userInfoManager.Add(userInfo) && userGameManager.Add(userGame))
                     {
-                        OperatorSuccess(userInfo, userGame, userBuffJsonObjects, false,responseData);
+                        OperatorSuccess(userInfo, userGame, responseData);
                     }
                     else
                     {
@@ -102,46 +100,25 @@ namespace TLJ_MySqlService.Handler
                 }
                 else
                 {
-                    //得到buff数据
-                    List<UserProp> userProps = userPropManager.GetListByUid(uid);
-                    if (userProps != null)
-                    {
-                        for (int i = 0; i < userProps.Count; i++)
-                        {
-                            if (userProps[i].BuffNum > 0)
-                            {
-                                UserBuffJsonObject userBuffJsonObject = new UserBuffJsonObject()
-                                {
-                                    prop_id = userProps[i].PropId,
-                                    buff_num = userProps[i].BuffNum
-                                };
-                                userBuffJsonObjects.Add(userBuffJsonObject);
-                            }
-                        }
-                    }
-
-                    //是否实名
-                    UserRealName userRealName = userRealNameManager.GetByUid(uid);
-                    OperatorSuccess(userInfo, userGame, userBuffJsonObjects, userRealName != null, responseData);
+                    OperatorSuccess(userInfo, userGame, responseData);
                 }
             }
         }
 
         //数据库操作成功
-        private void OperatorSuccess(UserInfo userInfo, UserGame userGame, List<UserBuffJsonObject> userProps, bool isRealName, JObject responseData)
+        private void OperatorSuccess(UserInfo userInfo, UserGame userGame, JObject responseData)
         {
-            UserGameJsonObject userGameJsonObject = new UserGameJsonObject(userGame.AllGameCount, userGame.WinCount,
-                userGame.RunCount,
-                userGame.MeiliZhi);
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
             responseData.Add(MyCommon.NAME, userInfo.NickName);
-            responseData.Add(MyCommon.PHONE, userInfo.Phone);
             responseData.Add(MyCommon.GOLD, userInfo.Gold);
-            responseData.Add("isRealName", isRealName);
-            responseData.Add(MyCommon.YUANBAO, userInfo.YuanBao);
             responseData.Add(MyCommon.HEAD, userInfo.Head);
-            responseData.Add(MyCommon.GAMEDATA, JsonConvert.SerializeObject(userGameJsonObject));
-            responseData.Add("BuffData", JsonConvert.SerializeObject(userProps));
+            JObject gameData = new JObject();
+            gameData.Add("allGameCount", userGame.AllGameCount);
+            gameData.Add("winCount", userGame.WinCount);
+            gameData.Add("runCount", userGame.RunCount);
+            gameData.Add("meiliZhi", userGame.MeiliZhi);
+
+            responseData.Add(MyCommon.GAMEDATA, gameData);
         }
 
         //数据库操作失败

@@ -1,40 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using TLJ_MySqlService.Model;
 using TLJCommon;
 using Zfstu.Manager;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
-    class GetUserBagHandler : BaseHandler
+    class UseLaBaHandler : BaseHandler
     {
         private static MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
+        private static MySqlManager<UserGame> userGameManager = new MySqlManager<UserGame>();
 
-        public GetUserBagHandler()
+        public UseLaBaHandler()
         {
-            tag = Consts.Tag_GetBag;
+            tag = Consts.Tag_UseLaBa;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            UseLaBaReq defaultReqData = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReqData = JsonConvert.DeserializeObject<UseLaBaReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
             }
+
             string Tag = defaultReqData.tag;
             int ConnId = defaultReqData.connId;
             string Uid = defaultReqData.uid;
+            string text = defaultReqData.text;
 
             if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(Uid))
             {
@@ -45,36 +45,32 @@ namespace TLJ_MySqlService.Handler
             JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, Tag);
             _responseData.Add(MyCommon.CONNID, ConnId);
+            _responseData.Add("text", text);
 
-            GetUserBagSql(Uid, _responseData);
+            UseLaBaSql(Uid, _responseData);
             return _responseData.ToString();
         }
 
-        private void GetUserBagSql(string uid, JObject responseData)
+        private void UseLaBaSql(string uid, JObject responseData)
         {
-            try
+            UserProp userProp = userPropManager.GetUserProp(uid, 106);
+            if (userProp == null || userProp.PropNum <= 0)
             {
-                List<UserProp> userProps = userPropManager.GetListByUid(uid);
-                List<UserPropJsonObject> tempList = new List<UserPropJsonObject>();
-                UserPropJsonObject userPropJson;
-                foreach (var prop in userProps)
-                {
-                    userPropJson = new UserPropJsonObject();
-                    userPropJson.prop_id = prop.PropId;
-                    userPropJson.prop_num = prop.PropNum;
-                    //只有数量大于0的道具数据才会返回
-                    if (userPropJson.prop_num > 0)
-                    {
-                        tempList.Add(userPropJson);
-                    }
-                }
-                responseData.Add("prop_list", JsonConvert.SerializeObject(tempList));
-                OperatorSuccess(responseData);
-            }
-            catch (Exception e)
-            {
-                MySqlService.log.Warn("查询道具失败:" + e);
+                MySqlService.log.Warn("没有喇叭");
                 OperatorFail(responseData);
+            }
+            else
+            {
+                userProp.PropNum--;
+                if (userPropManager.Update(userProp))
+                {
+                    OperatorSuccess(responseData);
+                }
+                else
+                {
+                    MySqlService.log.Warn("使用道具失败");
+                    OperatorFail(responseData);
+                }
             }
         }
 

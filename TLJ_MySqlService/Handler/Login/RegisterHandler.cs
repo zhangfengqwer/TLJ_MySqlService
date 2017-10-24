@@ -64,29 +64,10 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-              
                 string uid = UidUtil.createUID();
                 user.Uid = uid;
-                //注册签到数据
-                Sign sign = new Sign()
-                {
-                    Uid = uid,
-                    SignWeekDays = 0,
-                    UpdateTime = DateTime.Now
-                };
-                //注册用户数据
-                UserInfo userInfo = new UserInfo()
-                {
-                    Uid = user.Uid,
-                    NickName = user.Uid,
-                    Phone = "110",
-                    Gold = 3000,
-                    YuanBao = 0,
-                    PlatForm = 0
-                };
-
-                //注册用户 并 注册用户的签到数据
-                if (userManager.Add(user) && signManager.Add(sign) && userInfoManager.Add(userInfo))
+                //注册用户签到数据
+                if (userManager.Add(user))
                 {
                     OperatorSuccess(user, responseData);
                 }
