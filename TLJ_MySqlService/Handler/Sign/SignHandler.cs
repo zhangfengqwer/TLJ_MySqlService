@@ -14,8 +14,6 @@ namespace TLJ_MySqlService.Handler
 {
     class SignHandler : BaseHandler
     {
-        private static MySqlManager<Sign> signManager = new MySqlManager<Sign>();
-
         public SignHandler()
         {
             tag = Consts.Tag_Sign;
@@ -60,7 +58,7 @@ namespace TLJ_MySqlService.Handler
         /// <param name="responseData"></param>
         private void GetSignDataSql(string signUid, JObject responseData)
         {
-            Sign signByUid = signManager.GetByName(signUid);
+            Sign signByUid = MySqlService.signManager.GetByName(signUid);
             if (signByUid == null)
             {
                 OperatorFail(responseData);
@@ -86,7 +84,7 @@ namespace TLJ_MySqlService.Handler
                 {
                     signByUid.SignWeekDays++;
                     signByUid.UpdateTime = DateTime.Now;
-                    if (signManager.Update(signByUid))
+                    if (MySqlService.signManager.Update(signByUid))
                     {
                         OperatorSuccess(responseData);
                     }

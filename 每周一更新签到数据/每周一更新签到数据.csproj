@@ -38,7 +38,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -54,9 +53,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\alipay-sdk\AopSdk.csproj">
+      <Project>{9c11cae5-5188-4e71-825b-68fc3135728a}</Project>
+      <Name>AopSdk</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NHibernate与MySQL交互\NHibernate与MySQL交互.csproj">
       <Project>{a27fccef-7ccf-4f5d-8609-268afe33ed8a}</Project>
       <Name>NHibernate与MySQL交互</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TLJ_MySqlService\TLJ_MySqlService.csproj">
+      <Project>{74685689-aca8-4087-b4a3-ace58a62ce22}</Project>
+      <Name>TLJ_MySqlService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

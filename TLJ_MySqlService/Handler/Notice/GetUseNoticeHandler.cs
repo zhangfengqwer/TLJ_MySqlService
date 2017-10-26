@@ -17,9 +17,6 @@ namespace TLJ_MySqlService.Handler
 {
     class GetUseNoticeHandler : BaseHandler
     {
-        private MySqlManager<UserNotice> userNoticeManager = new MySqlManager<UserNotice>();
-        private MySqlManager<Notice> noticeManager = new MySqlManager<Notice>();
-
         public GetUseNoticeHandler()
         {
             tag = Consts.Tag_GetNotice;
@@ -57,8 +54,8 @@ namespace TLJ_MySqlService.Handler
 
         private void GetUseNoticeSql(string uid,JObject responseData)
         {
-            List<Notice> notices = noticeManager.GetAll().ToList();
-            List<UserNotice> userNotices = userNoticeManager.GetListByUid(uid);
+            List<Notice> notices = MySqlService.noticeManager.GetAll().ToList();
+            List<UserNotice> userNotices = MySqlService.userNoticeManager.GetListByUid(uid);
             List<UserNoticeJsonObj> tempList = new List<UserNoticeJsonObj>();
 
             if (notices.Count != 0)
@@ -74,14 +71,14 @@ namespace TLJ_MySqlService.Handler
                             NoticeId = notice.NoticeId,
                             State = 0
                         };
-                        if (!userNoticeManager.Add(userNotice))
+                        if (!MySqlService.userNoticeManager.Add(userNotice))
                         {
 //                            OperatorFail(responseData);
                             MySqlService.log.Warn("添加用户通知错误");
 //                            return;
                         }
                     }
-                    userNotices = userNoticeManager.GetListByUid(uid);
+                    userNotices = MySqlService.userNoticeManager.GetListByUid(uid);
                 }
                
             }

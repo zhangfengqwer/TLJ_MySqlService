@@ -17,8 +17,6 @@ namespace TLJ_MySqlService.Handler
 {
     class ReadNoticeHandler : BaseHandler
     {
-        private MySqlManager<UserNotice> userNoticeManager = new MySqlManager<UserNotice>();
-
         public ReadNoticeHandler()
         {
             tag = Consts.Tag_ReadNotice;
@@ -58,7 +56,7 @@ namespace TLJ_MySqlService.Handler
 
         private void ReadNoticeSql(string uid, int noticeId, JObject responseData)
         {
-            UserNotice userNotice = userNoticeManager.getUserNotice(uid, noticeId);
+            UserNotice userNotice = MySqlService.userNoticeManager.getUserNotice(uid, noticeId);
             if (userNotice == null)
             {
                 MySqlService.log.Warn("该用户没有这条通知");
@@ -69,7 +67,7 @@ namespace TLJ_MySqlService.Handler
                 if (userNotice.State == 0)
                 {
                     userNotice.State = 1;
-                    if (userNoticeManager.Update(userNotice))
+                    if (MySqlService.userNoticeManager.Update(userNotice))
                     {
                         OperatorSuccess(responseData);
                     }

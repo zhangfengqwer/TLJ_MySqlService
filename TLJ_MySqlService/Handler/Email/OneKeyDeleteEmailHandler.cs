@@ -14,7 +14,7 @@ namespace TLJ_MySqlService.Handler
 {
     class OneKeyDeleteEmailHandler : BaseHandler
     {
-        private static MySqlManager<UserEmail> userEmailManager = new MySqlManager<UserEmail>();
+     
         private UserEmailData userEmailData;
 
         public OneKeyDeleteEmailHandler()
@@ -55,7 +55,7 @@ namespace TLJ_MySqlService.Handler
 
         private void OneKeyDeleteEmailSql(string uid, JObject responseData)
         {
-            List<UserEmail> userEmails = userEmailManager.GetListByUid(uid);
+            List<UserEmail> userEmails = MySqlService.userEmailManager.GetListByUid(uid);
 
             if (userEmails == null)
             {
@@ -68,7 +68,7 @@ namespace TLJ_MySqlService.Handler
             {
                 if (email.State == 1)
                 {
-                    if (!userEmailManager.Delete(email))
+                    if (!MySqlService.userEmailManager.Delete(email))
                     {
                         MySqlService.log.Warn("删除邮件失败");
                         OperatorFail(responseData);

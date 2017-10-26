@@ -10,12 +10,6 @@ namespace TLJ_MySqlService.Handler
 {
     class GetUserInfoHandler : BaseHandler
     {
-        private static MySqlManager<UserInfo> userInfoManager = new MySqlManager<UserInfo>();
-        private static MySqlManager<UserGame> userGameManager = new MySqlManager<UserGame>();
-        private static MySqlManager<User> userManager = new MySqlManager<User>();
-        private static MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
-        private static MySqlManager<UserRealName> userRealNameManager = new MySqlManager<UserRealName>();
-
         public GetUserInfoHandler()
         {
             tag = Consts.Tag_UserInfo;
@@ -54,7 +48,7 @@ namespace TLJ_MySqlService.Handler
 
         private void GetUserInfoSql(string uid, JObject responseData)
         {
-            User user = userManager.GetByUid(uid);
+            User user = MySqlService.userManager.GetByUid(uid);
             List<UserBuffJsonObject> userBuffJsonObjects = new List<UserBuffJsonObject>();
             if (user == null)
             {
@@ -63,8 +57,8 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                UserInfo userInfo = userInfoManager.GetByUid(uid);
-                UserGame userGame = userGameManager.GetByUid(uid);
+                UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+                UserGame userGame = MySqlService.userGameManager.GetByUid(uid);
 
                 //用户信息表中没有用户信息
                 if (userInfo == null)
@@ -75,7 +69,7 @@ namespace TLJ_MySqlService.Handler
                         Uid = user.Uid,
                         NickName = user.Username,
                         Head = new Random().Next(1, 16),
-                        Phone = "110",
+                        Phone = "",
                         Gold = 3000,
                         YuanBao = 0,
                         PlatForm = 0
@@ -90,7 +84,7 @@ namespace TLJ_MySqlService.Handler
                     };
 
 
-                    if (userInfoManager.Add(userInfo) && userGameManager.Add(userGame))
+                    if (MySqlService.userInfoManager.Add(userInfo) && MySqlService.userGameManager.Add(userGame))
                     {
                         OperatorSuccess(userInfo, userGame, userBuffJsonObjects, false,responseData);
                     }
@@ -103,7 +97,7 @@ namespace TLJ_MySqlService.Handler
                 else
                 {
                     //得到buff数据
-                    List<UserProp> userProps = userPropManager.GetListByUid(uid);
+                    List<UserProp> userProps = MySqlService.userPropManager.GetListByUid(uid);
                     if (userProps != null)
                     {
                         for (int i = 0; i < userProps.Count; i++)
@@ -121,7 +115,7 @@ namespace TLJ_MySqlService.Handler
                     }
 
                     //是否实名
-                    UserRealName userRealName = userRealNameManager.GetByUid(uid);
+                    UserRealName userRealName = MySqlService.userRealNameManager.GetByUid(uid);
                     OperatorSuccess(userInfo, userGame, userBuffJsonObjects, userRealName != null, responseData);
                 }
             }

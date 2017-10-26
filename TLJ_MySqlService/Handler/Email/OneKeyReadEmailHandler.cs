@@ -14,7 +14,7 @@ namespace TLJ_MySqlService.Handler
 {
     class OneKeyReadEmailHandler : BaseHandler
     {
-        private static MySqlManager<UserEmail> userEmailManager = new MySqlManager<UserEmail>();
+      
 
         public OneKeyReadEmailHandler()
         {
@@ -55,7 +55,7 @@ namespace TLJ_MySqlService.Handler
         private void OneKeyReadEmailSql(string uid, JObject responseData)
         {
             //得到未读取的邮件
-            List<UserEmail> userEmails = userEmailManager.GetListByUid(uid);
+            List<UserEmail> userEmails = MySqlService.userEmailManager.GetListByUid(uid);
 
             if (userEmails == null)
             {
@@ -69,7 +69,7 @@ namespace TLJ_MySqlService.Handler
                 if (email.State == 0)
                 {
                     email.State = 1;
-                    if (!userEmailManager.Update(email))
+                    if (!MySqlService.userEmailManager.Update(email))
                     {
                         MySqlService.log.Warn("读取失败");
                         OperatorFail(responseData);

@@ -14,7 +14,6 @@ namespace TLJ_MySqlService.Handler
 {
     class DeleteEmailHandler : BaseHandler
     {
-        private static MySqlManager<UserEmail> userEmailManager = new MySqlManager<UserEmail>();
         private int connId;
 
         public DeleteEmailHandler()
@@ -56,7 +55,7 @@ namespace TLJ_MySqlService.Handler
 
         private void DeleteEmailSql(int emailId, string uid, JObject responseData)
         {
-            UserEmail userEmail = userEmailManager.GetEmail(emailId, uid);
+            UserEmail userEmail = MySqlService.userEmailManager.GetEmail(emailId, uid);
             if (userEmail == null)
             {
                 MySqlService.log.Warn("该邮件不存在");
@@ -67,7 +66,7 @@ namespace TLJ_MySqlService.Handler
                 //已读
                 if (userEmail.State == 1)
                 {
-                    if (userEmailManager.Delete(userEmail))
+                    if (MySqlService.userEmailManager.Delete(userEmail))
                     {
                         OperatorSuccess(responseData);
                     }

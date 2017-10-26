@@ -13,8 +13,6 @@ namespace TLJ_MySqlService.Handler
 {
     class GetUserBagHandler : BaseHandler
     {
-        private static MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
-
         public GetUserBagHandler()
         {
             tag = Consts.Tag_GetBag;
@@ -54,7 +52,7 @@ namespace TLJ_MySqlService.Handler
         {
             try
             {
-                List<UserProp> userProps = userPropManager.GetListByUid(uid);
+                List<UserProp> userProps = MySqlService.userPropManager.GetListByUid(uid);
                 List<UserPropJsonObject> tempList = new List<UserPropJsonObject>();
                 UserPropJsonObject userPropJson;
                 foreach (var prop in userProps)

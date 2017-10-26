@@ -11,7 +11,6 @@ namespace TLJ_MySqlService.Handler
 {
     class GetRankListHandler : BaseHandler
     {
-        private MySqlManager<UserInfo> userInfoManager = new MySqlManager<UserInfo>();
 
         public GetRankListHandler()
         {
@@ -55,7 +54,7 @@ namespace TLJ_MySqlService.Handler
         /// <param name=""></param>
         private void GetRankListSql(JObject responseData)
         {
-            List<UserInfo> orderByJinbi = userInfoManager.GetListOrderByLimit(30) as List<UserInfo>;
+            List<UserInfo> orderByJinbi = MySqlService.userInfoManager.GetListOrderByLimit(30) as List<UserInfo>;
             List<JinbiRankJsonObject> JinbiRanks = new List<JinbiRankJsonObject>();
             if (orderByJinbi ==null) orderByJinbi = new List<UserInfo>();
             for (int i = 0; i < orderByJinbi.Count; i++)

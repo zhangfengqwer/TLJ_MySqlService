@@ -14,8 +14,7 @@ namespace TLJ_MySqlService.Handler
 {
     class LoginHandler : BaseHandler
     {
-        private static MySqlManager<User> userManager = new MySqlManager<User>();
-      
+       
         public LoginHandler()
         {
             tag = Consts.Tag_Login;
@@ -56,7 +55,7 @@ namespace TLJ_MySqlService.Handler
         //登录 数据库操作
         private  void LoginSQL(User user, JObject responseData)
         {
-            User loginUser = userManager.VerifyLogin(user.Username, user.Userpassword);
+            User loginUser = MySqlService.userManager.VerifyLogin(user.Username, user.Userpassword);
             if (loginUser != null)
             {
                 OperatorSuccess(loginUser, responseData);

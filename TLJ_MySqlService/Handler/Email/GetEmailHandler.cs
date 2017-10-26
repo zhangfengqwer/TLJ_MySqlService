@@ -14,8 +14,7 @@ namespace TLJ_MySqlService.Handler
 {
     class GetEmailHandler : BaseHandler
     {
-        private static MySqlManager<UserEmail> userEmailManager = new MySqlManager<UserEmail>();
-
+       
         public GetEmailHandler()
         {
             tag = Consts.Tag_GetMail;
@@ -55,7 +54,7 @@ namespace TLJ_MySqlService.Handler
         {
             try
             {
-                List<UserEmail> userEmailList = userEmailManager.GetListByUid(uid);
+                List<UserEmail> userEmailList = MySqlService.userEmailManager.GetListByUid(uid);
                 mailData mailData;
                 foreach (var userEmail in userEmailList)
                 {

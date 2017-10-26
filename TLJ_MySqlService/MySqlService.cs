@@ -5,11 +5,14 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using TLJCommon;
 using TLJ_MySqlService.Handler;
+using Zfstu.Manager;
+using Zfstu.Model;
 
 namespace TLJ_MySqlService
 {
@@ -28,9 +31,32 @@ namespace TLJ_MySqlService
     public partial class MySqlService : ServiceBase
     {
         TcpPackServer m_tcpServer = new TcpPackServer();
+        public static string keyPhone = "sy123";
+        public static string baseUrl = "http://servicesy.51v.cn/partnerws/SmsService.asmx";
+        public static string sendSmsUrl = "";
         public static string TAG = "MySqlService";
         public static ILog log;
-        public static Dictionary<string,BaseHandler> handlerDic = new Dictionary<string, BaseHandler>();
+        public static Dictionary<string, BaseHandler> handlerDic = new Dictionary<string, BaseHandler>();
+
+
+        public static MySqlManager<UserTask> userTaskManager = new MySqlManager<UserTask>();
+        public static MySqlManager<UserInfo> userInfoManager = new MySqlManager<UserInfo>();
+        public static MySqlManager<UserGame> userGameManager = new MySqlManager<UserGame>();
+        public static MySqlManager<User> userManager = new MySqlManager<User>();
+        public static MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
+        public static MySqlManager<UserRealName> userRealNameManager = new MySqlManager<UserRealName>();
+        public static MySqlManager<UserNotice> userNoticeManager = new MySqlManager<UserNotice>();
+        public static MySqlManager<UserEmail> userEmailManager = new MySqlManager<UserEmail>();
+
+        public static MySqlManager<Goods> goodsManager = new MySqlManager<Goods>();
+        public static MySqlManager<Notice> noticeManager = new MySqlManager<Notice>();
+        public static MySqlManager<Sign> signManager = new MySqlManager<Sign>();
+        public static MySqlManager<PVPGameRoom> PVPGameRoomManager = new MySqlManager<PVPGameRoom>();
+        public static MySqlManager<Task> taskManager = new MySqlManager<Task>();
+
+
+        public static List<PVPGameRoom> PvpGameRooms;
+
         public MySqlService()
         {
             InitializeComponent();
@@ -38,11 +64,25 @@ namespace TLJ_MySqlService
 
         protected override void OnStart(string[] args)
         {
-            InitLog();
-            NetConfig.init();
-            InitService();
-            StartService();
-            InitHandler();
+            try
+            {
+                InitLog();
+                NetConfig.init();
+                InitService();
+                StartService();
+                InitHandler();
+                InitCommomData();
+            }
+            catch (Exception e)
+            {
+                log.Info("OnStart:" + e);
+            }
+        }
+
+        private void InitCommomData()
+        {
+            PvpGameRooms = PVPGameRoomManager.GetAll().ToList();
+            log.Info("PvpGameRooms:" + PvpGameRooms.Count);
         }
 
         public static void AddHandler(BaseHandler handler)
@@ -114,6 +154,18 @@ namespace TLJ_MySqlService
 
             UseLaBaHandler useLaBaHandler = new UseLaBaHandler();
             handlerDic.Add(useLaBaHandler.tag, useLaBaHandler);
+
+            SendSmsHandler sendSmsHandler = new SendSmsHandler();
+            handlerDic.Add(sendSmsHandler.tag, sendSmsHandler);
+
+            CheckSmsHandler checkSmsHandler = new CheckSmsHandler();
+            handlerDic.Add(checkSmsHandler.tag, checkSmsHandler);
+
+//            GetRankListHandler getRankListHandler = new GetRankListHandler();
+//            handlerDic.Add(getRankListHandler.tag, getRankListHandler);
+
+            GetPVPGameDataHandler getPVPGameDataHandler = new GetPVPGameDataHandler();
+            handlerDic.Add(getPVPGameDataHandler.tag, getPVPGameDataHandler);
         }
 
         public void InitLog()
@@ -162,7 +214,7 @@ namespace TLJ_MySqlService
             }
             catch (Exception ex)
             {
-                log.Error("TCP服务启动异常:"+ex.Message);
+                log.Error("TCP服务启动异常:" + ex.Message);
             }
         }
 
@@ -185,7 +237,7 @@ namespace TLJ_MySqlService
             ushort port = 0;
             if (m_tcpServer.GetRemoteAddress(connId, ref ip, ref port))
             {
-                log.Info("有客户端连接--ip = " + ip+ "--port = " + port);
+                log.Info("有客户端连接--ip = " + ip + "--port = " + port);
             }
             else
             {
@@ -195,7 +247,7 @@ namespace TLJ_MySqlService
             return HandleResult.Ok;
         }
 
-     
+
         HandleResult OnPointerDataReceive(IntPtr connId, IntPtr pData, int length)
         {
             // 数据到达了
@@ -219,8 +271,12 @@ namespace TLJ_MySqlService
             try
             {
                 ReceiveObj obj = new ReceiveObj(connId, bytes);
-                Thread thread = new Thread(doAskCilentReq);
-                thread.Start(obj);
+                System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() =>
+                {
+                    doAskCilentReq(obj);
+                });
+                t.Start();
+               
             }
             catch (Exception e)
             {
@@ -261,12 +317,11 @@ namespace TLJ_MySqlService
             string text = Encoding.UTF8.GetString(receiveObj.m_bytes, 0, receiveObj.m_bytes.Length);
 
             log.Info("收到消息：" + text);
-         
+
             JObject jo;
             try
             {
                 jo = JObject.Parse(text);
-              
             }
             catch (JsonReaderException ex)
             {
@@ -297,20 +352,19 @@ namespace TLJ_MySqlService
                         log.Warn("返回为null");
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    log.Warn("处理回调数据错误："+e);
+                    log.Warn("处理回调数据错误：" + e);
                 }
-               
             }
             else
             {
-                log.Warn("没有得到tag对应的handler");
+                log.Warn("没有得到tag对应的handler:" + tag);
             }
         }
 
         // 发送消息
-       public void sendMessage(IntPtr connId, string text)
+        public void sendMessage(IntPtr connId, string text)
         {
             byte[] bytes = new byte[1024];
             bytes = Encoding.UTF8.GetBytes(text);

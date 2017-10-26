@@ -10,9 +10,6 @@ namespace TLJ_MySqlService.Handler
 {
     class RealNameHandler : BaseHandler
     {
-        private static MySqlManager<User> userManager = new MySqlManager<User>();
-        private static MySqlManager<UserRealName> userRealNameManager = new MySqlManager<UserRealName>();
-
         public RealNameHandler()
         {
             tag = Consts.Tag_RealName;
@@ -60,7 +57,7 @@ namespace TLJ_MySqlService.Handler
         /// <param name="responseData"></param>
         private void UserRealNameSql(string uid, string realName, string identification, JObject responseData)
         {
-            User user = userManager.GetByUid(uid);
+            User user = MySqlService.userManager.GetByUid(uid);
             if (user == null)
             {
                 OperatorFail(responseData);
@@ -68,7 +65,7 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                UserRealName userRealName = userRealNameManager.GetByUid(uid);
+                UserRealName userRealName = MySqlService.userRealNameManager.GetByUid(uid);
                 if (userRealName == null)
                 {
                     userRealName = new UserRealName();
@@ -77,7 +74,7 @@ namespace TLJ_MySqlService.Handler
                     userRealName.Identification = identification;
                     if (IDCardValidationUtil.CheckRealName(realName) && IDCardValidationUtil.CheckIDCard(identification))
                     {
-                        if (userRealNameManager.Add(userRealName))
+                        if (MySqlService.userRealNameManager.Add(userRealName))
                         {
                             OperatorSuccess(responseData);
                         }

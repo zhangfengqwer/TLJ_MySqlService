@@ -10,9 +10,6 @@ namespace TLJ_MySqlService.Handler
 {
     class UsePropHandler : BaseHandler
     {
-        private static MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
-        private static MySqlManager<UserGame> userGameManager = new MySqlManager<UserGame>();
-
         public UsePropHandler()
         {
             tag = Consts.Tag_UseProp;
@@ -52,7 +49,7 @@ namespace TLJ_MySqlService.Handler
 
         private void UsePropSql(string uid, int propId, JObject responseData)
         {
-            UserProp userProp = userPropManager.GetUserProp(uid, propId);
+            UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, propId);
             if (userProp == null || userProp.PropNum <= 0)
             {
                 MySqlService.log.Warn("没有该道具或者不能使用该道具");
@@ -61,9 +58,9 @@ namespace TLJ_MySqlService.Handler
             else
             {
                 userProp.PropNum--;
-                if (userPropManager.Update(userProp))
+                if (MySqlService.userPropManager.Update(userProp))
                 {
-                    UserGame userGame = userGameManager.GetByUid(uid);
+                    UserGame userGame = MySqlService.userGameManager.GetByUid(uid);
                     if (userGame == null)
                     {
                         MySqlService.log.Warn("查找用户游戏数据失败");
@@ -76,12 +73,12 @@ namespace TLJ_MySqlService.Handler
                         //魅力值修正卡
                         case 109:
                             userGame.MeiliZhi = 0;
-                            userGameManager.Update(userGame);
+                            MySqlService.userGameManager.Update(userGame);
                             break;
                         //逃跑率清零卡
                         case 108:
                             userGame.RunCount = 0;
-                            userGameManager.Update(userGame);
+                            MySqlService.userGameManager.Update(userGame);
                             break;
 
                         //记牌器
@@ -91,7 +88,7 @@ namespace TLJ_MySqlService.Handler
                         //出牌发光
                         case 105:
                             userProp.BuffNum++;
-                            userPropManager.Update(userProp);
+                            MySqlService.userPropManager.Update(userProp);
                             break;
 
                     }

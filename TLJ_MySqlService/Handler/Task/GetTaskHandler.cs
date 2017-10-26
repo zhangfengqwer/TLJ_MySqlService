@@ -14,9 +14,6 @@ namespace TLJ_MySqlService.Handler
 {
     class GetTaskHandler : BaseHandler
     {
-        private MySqlManager<Task> taskManager = new MySqlManager<Task>();
-        private MySqlManager<UserTask> userTaskManager = new MySqlManager<UserTask>();
-
         public GetTaskHandler()
         {
             tag = Consts.Tag_GetTask;
@@ -54,8 +51,8 @@ namespace TLJ_MySqlService.Handler
 
         private void GetTaskSql(string Uid, JObject responseData)
         {
-            List<Task> tasks = taskManager.GetAll().ToList();
-            List<UserTask> userTasks = userTaskManager.GetListByUid(Uid);
+            List<Task> tasks = MySqlService.taskManager.GetAll().ToList();
+            List<UserTask> userTasks = MySqlService.userTaskManager.GetListByUid(Uid);
             if (tasks.Count != userTasks.Count)
             {
                 userTasks.Clear();
@@ -70,7 +67,7 @@ namespace TLJ_MySqlService.Handler
                         task_id = task.task_id,
                     };
                     userTasks.Add(userTask);
-                    userTaskManager.Add(userTask);
+                    MySqlService.userTaskManager.Add(userTask);
                 }
             }
             List<UserTaskJsonObject> userTaskJsonObjects = new List<UserTaskJsonObject>();

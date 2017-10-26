@@ -13,10 +13,7 @@ namespace TLJ_MySqlService.Handler
 {
     class RegisterHandler : BaseHandler
     {
-        private static MySqlManager<User> userManager = new MySqlManager<User>();
-        private static MySqlManager<Sign> signManager = new MySqlManager<Sign>();
-        private static MySqlManager<UserInfo> userInfoManager = new MySqlManager<UserInfo>();
-
+      
         public RegisterHandler()
         {
             tag = Consts.Tag_QuickRegister;
@@ -57,7 +54,7 @@ namespace TLJ_MySqlService.Handler
         //注册 数据库操作
         private void RegisterSQL(User user, JObject responseData)
         {
-            User userByName = userManager.GetByName(user.Username);
+            User userByName = MySqlService.userManager.GetByName(user.Username);
             if (userByName != null)
             {
                 OperatorFail(responseData);
@@ -67,7 +64,7 @@ namespace TLJ_MySqlService.Handler
                 string uid = UidUtil.createUID();
                 user.Uid = uid;
                 //注册用户签到数据
-                if (userManager.Add(user))
+                if (MySqlService.userManager.Add(user))
                 {
                     OperatorSuccess(user, responseData);
                 }

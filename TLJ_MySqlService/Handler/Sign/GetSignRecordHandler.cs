@@ -13,8 +13,6 @@ namespace TLJ_MySqlService.Handler
 {
     class GetSignRecordHandler : BaseHandler
     {
-        private MySqlManager<Sign> signManager;
-
         public GetSignRecordHandler()
         {
             tag = Consts.Tag_GetSignRecord;
@@ -42,7 +40,7 @@ namespace TLJ_MySqlService.Handler
                 return null;
             }
             //传给客户端的数据
-            signManager = new MySqlManager<Sign>();
+            MySqlService.signManager = new MySqlManager<Sign>();
             JObject responseData = new JObject();
             responseData.Add(MyCommon.TAG, Tag);
             responseData.Add(MyCommon.CONNID, connId);
@@ -58,7 +56,7 @@ namespace TLJ_MySqlService.Handler
         /// <param name="responseData"></param>
         private void GetSignDataSql(string signUid, JObject responseData)
         {
-            Sign signByUid = signManager.GetByName(signUid);
+            Sign signByUid = MySqlService.signManager.GetByName(signUid);
             //签到表中没有用户信息
             if (signByUid == null)
             {
@@ -69,7 +67,7 @@ namespace TLJ_MySqlService.Handler
                     SignWeekDays = 0,
                     UpdateTime = DateTime.Now
                 };
-                if (signManager.Add(sign))
+                if (MySqlService.signManager.Add(sign))
                 {
                     OperatorSuccess(signByUid, responseData);
                 }

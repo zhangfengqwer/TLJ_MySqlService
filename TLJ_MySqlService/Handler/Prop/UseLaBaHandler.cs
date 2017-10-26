@@ -10,9 +10,6 @@ namespace TLJ_MySqlService.Handler
 {
     class UseLaBaHandler : BaseHandler
     {
-        private static MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
-        private static MySqlManager<UserGame> userGameManager = new MySqlManager<UserGame>();
-
         public UseLaBaHandler()
         {
             tag = Consts.Tag_UseLaBa;
@@ -53,7 +50,7 @@ namespace TLJ_MySqlService.Handler
 
         private void UseLaBaSql(string uid, JObject responseData)
         {
-            UserProp userProp = userPropManager.GetUserProp(uid, 106);
+            UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, 106);
             if (userProp == null || userProp.PropNum <= 0)
             {
                 MySqlService.log.Warn("没有喇叭");
@@ -62,7 +59,7 @@ namespace TLJ_MySqlService.Handler
             else
             {
                 userProp.PropNum--;
-                if (userPropManager.Update(userProp))
+                if (MySqlService.userPropManager.Update(userProp))
                 {
                     OperatorSuccess(responseData);
                 }

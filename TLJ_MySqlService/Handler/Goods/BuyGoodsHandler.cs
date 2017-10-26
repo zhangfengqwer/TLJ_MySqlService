@@ -10,9 +10,7 @@ namespace TLJ_MySqlService.Handler
 {
     class BuyGoodsHandler : BaseHandler
     {
-        private MySqlManager<Goods> goodsManager = new MySqlManager<Goods>();
-        private MySqlManager<UserInfo> userInfoManager = new MySqlManager<UserInfo>();
-        private MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
+      
 
         public BuyGoodsHandler()
         {
@@ -52,7 +50,7 @@ namespace TLJ_MySqlService.Handler
 
         private void BuyGoodsSql(int goodId, int num,string uid,JObject responseData)
         {
-            Goods goods = goodsManager.GetGoods(goodId);
+            Goods goods = MySqlService.goodsManager.GetGoods(goodId);
             bool IsSuccess =false;
             if (goods != null)
             {
@@ -90,7 +88,7 @@ namespace TLJ_MySqlService.Handler
             bool IsSuccess = false;
             //需要的人民币
             int sumPrice = goods.price * num;
-            UserInfo userInfo = userInfoManager.GetByUid(uid);
+            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
             //只能用人民币
             if (goods.money_type == 3)
             {
@@ -109,7 +107,7 @@ namespace TLJ_MySqlService.Handler
         {
             bool IsSuccess = false;
             int sumPrice = goods.price * num;
-            UserInfo userInfo = userInfoManager.GetByUid(uid);
+            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
             //只能用元宝
             if (goods.money_type == 2)
             {
@@ -118,7 +116,7 @@ namespace TLJ_MySqlService.Handler
                     userInfo.YuanBao -= sumPrice;
                     //先扣钱,添加金币
                     MySqlService.log.Info("先扣钱,添加金币");
-                    if (userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num))
+                    if (MySqlService.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num))
                     {
                         IsSuccess = true;
                     }
@@ -136,7 +134,7 @@ namespace TLJ_MySqlService.Handler
             if (propId == 1)
             {
                 userInfo.Gold += propNum * num;
-                if (userInfoManager.Update(userInfo))
+                if (MySqlService.userInfoManager.Update(userInfo))
                 {
                     return true;
                 }
@@ -152,7 +150,7 @@ namespace TLJ_MySqlService.Handler
             if (propId == 2)
             {
                 userInfo.YuanBao += propNum * num;
-                if (userInfoManager.Update(userInfo))
+                if (MySqlService.userInfoManager.Update(userInfo))
                 {
                     return true;
                 }
@@ -165,7 +163,7 @@ namespace TLJ_MySqlService.Handler
             bool IsSuccess = false;
             //需要付的价格
             int sumPrice = goods.price * num;
-            UserInfo userInfo = userInfoManager.GetByUid(uid);
+            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
             switch (goods.money_type)
             {
                 //金币付款
@@ -174,7 +172,7 @@ namespace TLJ_MySqlService.Handler
                     {
                         userInfo.Gold -= sumPrice;
                         //先扣钱,添加道具
-                        if (userInfoManager.Update(userInfo))
+                        if (MySqlService.userInfoManager.Update(userInfo))
                         {
                             for (int i = 0; i < num; i++)
                             {
@@ -193,7 +191,7 @@ namespace TLJ_MySqlService.Handler
                     {
                         userInfo.YuanBao -= sumPrice;
                         //先扣钱,添加道具
-                        if (userInfoManager.Update(userInfo))
+                        if (MySqlService.userInfoManager.Update(userInfo))
                         {
                             for (int i = 0; i < num; i++)
                             {
@@ -223,7 +221,7 @@ namespace TLJ_MySqlService.Handler
                 int propId = Convert.ToInt32(strings[0]);
                 int propNum = Convert.ToInt32(strings[1]);
 
-                UserProp userProp = userPropManager.GetUserProp(uid, propId);
+                UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, propId);
                 if (userProp == null)
                 {
                     userProp = new UserProp()
@@ -232,7 +230,7 @@ namespace TLJ_MySqlService.Handler
                         PropId = propId,
                         PropNum = propNum
                     };
-                    if (!userPropManager.Add(userProp))
+                    if (!MySqlService.userPropManager.Add(userProp))
                     {
                         MySqlService.log.Warn("添加道具失败");
                         return false;
@@ -241,7 +239,7 @@ namespace TLJ_MySqlService.Handler
                 else
                 {
                     userProp.PropNum += propNum;
-                    if (!userPropManager.Update(userProp))
+                    if (!MySqlService.userPropManager.Update(userProp))
                     {
                         MySqlService.log.Warn("更新道具失败");
                         return false;

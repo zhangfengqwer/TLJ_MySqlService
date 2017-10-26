@@ -14,9 +14,6 @@ namespace TLJ_MySqlService.Handler
 {
     class ReadEmailHandler : BaseHandler
     {
-        private static MySqlManager<UserEmail> userEmailManager = new MySqlManager<UserEmail>();
-      
-
         public ReadEmailHandler()
         {
             tag = Consts.Tag_ReadMail;
@@ -56,7 +53,7 @@ namespace TLJ_MySqlService.Handler
 
         private void ReadEmailSql(int emailId, string uid, JObject responseData)
         {
-            UserEmail userEmail = userEmailManager.GetEmail(emailId, uid);
+            UserEmail userEmail = MySqlService.userEmailManager.GetEmail(emailId, uid);
             if (userEmail == null)
             {
                 MySqlService.log.Warn("该邮件不存在");
@@ -68,7 +65,7 @@ namespace TLJ_MySqlService.Handler
                 if (userEmail.State == 0)
                 {
                     userEmail.State = 1;
-                    if (userEmailManager.Update(userEmail))
+                    if (MySqlService.userEmailManager.Update(userEmail))
                     {
                         OperatorSuccess(responseData);
                     }
