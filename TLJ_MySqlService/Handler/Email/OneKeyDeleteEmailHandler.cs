@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using TLJCommon;
-using TLJ_MySqlService.Model;
-using Zfstu.Manager;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
@@ -15,30 +10,29 @@ namespace TLJ_MySqlService.Handler
     class OneKeyDeleteEmailHandler : BaseHandler
     {
      
-        private UserEmailData userEmailData;
 
         public OneKeyDeleteEmailHandler()
         {
-            tag = Consts.Tag_OneKeyDeleteMail;
+            Tag = Consts.Tag_OneKeyDeleteMail;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            DefaultReq defaultReq = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
             }
-            string Tag = defaultReqData.tag;
-            int connId = defaultReqData.connId;
-            string uid = defaultReqData.uid;
+            string Tag = defaultReq.tag;
+            int connId = defaultReq.connId;
+            string uid = defaultReq.uid;
 
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0 || string.IsNullOrWhiteSpace(uid))
+            if (string.IsNullOrWhiteSpace(Tag)  || string.IsNullOrWhiteSpace(uid))
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -77,6 +71,7 @@ namespace TLJ_MySqlService.Handler
                 }
             }
             OperatorSuccess(responseData);
+            MySqlService.log.Info("一键删除邮件成功");
         }
 
         //数据库操作成功

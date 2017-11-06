@@ -1,13 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Net;
-using TLJCommon;
 using TLJ_MySqlService.Model;
 using TLJ_MySqlService.Utils;
-using Zfstu.Manager;
-using Zfstu.Model;
+using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -15,7 +11,7 @@ namespace TLJ_MySqlService.Handler
     {
         public SendSmsHandler()
         {
-            tag = Consts.Tag_SendSMS;
+            Tag = Consts.Tag_SendSMS;
         }
 
         public override string OnResponse(string data)
@@ -35,7 +31,7 @@ namespace TLJ_MySqlService.Handler
             string uid = defaultReqData.uid;
             string phoneNum = defaultReqData.phoneNum;
 
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0
+            if (string.IsNullOrWhiteSpace(Tag) 
                 || string.IsNullOrWhiteSpace(uid) || string.IsNullOrWhiteSpace(phoneNum))
             {
                 MySqlService.log.Warn("字段有空");

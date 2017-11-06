@@ -10,11 +10,9 @@ namespace TLJ_MySqlService.Handler
 {
     class BuyGoodsHandler : BaseHandler
     {
-      
-
         public BuyGoodsHandler()
         {
-            tag = Consts.Tag_BuyGoods;
+            Tag = Consts.Tag_BuyGoods;
         }
 
         public override string OnResponse(string data)

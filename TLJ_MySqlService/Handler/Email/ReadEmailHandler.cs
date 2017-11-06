@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TLJCommon;
 using TLJ_MySqlService.Model;
+using TLJ_MySqlService.Utils;
 using Zfstu.Manager;
 using Zfstu.Model;
 
@@ -16,7 +17,7 @@ namespace TLJ_MySqlService.Handler
     {
         public ReadEmailHandler()
         {
-            tag = Consts.Tag_ReadMail;
+            Tag = Consts.Tag_ReadMail;
         }
 
         public override string OnResponse(string data)
@@ -35,7 +36,7 @@ namespace TLJ_MySqlService.Handler
             int connId = readEmailReq.connId;
             string uid = readEmailReq.uid;
             int emailId = readEmailReq.email_id;
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0 || string.IsNullOrWhiteSpace(uid) || emailId < 0)
+            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || emailId < 0)
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -47,8 +48,8 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.EMAIL_ID, emailId);
 
             //读取邮件
-            ReadEmailSql(emailId,uid,_responseData);
-            return _responseData.ToString() ;
+            ReadEmailSql(emailId, uid, _responseData);
+            return _responseData.ToString();
         }
 
         private void ReadEmailSql(int emailId, string uid, JObject responseData)
@@ -65,6 +66,14 @@ namespace TLJ_MySqlService.Handler
                 if (userEmail.State == 0)
                 {
                     userEmail.State = 1;
+                    if (!string.IsNullOrWhiteSpace(userEmail.Reward))
+                    {
+                        bool addProp = MySqlUtil.AddProp(uid, userEmail.Reward);
+                        if (!addProp)
+                        {
+                            MySqlService.log.Warn("读邮件加道具失败：" + uid + " " + userEmail.Reward);
+                        }
+                    }
                     if (MySqlService.userEmailManager.Update(userEmail))
                     {
                         OperatorSuccess(responseData);
@@ -81,20 +90,18 @@ namespace TLJ_MySqlService.Handler
                     OperatorFail(responseData);
                 }
             }
-
-
         }
 
         //数据库操作成功
-        private void OperatorSuccess( JObject responseData)
+        private void OperatorSuccess(JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
         }
 
         //数据库操作失败
         private void OperatorFail(JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
         }
     }
 }

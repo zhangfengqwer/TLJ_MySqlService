@@ -16,24 +16,24 @@ namespace TLJ_MySqlService.Handler
     {
         public GetTaskHandler()
         {
-            tag = Consts.Tag_GetTask;
+            Tag = Consts.Tag_GetTask;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            DefaultReq defaultReq = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误:"+e);
                 return null;
             }
-            string Tag = defaultReqData.tag;
-            int connId = defaultReqData.connId;
-            string uid = defaultReqData.uid;
+            string Tag = defaultReq.tag;
+            int connId = defaultReq.connId;
+            string uid = defaultReq.uid;
 
             if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid))
             {

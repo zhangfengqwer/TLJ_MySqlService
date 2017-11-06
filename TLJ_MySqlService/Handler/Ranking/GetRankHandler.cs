@@ -4,25 +4,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TLJCommon;
+using TLJ_MySqlService.Model;
 using Zfstu.Manager;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
-    class GetRankListHandler : BaseHandler
+    class GetRankHandler : BaseHandler
     {
 
-        public GetRankListHandler()
+        public GetRankHandler()
         {
-            tag = Consts.Tag_GetSignRecord;
+            Tag = Consts.Tag_GetRank;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            CommonReq defaultReqData = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReqData = JsonConvert.DeserializeObject<CommonReq>(data);
             }
             catch (Exception e)
             {
@@ -31,9 +32,8 @@ namespace TLJ_MySqlService.Handler
             }
             string Tag = defaultReqData.tag;
             int connId = defaultReqData.connId;
-            string uid = defaultReqData.uid;
 
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0 || string.IsNullOrWhiteSpace(uid))
+            if (string.IsNullOrWhiteSpace(Tag) )
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -43,7 +43,7 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.TAG, Tag);
             responseData.Add(MyCommon.CONNID, connId);
             //查询
-            GetRankListSql(responseData);
+            GetRankSql(responseData);
             return responseData.ToString();
         }
 
@@ -52,28 +52,44 @@ namespace TLJ_MySqlService.Handler
         /// </summary>
         /// <param name=""></param>
         /// <param name=""></param>
-        private void GetRankListSql(JObject responseData)
+        private void GetRankSql(JObject responseData)
         {
-            List<UserInfo> orderByJinbi = MySqlService.userInfoManager.GetListOrderByLimit(30) as List<UserInfo>;
-            List<JinbiRankJsonObject> JinbiRanks = new List<JinbiRankJsonObject>();
+            //金币榜
+            List<UserInfo> orderByJinbi = MySqlService.userInfoManager.GetGoldRank(30) as List<UserInfo>;
+            List<GoldRankJsonObject> JinbiRanks = new List<GoldRankJsonObject>();
             if (orderByJinbi ==null) orderByJinbi = new List<UserInfo>();
             for (int i = 0; i < orderByJinbi.Count; i++)
             {
-                JinbiRankJsonObject jinbiRankJsonObject = new JinbiRankJsonObject();
+                GoldRankJsonObject jinbiRankJsonObject = new GoldRankJsonObject();
                 jinbiRankJsonObject.name = orderByJinbi[i].NickName;
                 jinbiRankJsonObject.gold = orderByJinbi[i].Gold;
                 jinbiRankJsonObject.head = orderByJinbi[i].Head;
                 JinbiRanks.Add(jinbiRankJsonObject);
             }
-            OperatorSuccess(JinbiRanks, responseData);
+
+            //奖章榜
+            List<UserInfo> orderByMedal = MySqlService.userInfoManager.GetMedalRank(30) as List<UserInfo>;
+            List<MedalRankJsonObject> medalRanks = new List<MedalRankJsonObject>();
+            if (orderByMedal == null) orderByMedal = new List<UserInfo>();
+            for (int i = 0; i < orderByMedal.Count; i++)
+            {
+                MedalRankJsonObject medalRankJsonObject = new MedalRankJsonObject();
+                medalRankJsonObject.name = orderByMedal[i].NickName;
+                medalRankJsonObject.medal = orderByMedal[i].Medel;
+                medalRankJsonObject.head = orderByMedal[i].Head;
+                medalRanks.Add(medalRankJsonObject);
+            }
+            OperatorSuccess(JinbiRanks,medalRanks, responseData);
         }
 
+       
 
         //数据库操作成功
-        private void OperatorSuccess(List<JinbiRankJsonObject> jinbiRanks, JObject responseData)
+        private void OperatorSuccess(List<GoldRankJsonObject> jinbiRanks, List<MedalRankJsonObject> medalRanks, JObject responseData)
         {
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
-            responseData.Add("jinbi_list", JsonConvert.SerializeObject(jinbiRanks));
+            responseData.Add("gold_list", JsonConvert.SerializeObject(jinbiRanks));
+            responseData.Add("medal_list", JsonConvert.SerializeObject(medalRanks));
         }
 
         //数据库操作失败

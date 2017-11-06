@@ -12,7 +12,7 @@ namespace TLJ_MySqlService.Handler
     {
         public UseLaBaHandler()
         {
-            tag = Consts.Tag_UseLaBa;
+            Tag = Consts.Tag_UseLaBa;
         }
 
         public override string OnResponse(string data)

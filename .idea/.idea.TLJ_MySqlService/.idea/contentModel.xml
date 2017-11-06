@@ -14,6 +14,7 @@
         <e p="Mappings" t="Include">
           <e p="Goods.hbm.xml" t="Include" />
           <e p="Notice.hbm.xml" t="Include" />
+          <e p="PVPGameRoom.hbm.xml" t="Include" />
           <e p="Sign.hbm.xml" t="Include" />
           <e p="Task.hbm.xml" t="Include" />
           <e p="User.hbm.xml" t="Include" />
@@ -22,11 +23,13 @@
           <e p="UserInfo.hbm.xml" t="Include" />
           <e p="UserNotice.hbm.xml" t="Include" />
           <e p="UserProp.hbm.xml" t="Include" />
+          <e p="UserRealName.hbm.xml" t="Include" />
           <e p="UserTask.hbm.xml" t="Include" />
         </e>
         <e p="Model" t="Include">
           <e p="Goods.cs" t="Include" />
           <e p="Notice.cs" t="Include" />
+          <e p="PVPGameRoom.cs" t="Include" />
           <e p="Sign.cs" t="Include" />
           <e p="Task.cs" t="Include" />
           <e p="User.cs" t="Include" />
@@ -35,6 +38,7 @@
           <e p="UserInfo.cs" t="Include" />
           <e p="UserNotice.cs" t="Include" />
           <e p="UserProp.cs" t="Include" />
+          <e p="UserRealName.cs" t="Include" />
           <e p="UserTask.cs" t="Include" />
         </e>
         <e p="NHibernateHelper.cs" t="Include" />
@@ -61,9 +65,8 @@
             <e p="OneKeyReadEmailHandler.cs" t="Include" />
             <e p="ReadEmailHandler.cs" t="Include" />
           </e>
-          <e p="Goods" t="Include">
-            <e p="BuyGoodsHandler.cs" t="Include" />
-            <e p="GetGoodsHandler.cs" t="Include" />
+          <e p="Game" t="Include">
+            <e p="GetPVPGameDataHandler.cs" t="Include" />
           </e>
           <e p="Login" t="Include">
             <e p="LoginHandler.cs" t="Include" />
@@ -73,18 +76,32 @@
             <e p="GetUseNoticeHandler.cs" t="Include" />
             <e p="ReadNoticeHandler.cs" t="Include" />
           </e>
+          <e p="Phone" t="Include">
+            <e p="CheckSmsHandler.cs" t="Include" />
+            <e p="SendSmsHandler.cs" t="Include" />
+          </e>
           <e p="Prop" t="Include">
             <e p="GetUserBagHandler.cs" t="Include" />
+            <e p="UseLaBaHandler.cs" t="Include" />
             <e p="UsePropHandler.cs" t="Include" />
           </e>
           <e p="Ranking" t="Include">
-            <e p="GetRankListHandler.cs" t="Include" />
+            <e p="GetGoldRankHandler.cs" t="Include" />
+            <e p="GetMedalRankHandler.cs" t="Include" />
+          </e>
+          <e p="RealName" t="Include">
+            <e p="RealNameHandler.cs" t="Include" />
+          </e>
+          <e p="Shop" t="Include">
+            <e p="BuyGoodsHandler.cs" t="Include" />
+            <e p="GetGoodsHandler.cs" t="Include" />
           </e>
           <e p="Sign" t="Include">
             <e p="GetSignRecordHandler.cs" t="Include" />
             <e p="SignHandler.cs" t="Include" />
           </e>
           <e p="Task" t="Include">
+            <e p="CompleteTaskHandler.cs" t="Include" />
             <e p="GetTaskHandler.cs" t="Include" />
           </e>
           <e p="UserInfo" t="Include">
@@ -93,6 +110,9 @@
           </e>
         </e>
         <e p="JsonObject" t="Include">
+          <e p="GoldRankJsonObject.cs" t="Include" />
+          <e p="MedalRankJsonObject.cs" t="Include" />
+          <e p="UserBuffJsonObject.cs" t="Include" />
           <e p="UserGameJsonObject.cs" t="Include" />
           <e p="UserNoticeJsonObj.cs" t="Include" />
           <e p="UserPropJsonObject.cs" t="Include" />
@@ -100,10 +120,16 @@
         </e>
         <e p="Model" t="Include">
           <e p="BuyGoodReq.cs" t="Include" />
+          <e p="CheckSmsReq.cs" t="Include" />
+          <e p="CommonReq.cs" t="Include" />
+          <e p="CompleteTaskReq.cs" t="Include" />
           <e p="DefaultReqData.cs" t="Include" />
           <e p="Login.cs" t="Include" />
           <e p="ReadEmailReq.cs" t="Include" />
           <e p="ReadNoticeReq.cs" t="Include" />
+          <e p="RealNameReq.cs" t="Include" />
+          <e p="SendSmsReq.cs" t="Include" />
+          <e p="UseLaBaReq.cs" t="Include" />
           <e p="UsePropReq.cs" t="Include" />
           <e p="UserEmailData.cs" t="Include" />
         </e>
@@ -121,8 +147,11 @@
         <e p="TLJ_MySqlService.csproj" t="IncludeRecursive" />
         <e p="Utils" t="Include">
           <e p="CommonUtil.cs" t="Include" />
+          <e p="HttpUtil.cs" t="Include" />
+          <e p="IDCardValidationUtil.cs" t="Include" />
           <e p="LogUtil.cs" t="Include" />
           <e p="MyCommon.cs" t="Include" />
+          <e p="MysqlUtil.cs" t="Include" />
           <e p="NetConfig.cs" t="Include" />
         </e>
       </e>

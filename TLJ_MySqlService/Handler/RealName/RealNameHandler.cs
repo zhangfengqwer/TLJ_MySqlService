@@ -12,7 +12,7 @@ namespace TLJ_MySqlService.Handler
     {
         public RealNameHandler()
         {
-            tag = Consts.Tag_RealName;
+            Tag = Consts.Tag_RealName;
         }
 
         public override string OnResponse(string data)
@@ -33,7 +33,7 @@ namespace TLJ_MySqlService.Handler
             string identification = defaultReqData.identification;
             string realName = defaultReqData.realName;
 
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0
+            if (string.IsNullOrWhiteSpace(Tag) 
                 || string.IsNullOrWhiteSpace(uid) || string.IsNullOrWhiteSpace(identification) 
                 || string.IsNullOrWhiteSpace(realName))
             {
@@ -44,6 +44,7 @@ namespace TLJ_MySqlService.Handler
             JObject responseData = new JObject();
             responseData.Add(MyCommon.TAG, Tag);
             responseData.Add(MyCommon.CONNID, connId);
+            responseData.Add(MyCommon.UID, uid);
             //实名认证
             UserRealNameSql(uid, realName, identification ,responseData);
             return responseData.ToString();

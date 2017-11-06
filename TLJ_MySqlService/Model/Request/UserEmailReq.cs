@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TLJ_MySqlService.Model
 {
-    public class UserEmailData
+    public class UserEmailReq
     {
         public string tag;
         public int code;

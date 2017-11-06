@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TLJCommon;
-using TLJ_MySqlService;
-using TLJ_MySqlService.Handler;
-using TLJ_MySqlService.JsonObject;
+using System;
 using TLJ_MySqlService.Model;
-using Zfstu.Manager;
+using TLJCommon;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
@@ -19,7 +11,7 @@ namespace TLJ_MySqlService.Handler
     {
         public ReadNoticeHandler()
         {
-            tag = Consts.Tag_ReadNotice;
+            Tag = Consts.Tag_ReadNotice;
         }
 
         public override string OnResponse(string data)

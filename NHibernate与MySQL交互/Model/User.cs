@@ -9,6 +9,9 @@ namespace Zfstu.Model
         public virtual string Username { set; get; }
         public virtual string Userpassword { set; get; }
         public virtual string Uid { set; get; }
+        public virtual string ThirdId { set; get; }
+        public virtual int Platform { set; get; }
+        public virtual int IsRobot { set; get; }
 
         public virtual Sign USign { set; get; }
     }

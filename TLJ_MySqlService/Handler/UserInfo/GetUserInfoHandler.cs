@@ -12,26 +12,26 @@ namespace TLJ_MySqlService.Handler
     {
         public GetUserInfoHandler()
         {
-            tag = Consts.Tag_UserInfo;
+            Tag = Consts.Tag_UserInfo;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            DefaultReq defaultReq = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误:" + e);
                 return null;
             }
-            string Tag = defaultReqData.tag;
-            int connId = defaultReqData.connId;
-            string uid = defaultReqData.uid;
+            string Tag = defaultReq.tag;
+            int connId = defaultReq.connId;
+            string uid = defaultReq.uid;
 
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0
+            if (string.IsNullOrWhiteSpace(Tag) 
                 || string.IsNullOrWhiteSpace(uid))
             {
                 MySqlService.log.Warn("字段有空");
@@ -41,7 +41,6 @@ namespace TLJ_MySqlService.Handler
             JObject responseData = new JObject();
             responseData.Add(MyCommon.TAG, Tag);
             responseData.Add(MyCommon.CONNID, connId);
-
             GetUserInfoSql(uid, responseData);
             return responseData.ToString();
         }
@@ -70,9 +69,10 @@ namespace TLJ_MySqlService.Handler
                         NickName = user.Username,
                         Head = new Random().Next(1, 16),
                         Phone = "",
-                        Gold = 3000,
+                        Gold = 2000,
                         YuanBao = 0,
-                        PlatForm = 0
+                        RechargeVip = 0,
+                        Medel = 0
                     };
                     userGame = new UserGame()
                     {
@@ -131,7 +131,9 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.NAME, userInfo.NickName);
             responseData.Add(MyCommon.PHONE, userInfo.Phone);
             responseData.Add(MyCommon.GOLD, userInfo.Gold);
+            responseData.Add("medal", userInfo.Medel);
             responseData.Add("isRealName", isRealName);
+            responseData.Add("recharge_vip", userInfo.RechargeVip);
             responseData.Add(MyCommon.YUANBAO, userInfo.YuanBao);
             responseData.Add(MyCommon.HEAD, userInfo.Head);
             responseData.Add(MyCommon.GAMEDATA, JsonConvert.SerializeObject(userGameJsonObject));

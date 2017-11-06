@@ -1,39 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TLJCommon;
-using Zfstu.Manager;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
     class GetGoodsHandler : BaseHandler
     {
-      
-
         public GetGoodsHandler()
         {
-            tag = Consts.Tag_GetShop;
+            Tag = Consts.Tag_GetShop;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            DefaultReq defaultReq = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
             }
-            string Tag = defaultReqData.tag;
-            int ConnId = defaultReqData.connId;
+            string Tag = defaultReq.tag;
+            int ConnId = defaultReq.connId;
 
             if (string.IsNullOrWhiteSpace(Tag))
             {
@@ -51,8 +45,7 @@ namespace TLJ_MySqlService.Handler
 
         private void GetGoodsSql(JObject responseData)
         {
-            List<Goods> goods = MySqlService.goodsManager.GetAll().ToList();
-            OperatorSuccess(goods,responseData);
+            OperatorSuccess(MySqlService.ShopData, responseData);
         }
 
         //数据库操作成功

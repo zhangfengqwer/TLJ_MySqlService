@@ -15,26 +15,26 @@ namespace TLJ_MySqlService.Handler
     {
         public GetSignRecordHandler()
         {
-            tag = Consts.Tag_GetSignRecord;
+            Tag = Consts.Tag_GetSignRecord;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            DefaultReq defaultReq = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误:"+e);
                 return null;
             }
-            string Tag = defaultReqData.tag;
-            int connId = defaultReqData.connId;
-            string uid = defaultReqData.uid;
+            string Tag = defaultReq.tag;
+            int connId = defaultReq.connId;
+            string uid = defaultReq.uid;
 
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0 || string.IsNullOrWhiteSpace(uid))
+            if (string.IsNullOrWhiteSpace(Tag)  || string.IsNullOrWhiteSpace(uid))
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -56,12 +56,12 @@ namespace TLJ_MySqlService.Handler
         /// <param name="responseData"></param>
         private void GetSignDataSql(string signUid, JObject responseData)
         {
-            Sign signByUid = MySqlService.signManager.GetByName(signUid);
+            Sign sign = MySqlService.signManager.GetByName(signUid);
             //签到表中没有用户信息
-            if (signByUid == null)
+            if (sign == null)
             {
                 //注册签到数据
-                Sign sign = new Sign()
+                sign = new Sign()
                 {
                     Uid = signUid,
                     SignWeekDays = 0,
@@ -69,7 +69,7 @@ namespace TLJ_MySqlService.Handler
                 };
                 if (MySqlService.signManager.Add(sign))
                 {
-                    OperatorSuccess(signByUid, responseData);
+                    OperatorSuccess(sign, responseData);
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                OperatorSuccess(signByUid, responseData);
+                OperatorSuccess(sign, responseData);
             }
         }
 
@@ -93,6 +93,9 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
             responseData.Add(MyCommon.SIGNWEEKDAYS, sign.SignWeekDays);
             responseData.Add(MyCommon.UPDATETIME, updateTime);
+            responseData.Add("sign_config", JsonConvert.SerializeObject(MySqlService.SignConfigs));
+
+
         }
 
         //数据库操作失败

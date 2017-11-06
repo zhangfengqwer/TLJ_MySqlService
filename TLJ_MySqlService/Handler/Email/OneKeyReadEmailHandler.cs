@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using TLJ_MySqlService.Utils;
 using TLJCommon;
-using TLJ_MySqlService.Model;
-using Zfstu.Manager;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
@@ -18,26 +14,26 @@ namespace TLJ_MySqlService.Handler
 
         public OneKeyReadEmailHandler()
         {
-            tag = Consts.Tag_OneKeyReadMail;
+            Tag = Consts.Tag_OneKeyReadMail;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            DefaultReq defaultReq = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
             }
-            string Tag = defaultReqData.tag;
-            int connId = defaultReqData.connId;
-            string uid = defaultReqData.uid;
+            string Tag = defaultReq.tag;
+            int connId = defaultReq.connId;
+            string uid = defaultReq.uid;
 
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0 || string.IsNullOrWhiteSpace(uid))
+            if (string.IsNullOrWhiteSpace(Tag)  || string.IsNullOrWhiteSpace(uid))
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -69,6 +65,16 @@ namespace TLJ_MySqlService.Handler
                 if (email.State == 0)
                 {
                     email.State = 1;
+
+                    if (!string.IsNullOrWhiteSpace(email.Reward))
+                    {
+                        bool addProp = MySqlUtil.AddProp(uid, email.Reward);
+                        if (!addProp)
+                        {
+                            MySqlService.log.Warn("读邮件加道具失败：" + uid + " " + email.Reward);
+                        }
+                    }
+
                     if (!MySqlService.userEmailManager.Update(email))
                     {
                         MySqlService.log.Warn("读取失败");

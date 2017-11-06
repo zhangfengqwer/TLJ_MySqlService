@@ -1,27 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Aop.Api;
-using Aop.Api.Test;
-using TLJ_MySqlService;
-using TLJ_MySqlService.Utils;
 using Zfstu;
-using Zfstu.Manager;
-using Zfstu.Model;
+using TLJ_MySqlService;
+using TLJ_MySqlService.Handler;
 
 namespace UpdateSignMonday
 {
     class Program
     {
-        private static MySqlManager<PVPGameRoom> PVPGameRoomManager = new MySqlManager<PVPGameRoom>();
+
         static void Main(string[] args)
         {
-//            new Thread(UpdateSignDays).Start();
+            new Thread(() =>
+            {
+                UpdateSignDays();
+                UpdateCommonData();
+            }).Start();
         }
-       
-
-        
 
         private static void UpdateSignDays()
         {
@@ -41,6 +37,13 @@ namespace UpdateSignMonday
                     }
                 }
             }
+        }
+
+        //更新每日签到配置和商城列表
+        private static void UpdateCommonData()
+        {
+            MySqlService.ShopData = MySqlService.goodsManager.GetAll().ToList();
+            MySqlService.SignConfigs = MySqlService.signConfigManager.GetAll().ToList();
         }
     }
 }

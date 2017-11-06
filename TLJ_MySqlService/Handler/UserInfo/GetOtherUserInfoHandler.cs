@@ -11,26 +11,26 @@ namespace TLJ_MySqlService.Handler
     {
         public GetOtherUserInfoHandler()
         {
-            tag = Consts.Tag_UserInfo_Game;
+            Tag = Consts.Tag_UserInfo_Game;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            DefaultReq defaultReq = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误:" + e);
                 return null;
             }
-            string Tag = defaultReqData.tag;
-            int connId = defaultReqData.connId;
-            string uid = defaultReqData.uid;
+            string Tag = defaultReq.tag;
+            int connId = defaultReq.connId;
+            string uid = defaultReq.uid;
 
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0
+            if (string.IsNullOrWhiteSpace(Tag) 
                 || string.IsNullOrWhiteSpace(uid))
             {
                 MySqlService.log.Warn("字段有空");
@@ -69,10 +69,9 @@ namespace TLJ_MySqlService.Handler
                         Uid = user.Uid,
                         NickName = user.Username,
                         Head = new Random().Next(1, 16),
-                        Phone = "110",
-                        Gold = 3000,
+                        Phone = "",
+                        Gold = 2000,
                         YuanBao = 0,
-                        PlatForm = 0
                     };
                     userGame = new UserGame()
                     {

@@ -60,6 +60,7 @@
     <Compile Include="Model\Goods.cs" />
     <Compile Include="Model\Notice.cs" />
     <Compile Include="Model\PVPGameRoom.cs" />
+    <Compile Include="Model\SignConfig.cs" />
     <Compile Include="Model\UserRealName.cs" />
     <Compile Include="Model\UserTask.cs" />
     <Compile Include="Model\Task.cs" />
@@ -81,6 +82,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Mappings\SignConfig.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mappings\PVPGameRoom.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

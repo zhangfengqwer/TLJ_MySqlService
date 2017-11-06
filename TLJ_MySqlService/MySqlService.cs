@@ -1,15 +1,13 @@
 ﻿using HPSocketCS;
-using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
-using TLJCommon;
 using TLJ_MySqlService.Handler;
 using Zfstu.Manager;
 using Zfstu.Model;
@@ -26,18 +24,19 @@ namespace TLJ_MySqlService
             m_connId = connId;
             m_bytes = bytes;
         }
+
+
     }
 
     public partial class MySqlService : ServiceBase
     {
         TcpPackServer m_tcpServer = new TcpPackServer();
-        public static string keyPhone = "sy123";
-        public static string baseUrl = "http://servicesy.51v.cn/partnerws/SmsService.asmx";
-        public static string sendSmsUrl = "";
-        public static string TAG = "MySqlService";
-        public static ILog log;
-        public static Dictionary<string, BaseHandler> handlerDic = new Dictionary<string, BaseHandler>();
+//        TcpServer m_tcpServer = new TcpServer();
 
+        public static string TAG = "MySqlService";
+        public static Logger log = LogManager.GetLogger("MySqlService");
+        public static Logger DBLog = LogManager.GetLogger("DBLog");
+        public static Dictionary<string, BaseHandler> handlerDic = new Dictionary<string, BaseHandler>();
 
         public static MySqlManager<UserTask> userTaskManager = new MySqlManager<UserTask>();
         public static MySqlManager<UserInfo> userInfoManager = new MySqlManager<UserInfo>();
@@ -53,9 +52,16 @@ namespace TLJ_MySqlService
         public static MySqlManager<Sign> signManager = new MySqlManager<Sign>();
         public static MySqlManager<PVPGameRoom> PVPGameRoomManager = new MySqlManager<PVPGameRoom>();
         public static MySqlManager<Task> taskManager = new MySqlManager<Task>();
+        public static MySqlManager<SignConfig> signConfigManager = new MySqlManager<SignConfig>();
 
 
         public static List<PVPGameRoom> PvpGameRooms;
+        public static List<Goods> ShopData;
+        public static List<SignConfig> SignConfigs;
+
+        public static string AdminAccount = "admin";
+        public static string AdminPassWord = "jinyou123";
+
 
         public MySqlService()
         {
@@ -71,23 +77,27 @@ namespace TLJ_MySqlService
                 InitService();
                 StartService();
                 InitHandler();
+                log.Info("Handler初始化完成");
                 InitCommomData();
+                log.Info("初始数据完成");
+
             }
             catch (Exception e)
             {
-                log.Info("OnStart:" + e);
+                log.Error("OnStart:" + e);
             }
         }
 
         private void InitCommomData()
         {
             PvpGameRooms = PVPGameRoomManager.GetAll().ToList();
-            log.Info("PvpGameRooms:" + PvpGameRooms.Count);
+            ShopData = goodsManager.GetAll().ToList();
+            SignConfigs = signConfigManager.GetAll().ToList();
         }
 
         public static void AddHandler(BaseHandler handler)
         {
-            handlerDic.Add(handler.tag, handler);
+            handlerDic.Add(handler.Tag, handler);
         }
 
         /// <summary>
@@ -96,82 +106,109 @@ namespace TLJ_MySqlService
         private void InitHandler()
         {
             LoginHandler loginHandler = new LoginHandler();
-            handlerDic.Add(loginHandler.tag, loginHandler);
+            handlerDic.Add(loginHandler.Tag, loginHandler);
+
+            ThirdLoginHandler thirdLoginHandler = new ThirdLoginHandler();
+            handlerDic.Add(thirdLoginHandler.Tag, thirdLoginHandler);
 
             RegisterHandler registerHandler = new RegisterHandler();
-            handlerDic.Add(registerHandler.tag, registerHandler);
+            handlerDic.Add(registerHandler.Tag, registerHandler);
 
             GetSignRecordHandler getSignRecordHandler = new GetSignRecordHandler();
-            handlerDic.Add(getSignRecordHandler.tag, getSignRecordHandler);
+            handlerDic.Add(getSignRecordHandler.Tag, getSignRecordHandler);
 
             SignHandler signHandler = new SignHandler();
-            handlerDic.Add(signHandler.tag, signHandler);
+            handlerDic.Add(signHandler.Tag, signHandler);
 
             GetUserInfoHandler getUserInfoHandler = new GetUserInfoHandler();
-            handlerDic.Add(getUserInfoHandler.tag, getUserInfoHandler);
+            handlerDic.Add(getUserInfoHandler.Tag, getUserInfoHandler);
 
             GetEmailHandler getEmailHandler = new GetEmailHandler();
-            handlerDic.Add(getEmailHandler.tag, getEmailHandler);
+            handlerDic.Add(getEmailHandler.Tag, getEmailHandler);
+
+            AddEmailHandler addEmailHandler = new AddEmailHandler();
+            handlerDic.Add(addEmailHandler.Tag, addEmailHandler);
 
             ReadEmailHandler readEmailHandler = new ReadEmailHandler();
-            handlerDic.Add(readEmailHandler.tag, readEmailHandler);
+            handlerDic.Add(readEmailHandler.Tag, readEmailHandler);
 
             DeleteEmailHandler deleteEmailHandler = new DeleteEmailHandler();
-            handlerDic.Add(deleteEmailHandler.tag, deleteEmailHandler);
+            handlerDic.Add(deleteEmailHandler.Tag, deleteEmailHandler);
 
             OneKeyReadEmailHandler OneKeyReadEmailHandler = new OneKeyReadEmailHandler();
-            handlerDic.Add(OneKeyReadEmailHandler.tag, OneKeyReadEmailHandler);
+            handlerDic.Add(OneKeyReadEmailHandler.Tag, OneKeyReadEmailHandler);
 
             OneKeyDeleteEmailHandler OneKeyDeleteEmailHandler = new OneKeyDeleteEmailHandler();
-            handlerDic.Add(OneKeyDeleteEmailHandler.tag, OneKeyDeleteEmailHandler);
+            handlerDic.Add(OneKeyDeleteEmailHandler.Tag, OneKeyDeleteEmailHandler);
 
             GetUserBagHandler getUserBagHandler = new GetUserBagHandler();
-            handlerDic.Add(getUserBagHandler.tag, getUserBagHandler);
+            handlerDic.Add(getUserBagHandler.Tag, getUserBagHandler);
 
+            //使用道具
             UsePropHandler usePropHandler = new UsePropHandler();
-            handlerDic.Add(usePropHandler.tag, usePropHandler);
+            handlerDic.Add(usePropHandler.Tag, usePropHandler);
+
+            //使用话费
+            UseHuaFeiHandler useHuaFeiHandler = new UseHuaFeiHandler();
+            handlerDic.Add(useHuaFeiHandler.Tag, useHuaFeiHandler);
 
             GetUseNoticeHandler getUseNoticeHandler = new GetUseNoticeHandler();
-            handlerDic.Add(getUseNoticeHandler.tag, getUseNoticeHandler);
+            handlerDic.Add(getUseNoticeHandler.Tag, getUseNoticeHandler);
 
             ReadNoticeHandler readNoticeHandler = new ReadNoticeHandler();
-            handlerDic.Add(readNoticeHandler.tag, readNoticeHandler);
+            handlerDic.Add(readNoticeHandler.Tag, readNoticeHandler);
 
             GetGoodsHandler getGoodsHandler = new GetGoodsHandler();
-            handlerDic.Add(getGoodsHandler.tag, getGoodsHandler);
+            handlerDic.Add(getGoodsHandler.Tag, getGoodsHandler);
 
             BuyGoodsHandler buyGoodsHandler = new BuyGoodsHandler();
-            handlerDic.Add(buyGoodsHandler.tag, buyGoodsHandler);
+            handlerDic.Add(buyGoodsHandler.Tag, buyGoodsHandler);
 
             GetTaskHandler getTaskHandler = new GetTaskHandler();
-            handlerDic.Add(getTaskHandler.tag, getTaskHandler);
+            handlerDic.Add(getTaskHandler.Tag, getTaskHandler);
+
+            CompleteTaskHandler completeTaskHandler = new CompleteTaskHandler();
+            handlerDic.Add(completeTaskHandler.Tag, completeTaskHandler);
+
+            ProgressTaskHandler progressTaskHandler = new ProgressTaskHandler();
+            handlerDic.Add(progressTaskHandler.Tag, progressTaskHandler);
 
             GetOtherUserInfoHandler getOtherUserInfoHandler = new GetOtherUserInfoHandler();
-            handlerDic.Add(getOtherUserInfoHandler.tag, getOtherUserInfoHandler);
+            handlerDic.Add(getOtherUserInfoHandler.Tag, getOtherUserInfoHandler);
 
             RealNameHandler realNameHandler = new RealNameHandler();
-            handlerDic.Add(realNameHandler.tag, realNameHandler);
+            handlerDic.Add(realNameHandler.Tag, realNameHandler);
 
             UseLaBaHandler useLaBaHandler = new UseLaBaHandler();
-            handlerDic.Add(useLaBaHandler.tag, useLaBaHandler);
+            handlerDic.Add(useLaBaHandler.Tag, useLaBaHandler);
 
             SendSmsHandler sendSmsHandler = new SendSmsHandler();
-            handlerDic.Add(sendSmsHandler.tag, sendSmsHandler);
+            handlerDic.Add(sendSmsHandler.Tag, sendSmsHandler);
 
             CheckSmsHandler checkSmsHandler = new CheckSmsHandler();
-            handlerDic.Add(checkSmsHandler.tag, checkSmsHandler);
-
-//            GetRankListHandler getRankListHandler = new GetRankListHandler();
-//            handlerDic.Add(getRankListHandler.tag, getRankListHandler);
+            handlerDic.Add(checkSmsHandler.Tag, checkSmsHandler);
 
             GetPVPGameDataHandler getPVPGameDataHandler = new GetPVPGameDataHandler();
-            handlerDic.Add(getPVPGameDataHandler.tag, getPVPGameDataHandler);
+            handlerDic.Add(getPVPGameDataHandler.Tag, getPVPGameDataHandler);
+
+            GetRankHandler getRankHandler = new GetRankHandler();
+            handlerDic.Add(getRankHandler.Tag, getRankHandler);
+
+            ChangeUserWealth changeUserWealth = new ChangeUserWealth();
+            handlerDic.Add(changeUserWealth.Tag, changeUserWealth);
+
+            GetRobotHandler getRobotHandler = new GetRobotHandler();
+            handlerDic.Add(getRobotHandler.Tag, getRobotHandler);
+
+            RecordUserGameDataHandler recordUserGameDataHandler = new RecordUserGameDataHandler();
+            handlerDic.Add(recordUserGameDataHandler.Tag, recordUserGameDataHandler);
         }
 
         public void InitLog()
         {
-            log4net.Config.XmlConfigurator.Configure();
-            log = LogManager.GetLogger(TAG);
+            log.Info("1");
+            DBLog.Info("nihao ");
+            log.Info("2");
         }
 
         private void InitService()
@@ -187,10 +224,10 @@ namespace TLJ_MySqlService
 
             m_tcpServer.OnClose += new TcpServerEvent.OnCloseEventHandler(OnClose);
             m_tcpServer.OnShutdown += new TcpServerEvent.OnShutdownEventHandler(OnShutdown);
-            // 设置包头标识,与对端设置保证一致性
+            //设置包头标识,与对端设置保证一致性
             m_tcpServer.PackHeaderFlag = 0xff;
             // 设置最大封包大小
-            m_tcpServer.MaxPackSize = 0x1000;
+            m_tcpServer.MaxPackSize = 0x2000;
         }
 
         private void StartService()
@@ -276,7 +313,6 @@ namespace TLJ_MySqlService
                     doAskCilentReq(obj);
                 });
                 t.Start();
-               
             }
             catch (Exception e)
             {
@@ -366,8 +402,7 @@ namespace TLJ_MySqlService
         // 发送消息
         public void sendMessage(IntPtr connId, string text)
         {
-            byte[] bytes = new byte[1024];
-            bytes = Encoding.UTF8.GetBytes(text);
+            byte[] bytes = Encoding.UTF8.GetBytes(text);
 
             if (m_tcpServer.Send(connId, bytes, bytes.Length))
             {
@@ -377,7 +412,7 @@ namespace TLJ_MySqlService
             }
             else
             {
-                log.Error("发送失败");
+                log.Error("发送失败:"+ bytes.Length);
             }
         }
     }

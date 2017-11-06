@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using TLJ_MySqlService.Utils;
 using TLJCommon;
-using Zfstu.Manager;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
@@ -16,27 +11,26 @@ namespace TLJ_MySqlService.Handler
     {
         public SignHandler()
         {
-            tag = Consts.Tag_Sign;
-           
+            Tag = Consts.Tag_Sign;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            DefaultReq defaultReq = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
             }
-            string signTag = defaultReqData.tag;
-            int signConnId = defaultReqData.connId;
-            string signUid = defaultReqData.uid;
+            string signTag = defaultReq.tag;
+            int signConnId = defaultReq.connId;
+            string signUid = defaultReq.uid;
 
-            if (string.IsNullOrWhiteSpace(signTag) || signConnId == 0
+            if (string.IsNullOrWhiteSpace(signTag) 
                 || string.IsNullOrWhiteSpace(signUid))
             {
                 MySqlService.log.Warn("字段有空");
@@ -46,8 +40,9 @@ namespace TLJ_MySqlService.Handler
             JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, signTag);
             _responseData.Add(MyCommon.CONNID, signConnId);
-            //查询
-            GetSignDataSql(signUid,_responseData);
+
+            //签到
+            SignSql(signUid, _responseData);
             return _responseData.ToString();
         }
 
@@ -56,7 +51,7 @@ namespace TLJ_MySqlService.Handler
         /// </summary>
         /// <param name="signUid"></param>
         /// <param name="responseData"></param>
-        private void GetSignDataSql(string signUid, JObject responseData)
+        private void SignSql(string signUid, JObject responseData)
         {
             Sign signByUid = MySqlService.signManager.GetByName(signUid);
             if (signByUid == null)
@@ -74,7 +69,8 @@ namespace TLJ_MySqlService.Handler
                 int nowMonth = DateTime.Now.Month;
                 int nowDay = DateTime.Now.Day;
                 //已经签到过了，不能签到
-                if (updateTimeYear == nowYear && updateTimeMonth == nowMonth && updateTimeDay == nowDay && signByUid.SignWeekDays != 0)
+                if (updateTimeYear == nowYear && updateTimeMonth == nowMonth && updateTimeDay == nowDay &&
+                    signByUid.SignWeekDays != 0)
                 {
                     OperatorFail(responseData);
                     MySqlService.log.Warn("已签到");
@@ -82,9 +78,11 @@ namespace TLJ_MySqlService.Handler
                 //未签到，可以签到
                 else
                 {
+                    SignConfig signConfig = MySqlService.SignConfigs[signByUid.SignWeekDays];
                     signByUid.SignWeekDays++;
                     signByUid.UpdateTime = DateTime.Now;
-                    if (MySqlService.signManager.Update(signByUid))
+                    MySqlService.log.Info(signConfig.goods_prop);
+                    if (MySqlService.signManager.Update(signByUid) && MySqlUtil.AddProp(signUid,signConfig.goods_prop))
                     {
                         OperatorSuccess(responseData);
                     }

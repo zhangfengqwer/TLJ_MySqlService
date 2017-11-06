@@ -1,4 +1,4 @@
-﻿public class Login
+﻿public class LoginReq
 {
     public string tag;
     public int connId;

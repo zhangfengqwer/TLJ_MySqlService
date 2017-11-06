@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using TLJCommon;
-using TLJ_MySqlService.Model;
-using Zfstu.Manager;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
@@ -18,7 +12,7 @@ namespace TLJ_MySqlService.Handler
 
         public DeleteEmailHandler()
         {
-            tag = Consts.Tag_DeleteMail;
+            Tag = Consts.Tag_DeleteMail;
         }
 
         public override string OnResponse(string data)
@@ -37,7 +31,7 @@ namespace TLJ_MySqlService.Handler
             connId = readEmailReq.connId;
             string uid = readEmailReq.uid;
             int emailId = readEmailReq.email_id;
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0 || string.IsNullOrWhiteSpace(uid) || emailId < 0)
+            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || emailId < 0)
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -49,8 +43,8 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.EMAIL_ID, emailId);
 
             //删除邮件
-            DeleteEmailSql(emailId,uid,_responseData);
-            return _responseData.ToString() ;
+            DeleteEmailSql(emailId, uid, _responseData);
+            return _responseData.ToString();
         }
 
         private void DeleteEmailSql(int emailId, string uid, JObject responseData)
@@ -69,6 +63,7 @@ namespace TLJ_MySqlService.Handler
                     if (MySqlService.userEmailManager.Delete(userEmail))
                     {
                         OperatorSuccess(responseData);
+                        MySqlService.log.Warn("删除邮件成功:" + uid);
                     }
                     else
                     {
@@ -82,20 +77,18 @@ namespace TLJ_MySqlService.Handler
                     OperatorFail(responseData);
                 }
             }
-
-
         }
 
         //数据库操作成功
         private void OperatorSuccess(JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
         }
 
         //数据库操作失败
         private void OperatorFail(JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
         }
     }
 }

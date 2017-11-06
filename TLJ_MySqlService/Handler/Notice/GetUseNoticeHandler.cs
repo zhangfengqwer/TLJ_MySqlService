@@ -1,16 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using TLJCommon;
-using TLJ_MySqlService;
-using TLJ_MySqlService.Handler;
 using TLJ_MySqlService.JsonObject;
-using TLJ_MySqlService.Model;
-using Zfstu.Manager;
+using TLJCommon;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
@@ -19,24 +13,24 @@ namespace TLJ_MySqlService.Handler
     {
         public GetUseNoticeHandler()
         {
-            tag = Consts.Tag_GetNotice;
+            Tag = Consts.Tag_GetNotice;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            DefaultReq defaultReq = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
             }
-            string Tag = defaultReqData.tag;
-            int ConnId = defaultReqData.connId;
-            string Uid = defaultReqData.uid;
+            string Tag = defaultReq.tag;
+            int ConnId = defaultReq.connId;
+            string Uid = defaultReq.uid;
 
             if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(Uid))
             {

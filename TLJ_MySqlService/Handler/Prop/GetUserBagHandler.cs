@@ -15,24 +15,24 @@ namespace TLJ_MySqlService.Handler
     {
         public GetUserBagHandler()
         {
-            tag = Consts.Tag_GetBag;
+            Tag = Consts.Tag_GetBag;
         }
 
         public override string OnResponse(string data)
         {
-            DefaultReqData defaultReqData = null;
+            DefaultReq defaultReq = null;
             try
             {
-                defaultReqData = JsonConvert.DeserializeObject<DefaultReqData>(data);
+                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
             }
             catch (Exception e)
             {
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
             }
-            string Tag = defaultReqData.tag;
-            int ConnId = defaultReqData.connId;
-            string Uid = defaultReqData.uid;
+            string Tag = defaultReq.tag;
+            int ConnId = defaultReq.connId;
+            string Uid = defaultReq.uid;
 
             if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(Uid))
             {

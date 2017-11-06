@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HPSocketCS;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using TLJCommon;
-using Zfstu.Manager;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
@@ -17,14 +11,14 @@ namespace TLJ_MySqlService.Handler
        
         public LoginHandler()
         {
-            tag = Consts.Tag_Login;
+            Tag = Consts.Tag_Login;
         }
         public override string OnResponse(string data)
         {
-            Login login = null;
+            LoginReq login = null;
             try
             {
-                login = JsonConvert.DeserializeObject<Login>(data);
+                login = JsonConvert.DeserializeObject<LoginReq>(data);
             }
             catch (Exception e)
             {
@@ -36,8 +30,7 @@ namespace TLJ_MySqlService.Handler
             int _connId = login.connId;
             string _username = login.account;
             string _userpassword = login.password;
-            if (string.IsNullOrWhiteSpace(_tag) || _connId == 0 
-                || string.IsNullOrWhiteSpace(_username) ||  string.IsNullOrWhiteSpace(_userpassword))
+            if (string.IsNullOrWhiteSpace(_tag) || string.IsNullOrWhiteSpace(_username) ||  string.IsNullOrWhiteSpace(_userpassword))
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -45,7 +38,12 @@ namespace TLJ_MySqlService.Handler
             //传给客户端的数据
             JObject _responseData; _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, _tag);
-            _responseData.Add(MyCommon.CONNID, _connId);
+
+            if (_connId != 0)
+            {
+                _responseData.Add(MyCommon.CONNID, _connId);
+            }
+         
             User _user = new User() { Username = _username, Userpassword = _userpassword };
             LoginSQL(_user, _responseData);
             return _responseData.ToString();
@@ -62,7 +60,16 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                OperatorFail(responseData);
+                User name = MySqlService.userManager.GetByName(user.Username);
+                if (name == null)
+                {
+                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_AccountNoExist);
+                }
+                else
+                {
+                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_PasswordError);
+                }
+               
             }
         }
 

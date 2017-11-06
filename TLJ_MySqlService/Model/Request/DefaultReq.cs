@@ -1,5 +1,5 @@
 ﻿
-    public class DefaultReqData
+    public class DefaultReq
     {
         public string tag;
         public int connId;

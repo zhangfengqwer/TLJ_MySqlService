@@ -1,23 +1,19 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Net;
 using System.Xml;
-using TLJCommon;
 using TLJ_MySqlService.Model;
 using TLJ_MySqlService.Utils;
-using Zfstu.Manager;
+using TLJCommon;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
     class CheckSmsHandler : BaseHandler
     {
-        
         public CheckSmsHandler()
         {
-            tag = Consts.Tag_CheckSMS;
+            Tag = Consts.Tag_CheckSMS;
         }
 
         public override string OnResponse(string data)
@@ -38,9 +34,8 @@ namespace TLJ_MySqlService.Handler
             string phoneNum = defaultReqData.phoneNum;
             string verfityCode = defaultReqData.verfityCode;
 
-            if (string.IsNullOrWhiteSpace(Tag) || connId == 0
-                || string.IsNullOrWhiteSpace(uid) || string.IsNullOrWhiteSpace(phoneNum) 
-                || string.IsNullOrWhiteSpace(verfityCode))
+            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) 
+                || string.IsNullOrWhiteSpace(phoneNum) || string.IsNullOrWhiteSpace(verfityCode))
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -49,6 +44,7 @@ namespace TLJ_MySqlService.Handler
             JObject responseData = new JObject();
             responseData.Add(MyCommon.TAG, Tag);
             responseData.Add(MyCommon.CONNID, connId);
+            responseData.Add(MyCommon.UID, uid);
 
             try
             {
@@ -66,7 +62,7 @@ namespace TLJ_MySqlService.Handler
                         MySqlService.log.Info(nodeValue);
 
                         JObject result = JObject.Parse(nodeValue);
-                        var ResultCode =(int)result.GetValue("ResultCode");
+                        var ResultCode = (int) result.GetValue("ResultCode");
                         if (ResultCode == 1)
                         {
                             uid = "6" + uid;
@@ -74,10 +70,18 @@ namespace TLJ_MySqlService.Handler
                             if (userInfo == null)
                             {
                                 MySqlService.log.Warn("uid未注册");
-                                responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                                responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
                             }
                             else
                             {
+                                if (string.IsNullOrWhiteSpace(userInfo.Phone))
+                                {
+                                    responseData.Add("isFirst", 1);
+                                }
+                                else
+                                {
+                                    responseData.Add("isFirst", 0);
+                                }
                                 userInfo.Phone = phoneNum;
                                 if (MySqlService.userInfoManager.Update(userInfo))
                                 {
@@ -86,21 +90,21 @@ namespace TLJ_MySqlService.Handler
                                 else
                                 {
                                     MySqlService.log.Warn("更新用户数据库失败");
-                                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                                    responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
                                 }
                             }
                         }
                         else
                         {
-                            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
                         }
                     }
                 }
             }
             catch (Exception e)
             {
-                MySqlService.log.Warn("发送信息失败:"+ e);
-                responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                MySqlService.log.Warn("发送信息失败:" + e);
+                responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
             }
             return responseData.ToString();
         }

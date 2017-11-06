@@ -41,11 +41,15 @@
     <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.4.0.0.4000\lib\net40\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -67,19 +71,29 @@
   <ItemGroup>
     <Compile Include="Handler\BaseHandler.cs" />
     <Compile Include="Handler\Email\DeleteEmailHandler.cs" />
+    <Compile Include="Handler\Email\AddEmailHandler.cs" />
     <Compile Include="Handler\Email\OneKeyDeleteEmailHandler.cs" />
     <Compile Include="Handler\Email\OneKeyReadEmailHandler.cs" />
     <Compile Include="Handler\Email\ReadEmailHandler.cs" />
     <Compile Include="Handler\Email\GetEmailHandler.cs" />
+    <Compile Include="Handler\Game\RecordUserGameDataHandler.cs" />
     <Compile Include="Handler\Game\GetPVPGameDataHandler.cs" />
+    <Compile Include="Handler\Login\ThirdLoginHandler.cs" />
     <Compile Include="Handler\Phone\CheckSmsHandler.cs" />
     <Compile Include="Handler\Phone\SendSmsHandler.cs" />
+    <Compile Include="Handler\Game\JoinRoomHandler.cs" />
     <Compile Include="Handler\Prop\UseLaBaHandler.cs" />
-    <Compile Include="Handler\Ranking\GetRankListHandler.cs" />
-    <Compile Include="Handler\Goods\BuyGoodsHandler.cs" />
-    <Compile Include="Handler\Goods\GetGoodsHandler.cs" />
+    <Compile Include="Handler\Prop\ChangeUserWealth.cs" />
+    <Compile Include="Handler\Prop\UseHuaFeiHandler.cs" />
+    <Compile Include="Handler\Ranking\GetRankHandler.cs" />
+    <Compile Include="Handler\Robot\AddRobot.cs" />
+    <Compile Include="Handler\Robot\GetRobotHandler.cs" />
+    <Compile Include="Handler\Shop\BuyGoodsHandler.cs" />
+    <Compile Include="Handler\Shop\GetGoodsHandler.cs" />
     <Compile Include="Handler\Notice\ReadNoticeHandler.cs" />
     <Compile Include="Handler\Notice\GetUseNoticeHandler.cs" />
+    <Compile Include="Handler\Task\ProgressTaskHandler.cs" />
+    <Compile Include="Handler\Task\CompleteTaskHandler.cs" />
     <Compile Include="Handler\Task\GetTaskHandler.cs" />
     <Compile Include="Handler\RealName\RealNameHandler.cs" />
     <Compile Include="Handler\UserInfo\GetOtherUserInfoHandler.cs" />
@@ -90,23 +104,35 @@
     <Compile Include="Handler\Login\RegisterHandler.cs" />
     <Compile Include="Handler\Prop\GetUserBagHandler.cs" />
     <Compile Include="Handler\Prop\UsePropHandler.cs" />
-    <Compile Include="JsonObject\UserBuffJsonObject.cs" />
-    <Compile Include="JsonObject\UserGameJsonObject.cs" />
-    <Compile Include="JsonObject\UserNoticeJsonObj.cs" />
-    <Compile Include="JsonObject\UserPropJsonObject.cs" />
-    <Compile Include="JsonObject\JinbiRankJsonObject.cs" />
-    <Compile Include="JsonObject\UserTaskJsonObject.cs" />
-    <Compile Include="Model\BuyGoodReq.cs" />
-    <Compile Include="Model\ReadEmailReq.cs" />
-    <Compile Include="Model\Login.cs" />
-    <Compile Include="Model\DefaultReqData.cs" />
-    <Compile Include="Model\ReadNoticeReq.cs" />
-    <Compile Include="Model\RealNameReq.cs" />
-    <Compile Include="Model\CheckSmsReq.cs" />
-    <Compile Include="Model\SendSmsReq.cs" />
-    <Compile Include="Model\UseLaBaReq.cs" />
-    <Compile Include="Model\UsePropReq.cs" />
-    <Compile Include="Model\UserEmailData.cs" />
+    <Compile Include="Handler\Web\GetUserInfoFromWCHandler.cs" />
+    <Compile Include="Model\Request\RecordUserDataReq.cs" />
+    <Compile Include="Model\Request\AddEmailReq.cs" />
+    <Compile Include="Model\Request\GetAIReq.cs" />
+    <Compile Include="Model\Request\UseHuaFeiReq.cs" />
+    <Compile Include="Model\Response\AIJsonObject.cs" />
+    <Compile Include="Model\Response\MedalRankJsonObject.cs" />
+    <Compile Include="Model\Response\UserBuffJsonObject.cs" />
+    <Compile Include="Model\Response\UserGameJsonObject.cs" />
+    <Compile Include="Model\Response\UserNoticeJsonObj.cs" />
+    <Compile Include="Model\Response\UserPropJsonObject.cs" />
+    <Compile Include="Model\Response\GoldRankJsonObject.cs" />
+    <Compile Include="Model\Response\UserTaskJsonObject.cs" />
+    <Compile Include="Model\Request\AddPropReq.cs" />
+    <Compile Include="Model\Request\BuyGoodReq.cs" />
+    <Compile Include="Model\Request\CommonReq.cs" />
+    <Compile Include="Model\Request\CompleteTaskReq.cs" />
+    <Compile Include="Model\Request\JoinRoomReq.cs" />
+    <Compile Include="Model\Request\ThirdLoginReq.cs" />
+    <Compile Include="Model\Request\ReadEmailReq.cs" />
+    <Compile Include="Model\Request\LoginReq.cs" />
+    <Compile Include="Model\Request\DefaultReq.cs" />
+    <Compile Include="Model\Request\ReadNoticeReq.cs" />
+    <Compile Include="Model\Request\RealNameReq.cs" />
+    <Compile Include="Model\Request\CheckSmsReq.cs" />
+    <Compile Include="Model\Request\SendSmsReq.cs" />
+    <Compile Include="Model\Request\UseLaBaReq.cs" />
+    <Compile Include="Model\Request\UsePropReq.cs" />
+    <Compile Include="Model\Request\UserEmailReq.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -124,10 +150,17 @@
     <Compile Include="Utils\IDCardValidationUtil.cs" />
     <Compile Include="Utils\LogUtil.cs" />
     <Compile Include="Utils\MyCommon.cs" />
+    <Compile Include="Utils\MySqlUtil.cs" />
     <Compile Include="Utils\NetConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />

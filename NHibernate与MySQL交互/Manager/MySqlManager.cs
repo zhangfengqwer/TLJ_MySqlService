@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace Zfstu.Manager
 {
     public class MySqlManager<T> : IManager<T>
     {
+        private static readonly object Locker = new object();
+
         private string tableName = null;
         public MySqlManager()
         {
@@ -37,9 +40,13 @@ namespace Zfstu.Manager
                 {
                     try
                     {
-                        Session.Save(t);
-                        transaction.Commit();
-                        return true;
+                        lock (Locker)
+                        {
+                            Session.Save(t);
+                            transaction.Commit();
+                            return true;
+                        }
+                       
                     }
                     catch(Exception e)
                     {
@@ -109,9 +116,12 @@ namespace Zfstu.Manager
                 {
                     try
                     {
-                        Session.Update(t);
-                        transaction.Commit();
-                        return true;
+                        lock (Locker)
+                        {
+                            Session.Update(t);
+                            transaction.Commit();
+                            return true;
+                        }
                     }
                     catch
                     {
@@ -322,15 +332,55 @@ namespace Zfstu.Manager
         /// </summary>
         /// <param name="num"></param>
         /// <returns></returns>
-        public IList<UserInfo> GetListOrderByLimit(int num)
+        public IList<UserInfo> GetGoldRank(int num)
         {
             using (var Session = NHibernateHelper.OpenSession())
             {
                 IList<UserInfo> userInfos = Session.QueryOver<UserInfo>()
                     .OrderBy(p => p.Gold).Desc
+                    .OrderBy(p => p.NickName).Asc
                     .Take(num)
                     .List();
                 return userInfos;
+            }
+        }
+
+        /// <summary>
+        /// 获得徽章排行榜
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
+        public IList<UserInfo> GetMedalRank(int num)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                IList<UserInfo> userInfos = Session.QueryOver<UserInfo>()
+                    .OrderBy(p => p.Medel).Desc
+                    .Take(num)
+                    .List();
+                return userInfos;
+            }
+        }
+
+        public User GetUserByTid(string thirdId)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var user = Session.CreateCriteria(typeof(User))
+                    .Add(Restrictions.Eq("ThirdId", thirdId))
+                    .UniqueResult<User>();
+                return user;
+            }
+        }
+
+        public IList<User> GetAIList()
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var user = Session.CreateCriteria(typeof(User))
+                    .Add(Restrictions.Eq("IsRobot", 1))
+                    .List<User>();
+                return user;
             }
         }
     }

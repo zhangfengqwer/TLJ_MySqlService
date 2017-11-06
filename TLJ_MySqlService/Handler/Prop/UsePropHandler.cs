@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using TLJ_MySqlService.Model;
 using TLJCommon;
-using Zfstu.Manager;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
@@ -12,17 +11,17 @@ namespace TLJ_MySqlService.Handler
     {
         public UsePropHandler()
         {
-            tag = Consts.Tag_UseProp;
+            Tag = Consts.Tag_UseProp;
         }
 
         public override string OnResponse(string data) 
         {
-            UsePropReq defaultReqData = null;
+            UsePropReq defaultReqData;
             try
             {
                 defaultReqData = JsonConvert.DeserializeObject<UsePropReq>(data);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
@@ -90,7 +89,6 @@ namespace TLJ_MySqlService.Handler
                             userProp.BuffNum++;
                             MySqlService.userPropManager.Update(userProp);
                             break;
-
                     }
                     OperatorSuccess(responseData);
                 }
