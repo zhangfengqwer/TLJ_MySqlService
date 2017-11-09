@@ -32,6 +32,7 @@ namespace TLJ_MySqlService.Handler
             string password = defaultReqData.password;
             int reward_id = defaultReqData.reward_id;
             int reward_num = defaultReqData.reward_num;
+            string connId = defaultReqData.connId;
 
             if (!MySqlService.AdminAccount.Equals(account) || !MySqlService.AdminPassWord.Equals(password))
             {
@@ -47,6 +48,7 @@ namespace TLJ_MySqlService.Handler
             //传给客户端的数据
             JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, Tag);
+            _responseData.Add(MyCommon.CONNID, connId);
 
             AddPropSql(Uid, reward_id, reward_num, _responseData);
             return _responseData.ToString();

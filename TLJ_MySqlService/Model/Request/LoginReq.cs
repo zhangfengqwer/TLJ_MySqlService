@@ -4,5 +4,6 @@
     public int connId;
     public string account;
     public string password;
+    public int passwordtype;
 }
 

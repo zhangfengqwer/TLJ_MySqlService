@@ -12,6 +12,12 @@
     <property name="WinCount" column="win_count" type="Int32"></property>
     <property name="RunCount" column="run_count" type="Int32"></property>
     <property name="MeiliZhi" column="meilizhi" type="Int32"></property>
+    <property name="XianxianJDPrimary" column="xiuxian_jd_primary" type="Int32"></property>
+    <property name="XianxianJDMiddle" column="xiuxian_jd_middle" type="Int32"></property>
+    <property name="XianxianJDHigh" column="xiuxian_jd_high" type="Int32"></property>
+    <property name="XianxianCDPrimary" column="xiuxian_cd_primary" type="Int32"></property>
+    <property name="XianxianCDMiddle" column="xiuxian_cd_middle" type="Int32"></property>
+    <property name="XianxianCDHigh" column="xiuxian_cd_high" type="Int32"></property>
   </class>
 
 </hibernate-mapping>

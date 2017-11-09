@@ -30,6 +30,7 @@ namespace TLJ_MySqlService.Handler
             int _connId = login.connId;
             string _username = login.account;
             string _userpassword = login.password;
+            int passwordtype = login.passwordtype;
             if (string.IsNullOrWhiteSpace(_tag) || string.IsNullOrWhiteSpace(_username) ||  string.IsNullOrWhiteSpace(_userpassword))
             {
                 MySqlService.log.Warn("字段有空");
@@ -38,6 +39,7 @@ namespace TLJ_MySqlService.Handler
             //传给客户端的数据
             JObject _responseData; _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, _tag);
+            _responseData.Add("passwordtype", passwordtype);
 
             if (_connId != 0)
             {
@@ -45,15 +47,26 @@ namespace TLJ_MySqlService.Handler
             }
          
             User _user = new User() { Username = _username, Userpassword = _userpassword };
-            LoginSQL(_user, _responseData);
+            LoginSQL(_user, passwordtype, _responseData);
             return _responseData.ToString();
 
         }
 
         //登录 数据库操作
-        private  void LoginSQL(User user, JObject responseData)
+        private  void LoginSQL(User user, int passwordtype, JObject responseData)
         {
-            User loginUser = MySqlService.userManager.VerifyLogin(user.Username, user.Userpassword);
+            User loginUser = null;
+            switch (passwordtype)
+            {
+                case 1:
+                    loginUser = MySqlService.userManager.VerifyLogin(user.Username, user.Userpassword);
+                  
+                    break;
+                case 2:
+                    loginUser = MySqlService.userManager.VerifySecondLogin(user.Username, user.Userpassword);
+                    break;
+            }
+
             if (loginUser != null)
             {
                 OperatorSuccess(loginUser, responseData);
@@ -69,8 +82,8 @@ namespace TLJ_MySqlService.Handler
                 {
                     responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_PasswordError);
                 }
-               
             }
+
         }
 
         //数据库操作成功

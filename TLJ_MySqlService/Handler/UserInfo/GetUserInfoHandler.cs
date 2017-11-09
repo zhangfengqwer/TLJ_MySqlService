@@ -80,7 +80,13 @@ namespace TLJ_MySqlService.Handler
                         AllGameCount = 0,
                         MeiliZhi = 0,
                         RunCount = 0,
-                        WinCount = 0
+                        WinCount = 0,
+                        XianxianCDHigh = 0,
+                        XianxianCDMiddle = 0,
+                        XianxianCDPrimary = 0,
+                        XianxianJDHigh = 0,
+                        XianxianJDMiddle = 0,
+                        XianxianJDPrimary = 0
                     };
 
 
@@ -124,9 +130,9 @@ namespace TLJ_MySqlService.Handler
         //数据库操作成功
         private void OperatorSuccess(UserInfo userInfo, UserGame userGame, List<UserBuffJsonObject> userProps, bool isRealName, JObject responseData)
         {
-            UserGameJsonObject userGameJsonObject = new UserGameJsonObject(userGame.AllGameCount, userGame.WinCount,
-                userGame.RunCount,
-                userGame.MeiliZhi);
+            UserGameJsonObject userGameJsonObject = new UserGameJsonObject(userGame.AllGameCount, userGame.WinCount, userGame.RunCount, userGame.MeiliZhi,
+                userGame.XianxianJDPrimary,userGame.XianxianJDMiddle,userGame.XianxianJDHigh,
+                userGame.XianxianCDPrimary,userGame.XianxianCDMiddle,userGame.XianxianCDHigh );
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
             responseData.Add(MyCommon.NAME, userInfo.NickName);
             responseData.Add(MyCommon.PHONE, userInfo.Phone);

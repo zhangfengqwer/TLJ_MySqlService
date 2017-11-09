@@ -30,7 +30,7 @@ namespace TLJ_MySqlService.Utils
         }
 
         /// <summary>
-        /// 
+        /// 1.是金币,2.是话费，4徽章
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="propId">1,2...</param>
@@ -73,8 +73,6 @@ namespace TLJ_MySqlService.Utils
                     MySqlService.log.Warn("金币不足");
                     return false;
                 }
-               
-
             }
             else if (propId == 2)
             {
@@ -94,6 +92,22 @@ namespace TLJ_MySqlService.Utils
                     return false;
                 }
                   
+            }else if (propId == 110)
+            {
+                userInfo.Medel += propNum;
+                if (userInfo.Medel >= 0)
+                {
+                    if (!MySqlService.userInfoManager.Update(userInfo))
+                    {
+                        MySqlService.log.Warn("添加徽章失败");
+                        return false;
+                    }
+                }
+                else
+                {
+                    MySqlService.log.Warn("徽章不足");
+                    return false;
+                }
             }
             else
             {

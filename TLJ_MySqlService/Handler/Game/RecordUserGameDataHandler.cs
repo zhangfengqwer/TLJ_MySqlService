@@ -34,8 +34,9 @@ namespace TLJ_MySqlService.Handler
             string Tag = defaultReq.tag;
             string uid = defaultReq.uid;
             int actionType = defaultReq.action_type;
+            string room_type = defaultReq.room_type;
 
-            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid))
+            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || string.IsNullOrWhiteSpace(room_type))
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -43,11 +44,11 @@ namespace TLJ_MySqlService.Handler
 
 
             //得到pvp数据
-            RecordUserGameDataSql(uid, actionType);
+            RecordUserGameDataSql(uid, room_type, actionType);
             return null;
         }
 
-        private void RecordUserGameDataSql(string uid, int actionType)
+        private void RecordUserGameDataSql( string uid, string room_type, int actionType)
         {
             UserGame userGame = MySqlService.userGameManager.GetByUid(uid);
             if (userGame == null)
@@ -60,6 +61,28 @@ namespace TLJ_MySqlService.Handler
                 {
                     case (int) Consts.GameAction.GameAction_StartGame:
                         userGame.AllGameCount++;
+                        if (room_type.Equals(Consts.GameRoomType_XiuXian_JingDian_ChuJi))
+                        {
+                            userGame.XianxianJDPrimary++;
+                        }
+                        else if (room_type.Equals(Consts.GameRoomType_XiuXian_ChaoDi_ZhongJi))
+                        {
+                            userGame.XianxianJDMiddle++;
+                        }else if (room_type.Equals(Consts.GameRoomType_XiuXian_JingDian_GaoJi))
+                        {
+                            userGame.XianxianCDHigh++;
+                        }
+                        else if (room_type.Equals(Consts.GameRoomType_XiuXian_ChaoDi_ChuJi))
+                        {
+                            userGame.XianxianCDPrimary++;
+                        }else if (room_type.Equals(Consts.GameRoomType_XiuXian_ChaoDi_ZhongJi))
+                        {
+                            userGame.XianxianCDMiddle++;
+                        }else if (room_type.Equals(Consts.GameRoomType_XiuXian_ChaoDi_GaoJi))
+                        {
+                            userGame.XianxianCDHigh++;
+                        }
+
                         break;
                     case (int) Consts.GameAction.GameAction_Win:
                         userGame.WinCount++;
@@ -71,6 +94,8 @@ namespace TLJ_MySqlService.Handler
                         MySqlService.log.Warn("没有该actionType:" + actionType);
                         break;
                 }
+
+                MySqlService.log.Info("RecordUserGameDataHandler-actionType:" + actionType+ "room_type:"+ room_type);
                 if (MySqlService.userGameManager.Update(userGame))
                 {
                 }

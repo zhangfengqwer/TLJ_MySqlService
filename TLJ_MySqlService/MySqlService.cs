@@ -24,8 +24,6 @@ namespace TLJ_MySqlService
             m_connId = connId;
             m_bytes = bytes;
         }
-
-
     }
 
     public partial class MySqlService : ServiceBase
@@ -46,14 +44,12 @@ namespace TLJ_MySqlService
         public static MySqlManager<UserRealName> userRealNameManager = new MySqlManager<UserRealName>();
         public static MySqlManager<UserNotice> userNoticeManager = new MySqlManager<UserNotice>();
         public static MySqlManager<UserEmail> userEmailManager = new MySqlManager<UserEmail>();
-
         public static MySqlManager<Goods> goodsManager = new MySqlManager<Goods>();
         public static MySqlManager<Notice> noticeManager = new MySqlManager<Notice>();
         public static MySqlManager<Sign> signManager = new MySqlManager<Sign>();
         public static MySqlManager<PVPGameRoom> PVPGameRoomManager = new MySqlManager<PVPGameRoom>();
         public static MySqlManager<Task> taskManager = new MySqlManager<Task>();
         public static MySqlManager<SignConfig> signConfigManager = new MySqlManager<SignConfig>();
-
 
         public static List<PVPGameRoom> PvpGameRooms;
         public static List<Goods> ShopData;
@@ -202,12 +198,18 @@ namespace TLJ_MySqlService
 
             RecordUserGameDataHandler recordUserGameDataHandler = new RecordUserGameDataHandler();
             handlerDic.Add(recordUserGameDataHandler.Tag, recordUserGameDataHandler);
+
+            UseBuffPropHandler useBuffPropHandler = new UseBuffPropHandler();
+            handlerDic.Add(useBuffPropHandler.Tag, useBuffPropHandler);
+
+            GetWXUserInfoHandler getWXUserInfoHandler = new GetWXUserInfoHandler();
+            handlerDic.Add(getWXUserInfoHandler.Tag, getWXUserInfoHandler);
         }
 
         public void InitLog()
         {
             log.Info("1");
-            DBLog.Info("nihao ");
+            DBLog.Info("nihao");
             log.Info("2");
         }
 

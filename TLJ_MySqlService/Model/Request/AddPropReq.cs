@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 public class AddPropReq
 {
     public string tag;
+    public string connId;
     public string uid;
     public string account;
     public string password;

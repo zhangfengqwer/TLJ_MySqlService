@@ -10,6 +10,7 @@
     </id>
     <property name="Username" column="username" type="String"></property>
     <property name="Userpassword" column="userpassword" type="String"></property>
+    <property name="Secondpassword" column="second_password" type="String"></property>
     <property name="Uid" column="uid" type="String"></property>
     <property name="ThirdId" column="third_id" type="String"></property>
     <property name="Platform" column="platform" type="Int32"></property>

@@ -65,6 +65,7 @@ namespace TLJ_MySqlService.Handler
                 user.Uid = uid;
                 user.Platform = 0;
                 user.ThirdId = "";
+                user.Secondpassword = "";
                 user.IsRobot = 0;
 
                 var userEmail = new UserEmail()

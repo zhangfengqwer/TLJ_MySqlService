@@ -21,6 +21,9 @@ namespace Zfstu.Manager
             {
                 tableName = "Username";
 
+            }else if (typeof(T) == typeof(UserInfo))
+            {
+                tableName = "NickName";
             }
             else
             {
@@ -256,6 +259,25 @@ namespace Zfstu.Manager
                 var user = Session.CreateCriteria(typeof(User))
                     .Add(Restrictions.Eq("Username", username))
                     .Add(Restrictions.Eq("Userpassword", password))
+                    .UniqueResult<User>();
+               
+                return user;
+            }
+        }
+
+        /// <summary>
+        /// 登录二级登录验证 User表独自用
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public User VerifySecondLogin(string username, string secondPassword)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var user = Session.CreateCriteria(typeof(User))
+                    .Add(Restrictions.Eq("Username", username))
+                    .Add(Restrictions.Eq("Secondpassword", secondPassword))
                     .UniqueResult<User>();
                
                 return user;

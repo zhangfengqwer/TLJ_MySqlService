@@ -59,6 +59,7 @@ namespace TLJ_MySqlService.Handler
                     Userpassword = "",
                     Platform = platform,
                     ThirdId = thirdId,
+                    Secondpassword = "",
                     Uid = uid,
                     IsRobot = 0
                 };
@@ -95,10 +96,12 @@ namespace TLJ_MySqlService.Handler
                     }
                     if (flag)
                     {
+                        MySqlService.log.Info("第三方重复注册成功 user.Username:" + user.Username + "\nuser.Uid" + user.Uid);
                         OperatorSuccess(user, responseData);
                     }
                     else
                     {
+                        MySqlService.log.Warn("第三方注册失败 user.Username:" + user.Username + "\nuser.Uid" + user.Uid);
                         OperatorFail(responseData);
                     }
                     
