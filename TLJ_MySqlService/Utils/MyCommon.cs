@@ -11,6 +11,14 @@
         Code_LoginFail,
     }
 
+    public class OpType 
+    {
+        public static readonly string BUYGOLD = "buy_gold";
+        public static readonly string BUYYUANBAO = "buy_yuanbao";
+        public static readonly string BUYPROP = "buy_prop";
+        public static readonly string RECHARGE_PHONEFEE = "recharge_phonefee";
+    }
+
     public static string Tag_Login = "Login";
     public static string Tag_QuickRegister = "QuickRegister";
     public static string Tag_Sign = "Sign";

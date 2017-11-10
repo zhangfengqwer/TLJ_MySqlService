@@ -5,6 +5,9 @@ using System.Text;
 
 class CommonUtil
 {
+
+
+
     // 格式2017/7/12 15:05:03
     static public string getCurTime()
     {

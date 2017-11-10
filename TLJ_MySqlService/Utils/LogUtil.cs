@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Zfstu.Model;
 
-class LogUtil
+public class LogUtil
 {
     static LogUtil s_logUtil = null;
 
@@ -19,6 +20,19 @@ class LogUtil
 
     static List<string> m_waitRecoedDebugLogList = new List<string>();
     static List<string> m_waitRecoedErrorLogList = new List<string>();
+
+
+    public static void Log(string uid, string optype, string message)
+    {
+        var myLog = new MyLog()
+        {
+            uid = uid,
+            optype = optype,
+            message = message
+        };
+        TLJ_MySqlService.MySqlService.logManager.Add(myLog);
+    }
+
 
     public static LogUtil getInstance()
     {

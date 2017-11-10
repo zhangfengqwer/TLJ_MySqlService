@@ -405,5 +405,18 @@ namespace Zfstu.Manager
                 return user;
             }
         }
+
+
+        public Prop GetProp(int propId)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var Prop = Session.CreateCriteria(typeof(Prop))
+                    .Add(Restrictions.Eq("prop_id", propId))
+                    .UniqueResult<Prop>();
+
+                return Prop;
+            }
+        }
     }
 }

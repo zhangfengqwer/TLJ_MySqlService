@@ -53,7 +53,7 @@ namespace TLJ_MySqlService.Utils
                     User user = MySqlService.userManager.GetByUid(uid);
                     if (user.IsRobot == 1)
                     {
-                        userInfo.Gold = 88888;
+                        userInfo.Gold = new Random().Next(80000,100000);
                     }
                     else
                     {

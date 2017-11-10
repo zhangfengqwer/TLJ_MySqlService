@@ -1,0 +1,13 @@
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\bin\Debug\hibernate.cfg.xml
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\bin\Debug\每天更新充值限额.exe.config
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\bin\Debug\每天更新充值限额.exe
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\bin\Debug\每天更新充值限额.pdb
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\bin\Debug\NHibernate.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\bin\Debug\Zfstu.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\bin\Debug\Zfstu.pdb
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\bin\Debug\Zfstu.dll.config
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\bin\Debug\NHibernate.xml
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\obj\Debug\每天更新充值限额.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\obj\Debug\每天更新充值限额.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\obj\Debug\每天更新充值限额.exe
+C:\Users\Administrator\Desktop\TLJ_MySqlService\每天更新充值限额\obj\Debug\每天更新充值限额.pdb

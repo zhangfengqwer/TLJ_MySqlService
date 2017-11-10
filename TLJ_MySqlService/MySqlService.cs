@@ -50,6 +50,9 @@ namespace TLJ_MySqlService
         public static MySqlManager<PVPGameRoom> PVPGameRoomManager = new MySqlManager<PVPGameRoom>();
         public static MySqlManager<Task> taskManager = new MySqlManager<Task>();
         public static MySqlManager<SignConfig> signConfigManager = new MySqlManager<SignConfig>();
+        public static MySqlManager<Prop> propManager = new MySqlManager<Prop>();
+        public static MySqlManager<MyLog> logManager = new MySqlManager<MyLog>();
+        public static MySqlManager<CommonConfig> commonConfigManager = new MySqlManager<CommonConfig>();
 
         public static List<PVPGameRoom> PvpGameRooms;
         public static List<Goods> ShopData;
@@ -244,7 +247,7 @@ namespace TLJ_MySqlService
                 // 启动服务
                 if (m_tcpServer.Start())
                 {
-                    log.Info("TCP服务启动成功");
+                    log.Info("TCP服务启动成功,当前服务器i-:"+ NetConfig.s_mySqlService_ip+":"+ NetConfig.s_mySqlService_port);
                 }
                 else
                 {
@@ -387,7 +390,6 @@ namespace TLJ_MySqlService
                     }
                     else
                     {
-                        log.Warn("返回为null");
                     }
                 }
                 catch (Exception e)

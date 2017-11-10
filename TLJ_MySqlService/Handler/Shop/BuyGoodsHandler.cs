@@ -46,10 +46,10 @@ namespace TLJ_MySqlService.Handler
             return _responseData.ToString();
         }
 
-        private void BuyGoodsSql(int goodId, int num,string uid,JObject responseData)
+        private void BuyGoodsSql(int goodId, int num, string uid, JObject responseData)
         {
             Goods goods = MySqlService.goodsManager.GetGoods(goodId);
-            bool IsSuccess =false;
+            bool IsSuccess = false;
             if (goods != null)
             {
                 switch (goods.goods_type)
@@ -62,7 +62,7 @@ namespace TLJ_MySqlService.Handler
                     //购买的是元宝
                     case 2:
                         MySqlService.log.Info("购买的是元宝");
-                        IsSuccess = BuyYuanbao(goods, num, uid);
+//                        IsSuccess = BuyYuanbao(goods, num, uid);
                         break;
                     //购买的是道具
                     case 3:
@@ -114,8 +114,11 @@ namespace TLJ_MySqlService.Handler
                     userInfo.YuanBao -= sumPrice;
                     //先扣钱,添加金币
                     MySqlService.log.Info("先扣钱,添加金币");
-                    if (MySqlService.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num))
+                    string temp = "";
+                    if (MySqlService.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, out temp))
                     {
+                        string s = string.Format("花费{0}元宝，购买了{1}个{2}", sumPrice, num,goods.goods_name);
+                        LogUtil.Log(uid, MyCommon.OpType.BUYGOLD, s);
                         IsSuccess = true;
                     }
                 }
@@ -123,20 +126,21 @@ namespace TLJ_MySqlService.Handler
             return IsSuccess;
         }
 
-        private bool AddJinbi(Goods goods, UserInfo userInfo, int num)
+        private bool AddJinbi(Goods goods, UserInfo userInfo, int num, out string temp)
         {
-
             string[] strings = goods.props.Split(':');
             int propId = Convert.ToInt32(strings[0]);
             int propNum = Convert.ToInt32(strings[1]);
             if (propId == 1)
             {
+                temp = propNum * num + "";
                 userInfo.Gold += propNum * num;
                 if (MySqlService.userInfoManager.Update(userInfo))
                 {
                     return true;
                 }
             }
+            temp = null;
             return false;
         }
 
@@ -179,6 +183,8 @@ namespace TLJ_MySqlService.Handler
                                     return false;
                                 }
                             }
+                            string s = string.Format("花费{0}金币，购买了{1}个{2}", sumPrice, num, goods.goods_name);
+                            LogUtil.Log(uid, MyCommon.OpType.BUYPROP, s);
                             IsSuccess = true;
                         }
                     }
@@ -198,6 +204,8 @@ namespace TLJ_MySqlService.Handler
                                     return false;
                                 }
                             }
+                            string s = string.Format("花费{0}元宝，购买了{1}个{2}", sumPrice, num, goods.goods_name);
+                            LogUtil.Log(uid, MyCommon.OpType.BUYPROP, s);
                             IsSuccess = true;
                         }
                     }
@@ -250,13 +258,13 @@ namespace TLJ_MySqlService.Handler
         //数据库操作成功
         private void OperatorSuccess(JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
         }
 
         //数据库操作失败
         private void OperatorFail(JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
         }
     }
 }

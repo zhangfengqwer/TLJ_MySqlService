@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Zfstu"
+                   namespace="Zfstu.Model">
+
+  <class name="CommonConfig" table="common_config">
+    <id name="id" column="id" type="Int32">
+      <generator class="native"></generator>
+    </id>
+    <property name="Uid" column="uid" type="String"></property>
+    <property name="recharge_phonefee_amount" column="recharge_phonefee_amount" type="Int32"></property>
+  </class>
+</hibernate-mapping>

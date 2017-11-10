@@ -3,15 +3,16 @@ using Newtonsoft.Json.Linq;
 using System;
 using TLJ_MySqlService.Model;
 using TLJCommon;
+using TLJ_MySqlService.Utils;
 using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
-    class UseBuffPropHandler : BaseHandler
+    class UsePropHandler : BaseHandler
     {
-        public UseBuffPropHandler()
+        public UsePropHandler()
         {
-            Tag = Consts.Tag_UseBuff;
+            Tag = Consts.Tag_UseProp;
         }
 
         public override string OnResponse(string data) 
@@ -41,8 +42,6 @@ namespace TLJ_MySqlService.Handler
             JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, Tag);
             _responseData.Add(MyCommon.CONNID, ConnId);
-            _responseData.Add(MyCommon.UID, Uid);
-            _responseData.Add("prop_id", propId);
 
             UsePropSql(Uid, propId, _responseData);
             return _responseData.ToString();
@@ -51,26 +50,63 @@ namespace TLJ_MySqlService.Handler
         private void UsePropSql(string uid, int propId, JObject responseData)
         {
             UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, propId);
-            if (userProp == null || userProp.BuffNum <= 0)
+            if (userProp == null || userProp.PropNum <= 0)
             {
                 MySqlService.log.Warn("没有该道具或者不能使用该道具");
                 OperatorFail(responseData);
             }
             else
             {
-                userProp.BuffNum--;
+                userProp.PropNum--;
                 if (MySqlService.userPropManager.Update(userProp))
                 {
-                    //TODO buff为0,删除玩家道具
+                    UserGame userGame = MySqlService.userGameManager.GetByUid(uid);
+                    if (userGame == null)
+                    {
+                        MySqlService.log.Warn("查找用户游戏数据失败");
+                        OperatorFail(responseData);
+                        return;
+                    }
+
+                    switch (userProp.PropId)
+                    {
+                        //魅力值修正卡
+                        case 109:
+                            userGame.MeiliZhi = 0;
+                            MySqlService.userGameManager.Update(userGame);
+                            break;
+                        //逃跑率清零卡
+                        case 108:
+                            userGame.RunCount = 0;
+                            MySqlService.userGameManager.Update(userGame);
+                            break;
+
+                        //记牌器
+                        case 101:
+                        //加倍卡
+                        case 102:
+                        //出牌发光
+                        case 105:
+                            userProp.BuffNum++;
+                            MySqlService.userPropManager.Update(userProp);
+                            break;
+
+                        case 111:
+                        case 112:
+                            
+                            break;
+                    }
                     OperatorSuccess(responseData);
                 }
                 else
                 {
-                    MySqlService.log.Warn("使用Buff道具失败");
+                    MySqlService.log.Warn("使用道具失败");
                     OperatorFail(responseData);
                 }
             }
         }
+
+     
 
         //数据库操作成功
         private void OperatorSuccess(JObject responseData)

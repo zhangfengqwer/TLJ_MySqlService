@@ -84,8 +84,8 @@
     <Compile Include="Handler\Game\JoinRoomHandler.cs" />
     <Compile Include="Handler\Prop\UseLaBaHandler.cs" />
     <Compile Include="Handler\Prop\ChangeUserWealth.cs" />
-    <Compile Include="Handler\Prop\UseHuaFeiHandler.cs" />
-    <Compile Include="Handler\Prop\UseBuffPropHandler.cs" />
+    <Compile Include="Handler\Phone\UseHuaFeiHandler.cs" />
+    <Compile Include="Handler\Prop\UsePropHandler.cs" />
     <Compile Include="Handler\Ranking\GetRankHandler.cs" />
     <Compile Include="Handler\Robot\AddRobot.cs" />
     <Compile Include="Handler\Robot\GetRobotHandler.cs" />
@@ -104,7 +104,7 @@
     <Compile Include="Handler\Login\LoginHandler.cs" />
     <Compile Include="Handler\Login\RegisterHandler.cs" />
     <Compile Include="Handler\Prop\GetUserBagHandler.cs" />
-    <Compile Include="Handler\Prop\UsePropHandler.cs" />
+    <Compile Include="Handler\Prop\UseBuffPropHandler.cs" />
     <Compile Include="Handler\Web\GetWXUserInfoHandler.cs" />
     <Compile Include="Model\Request\RecordUserDataReq.cs" />
     <Compile Include="Model\Request\AddEmailReq.cs" />

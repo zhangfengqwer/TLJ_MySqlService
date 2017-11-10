@@ -5,6 +5,7 @@ using System.Threading;
 using Zfstu;
 using TLJ_MySqlService;
 using TLJ_MySqlService.Handler;
+using TLJ_MySqlService.Utils;
 using Zfstu.Model;
 
 namespace UpdateSignMonday
@@ -14,37 +15,10 @@ namespace UpdateSignMonday
 
         static void Main(string[] args)
         {
-            IList<User> aiList = MySqlService.userManager.GetAIList();
-            //            List<UserProp> userProps = MySqlService.userPropManager.GetAll().ToList();
-            //
-            //            for (int i = 0; i < userProps.Count; i++)
-            //            {
-            //                UserProp userProp =  userProps[i];
-            //                if (userProp.PropId == 102 || userProp.PropId == 105)
-            //                {
-            //                    MySqlService.userPropManager.Delete(userProp);
-            //                }
-            //            }
-//            MySqlService.ShopData = MySqlService.goodsManager.GetAll().ToList();
-//            for (int i = 0; i < MySqlService.ShopData.Count; i++)
-//            {
-//                Goods shopData = MySqlService.ShopData[i];
-//                if (shopData.goods_id == 1005)
-//                {
-//                    MySqlService.ShopData.Remove(shopData);
-//                }
-//                //            if (shopData.goods_id == 1002 || shopData.goods_id == 1005)
-//                //            {
-//                //                shopDataList.Remove(shopData);
-//                //            }
-//            }
-            Console.ReadKey();
-
-//            new Thread(() =>
-//            {
-//                UpdateSignDays();
-//                UpdateCommonData();
-//            }).Start();
+            new Thread(() =>
+            {
+                UpdateRechargeDayly();
+            }).Start();
         }
 
         private static List<User> GetRobot()
@@ -82,6 +56,26 @@ namespace UpdateSignMonday
             }
         }
 
+        //每天更新充值限额
+        private static void UpdateRechargeDayly()
+        {
+            var sql = "update common_config set recharge_phonefee_amount = '0'";
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    try
+                    {
+                        session.CreateSQLQuery(sql).ExecuteUpdate();
+                        transaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
+        }
         //更新每日签到配置和商城列表
         private static void UpdateCommonData()
         {
