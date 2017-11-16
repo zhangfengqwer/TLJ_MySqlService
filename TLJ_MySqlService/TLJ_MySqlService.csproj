@@ -76,6 +76,8 @@
     <Compile Include="Handler\Email\OneKeyReadEmailHandler.cs" />
     <Compile Include="Handler\Email\ReadEmailHandler.cs" />
     <Compile Include="Handler\Email\GetEmailHandler.cs" />
+    <Compile Include="Handler\TurnTable\UseTurnTableHandler.cs" />
+    <Compile Include="Handler\TurnTable\GetTurnTableDataHandler.cs" />
     <Compile Include="Handler\Game\RecordUserGameDataHandler.cs" />
     <Compile Include="Handler\Game\GetPVPGameDataHandler.cs" />
     <Compile Include="Handler\Login\ThirdLoginHandler.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="Handler\Ranking\GetRankHandler.cs" />
     <Compile Include="Handler\Robot\AddRobot.cs" />
     <Compile Include="Handler\Robot\GetRobotHandler.cs" />
+    <Compile Include="Handler\Shop\BuyYuanBaoHandler.cs" />
     <Compile Include="Handler\Shop\BuyGoodsHandler.cs" />
     <Compile Include="Handler\Shop\GetGoodsHandler.cs" />
     <Compile Include="Handler\Notice\ReadNoticeHandler.cs" />
@@ -98,6 +101,7 @@
     <Compile Include="Handler\Task\GetTaskHandler.cs" />
     <Compile Include="Handler\RealName\RealNameHandler.cs" />
     <Compile Include="Handler\UserInfo\GetOtherUserInfoHandler.cs" />
+    <Compile Include="Handler\UserInfo\SetUserSecondPSWHandler.cs" />
     <Compile Include="Handler\UserInfo\GetUserInfoHandler.cs" />
     <Compile Include="Handler\Sign\SignHandler.cs" />
     <Compile Include="Handler\Sign\GetSignRecordHandler.cs" />
@@ -106,10 +110,14 @@
     <Compile Include="Handler\Prop\GetUserBagHandler.cs" />
     <Compile Include="Handler\Prop\UseBuffPropHandler.cs" />
     <Compile Include="Handler\Web\GetWXUserInfoHandler.cs" />
+    <Compile Include="Model\Request\BuyYuanBaoReq.cs" />
+    <Compile Include="Model\Request\OtherUserInfoReq.cs" />
+    <Compile Include="Model\Request\SetUserSecondPSWReq.cs" />
     <Compile Include="Model\Request\RecordUserDataReq.cs" />
     <Compile Include="Model\Request\AddEmailReq.cs" />
     <Compile Include="Model\Request\GetAIReq.cs" />
     <Compile Include="Model\Request\UseHuaFeiReq.cs" />
+    <Compile Include="Model\Response\TurnTableJsonObject.cs" />
     <Compile Include="Model\Response\AIJsonObject.cs" />
     <Compile Include="Model\Response\MedalRankJsonObject.cs" />
     <Compile Include="Model\Response\UserBuffJsonObject.cs" />

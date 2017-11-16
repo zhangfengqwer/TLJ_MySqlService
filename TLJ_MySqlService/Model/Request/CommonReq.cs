@@ -9,6 +9,8 @@ namespace TLJ_MySqlService.Model
     public class CommonReq
     {
         public string tag;
+        public string uid;
         public int connId;
+        public int type;
     }
 }

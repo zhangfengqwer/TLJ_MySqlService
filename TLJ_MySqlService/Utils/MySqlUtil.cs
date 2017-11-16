@@ -99,13 +99,13 @@ namespace TLJ_MySqlService.Utils
                 {
                     if (!MySqlService.userInfoManager.Update(userInfo))
                     {
-                        MySqlService.log.Warn("添加徽章失败");
+                        MySqlService.log.Warn($"添加徽章失败-medal:{userInfo.Medel}-改变的数量:{propNum}");
                         return false;
                     }
                 }
                 else
                 {
-                    MySqlService.log.Warn("徽章不足");
+                    MySqlService.log.Warn($"徽章不足-medal:{userInfo.Medel}-改变的数量:{propNum}");
                     return false;
                 }
             }
@@ -122,7 +122,7 @@ namespace TLJ_MySqlService.Utils
                     };
                     if (!MySqlService.userPropManager.Add(userProp))
                     {
-                        MySqlService.log.Warn("添加道具失败");
+                        MySqlService.log.Warn($"添加道具失败-propId：{propId}-propNum：{propNum}");
                         return false;
                     }
                 }

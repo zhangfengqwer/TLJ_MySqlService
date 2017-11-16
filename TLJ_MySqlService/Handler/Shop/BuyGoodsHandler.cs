@@ -61,7 +61,7 @@ namespace TLJ_MySqlService.Handler
                         break;
                     //购买的是元宝
                     case 2:
-                        MySqlService.log.Info("购买的是元宝");
+                        MySqlService.log.Warn("购买的是元宝,接口错误："+uid);
 //                        IsSuccess = BuyYuanbao(goods, num, uid);
                         break;
                     //购买的是道具

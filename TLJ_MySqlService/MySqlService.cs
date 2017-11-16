@@ -53,10 +53,12 @@ namespace TLJ_MySqlService
         public static MySqlManager<Prop> propManager = new MySqlManager<Prop>();
         public static MySqlManager<MyLog> logManager = new MySqlManager<MyLog>();
         public static MySqlManager<CommonConfig> commonConfigManager = new MySqlManager<CommonConfig>();
+        public static MySqlManager<TurnTable> turnTableManager = new MySqlManager<TurnTable>();
 
         public static List<PVPGameRoom> PvpGameRooms;
         public static List<Goods> ShopData;
         public static List<SignConfig> SignConfigs;
+        public static List<TurnTable> TurnTables;
 
         public static string AdminAccount = "admin";
         public static string AdminPassWord = "jinyou123";
@@ -72,13 +74,14 @@ namespace TLJ_MySqlService
             try
             {
                 InitLog();
-                NetConfig.init();
-                InitService();
-                StartService();
                 InitHandler();
                 log.Info("Handler初始化完成");
                 InitCommomData();
-                log.Info("初始数据完成");
+                log.Info($"初始数据完成:PvpGameRooms:{PvpGameRooms.Count},ShopData:{ShopData.Count},SignConfigs:{SignConfigs.Count},TurnTables:{TurnTables.Count}");
+                NetConfig.init();
+                InitService();
+                StartService();
+               
 
             }
             catch (Exception e)
@@ -92,6 +95,7 @@ namespace TLJ_MySqlService
             PvpGameRooms = PVPGameRoomManager.GetAll().ToList();
             ShopData = goodsManager.GetAll().ToList();
             SignConfigs = signConfigManager.GetAll().ToList();
+            TurnTables = turnTableManager.GetAll().ToList();
         }
 
         public static void AddHandler(BaseHandler handler)
@@ -207,13 +211,23 @@ namespace TLJ_MySqlService
 
             GetWXUserInfoHandler getWXUserInfoHandler = new GetWXUserInfoHandler();
             handlerDic.Add(getWXUserInfoHandler.Tag, getWXUserInfoHandler);
+
+            BuyYuanBaoHandler buyYuanBaoHandler = new BuyYuanBaoHandler();
+            handlerDic.Add(buyYuanBaoHandler.Tag, buyYuanBaoHandler);
+
+            SetUserSecondPSWHandler setUserSecondPSWHandler = new SetUserSecondPSWHandler();
+            handlerDic.Add(setUserSecondPSWHandler.Tag, setUserSecondPSWHandler);
+
+            GetTurnTableDataHandler getTurnTableDataHandler = new GetTurnTableDataHandler();
+            handlerDic.Add(getTurnTableDataHandler.Tag, getTurnTableDataHandler);
+
+            UseTurnTableHandler useTurnTableHandler = new UseTurnTableHandler();
+            handlerDic.Add(useTurnTableHandler.Tag, useTurnTableHandler);
         }
 
         public void InitLog()
         {
             log.Info("1");
-            DBLog.Info("nihao");
-            log.Info("2");
         }
 
         private void InitService()

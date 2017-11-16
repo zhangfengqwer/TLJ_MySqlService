@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using TLJCommon;
 using Zfstu.Manager;
 using Zfstu.Model;
@@ -16,10 +17,10 @@ namespace TLJ_MySqlService.Handler
 
         public override string OnResponse(string data)
         {
-            DefaultReq defaultReq = null;
+            OtherUserInfoReq defaultReq = null;
             try
             {
-                defaultReq = JsonConvert.DeserializeObject<DefaultReq>(data);
+                defaultReq = JsonConvert.DeserializeObject<OtherUserInfoReq>(data);
             }
             catch (Exception e)
             {
@@ -29,6 +30,7 @@ namespace TLJ_MySqlService.Handler
             string Tag = defaultReq.tag;
             int connId = defaultReq.connId;
             string uid = defaultReq.uid;
+            int isClientReq = defaultReq.isClientReq;
 
             if (string.IsNullOrWhiteSpace(Tag) 
                 || string.IsNullOrWhiteSpace(uid))
@@ -41,6 +43,7 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.TAG, Tag);
             responseData.Add(MyCommon.CONNID, connId);
             responseData.Add(MyCommon.UID, uid);
+            responseData.Add("isClientReq", isClientReq);
 
 
             GetOtherUserInfoSql(uid, responseData);
@@ -64,15 +67,8 @@ namespace TLJ_MySqlService.Handler
                 if (userInfo == null)
                 {
                     //注册用户数据
-                    userInfo = new UserInfo()
-                    {
-                        Uid = user.Uid,
-                        NickName = user.Username,
-                        Head = new Random().Next(1, 16),
-                        Phone = "",
-                        Gold = 2000,
-                        YuanBao = 0,
-                    };
+                    userInfo = GetUserInfoHandler.AddUserInfo(user.Uid, user.Username);
+                   
                     userGame = new UserGame()
                     {
                         Uid = user.Uid,
@@ -114,6 +110,27 @@ namespace TLJ_MySqlService.Handler
             gameData.Add("meiliZhi", userGame.MeiliZhi);
 
             responseData.Add(MyCommon.GAMEDATA, gameData);
+            //用户buff
+            List<UserBuffJsonObject> userBuffJsonObjects = new List<UserBuffJsonObject>();
+            List<UserProp> userProps = MySqlService.userPropManager.GetListByUid(userInfo.Uid);
+            if (userProps != null)
+            {
+                for (int i = 0; i < userProps.Count; i++)
+                {
+                    if (userProps[i].BuffNum > 0)
+                    {
+                        UserBuffJsonObject userBuffJsonObject = new UserBuffJsonObject()
+                        {
+                            prop_id = userProps[i].PropId,
+                            buff_num = userProps[i].BuffNum
+                        };
+                        userBuffJsonObjects.Add(userBuffJsonObject);
+                    }
+                }
+            }
+
+            responseData.Add("BuffData", JsonConvert.SerializeObject(userBuffJsonObjects));
+
         }
 
         //数据库操作失败

@@ -63,6 +63,7 @@
     <Compile Include="Model\Notice.cs" />
     <Compile Include="Model\PVPGameRoom.cs" />
     <Compile Include="Model\SignConfig.cs" />
+    <Compile Include="Model\TurnTable.cs" />
     <Compile Include="Model\UserRealName.cs" />
     <Compile Include="Model\MyLog.cs" />
     <Compile Include="Model\UserTask.cs" />
@@ -85,6 +86,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Mappings\TurnTable.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mappings\CommonConfig.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

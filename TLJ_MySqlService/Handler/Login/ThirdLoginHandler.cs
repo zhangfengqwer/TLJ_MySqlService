@@ -43,7 +43,6 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.CONNID, connId);
             ThirdLoginSQL(third_id, nickname, platform, responseData);
             return responseData.ToString();
-
         }
 
         private void ThirdLoginSQL(string thirdId, string nickname, int platform, JObject responseData)

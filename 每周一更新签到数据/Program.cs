@@ -17,7 +17,7 @@ namespace UpdateSignMonday
         {
             new Thread(() =>
             {
-                UpdateRechargeDayly();
+                UpdateCommonData();
             }).Start();
         }
 

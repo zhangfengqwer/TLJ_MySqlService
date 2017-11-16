@@ -15,6 +15,9 @@
     <property name="Medel" column="medal" type="Int32"></property>
     <property name="RechargeVip" column="recharge_vip" type="Int32"></property>
     <property name="YuanBao" column="yuanbao" type="Int32"></property>
+    <property name="freeCount" column="freeCount" type="Int32"></property>
+    <property name="huizhangCount" column="huizhangCount" type="Int32"></property>
+    <property name="luckyValue" column="luckyValue" type="Int32"></property>
   </class>
 
 </hibernate-mapping>

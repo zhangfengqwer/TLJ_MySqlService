@@ -62,18 +62,8 @@ namespace TLJ_MySqlService.Handler
                 //用户信息表中没有用户信息
                 if (userInfo == null)
                 {
-                    //注册用户数据
-                    userInfo = new UserInfo()
-                    {
-                        Uid = user.Uid,
-                        NickName = user.Username,
-                        Head = new Random().Next(1, 16),
-                        Phone = "",
-                        Gold = 2000,
-                        YuanBao = 0,
-                        RechargeVip = 0,
-                        Medel = 0
-                    };
+                    userInfo = AddUserInfo(user.Uid,user.Username);
+
                     userGame = new UserGame()
                     {
                         Uid = user.Uid,
@@ -127,6 +117,27 @@ namespace TLJ_MySqlService.Handler
             }
         }
 
+        //添加用户数据
+        public static UserInfo AddUserInfo(string uid,string nickName)
+        {
+
+            UserInfo userInfo = new UserInfo()
+            {
+                Uid = uid,
+                NickName = nickName,
+                Head = new Random().Next(1, 16),
+                Phone = "",
+                Gold = 2000,
+                YuanBao = 0,
+                RechargeVip = 0,
+                Medel = 0,
+                freeCount = 0,
+                huizhangCount = 3,
+                luckyValue = 0
+            };
+            return userInfo;
+        }
+
         //数据库操作成功
         private void OperatorSuccess(UserInfo userInfo, UserGame userGame, List<UserBuffJsonObject> userProps, bool isRealName, JObject responseData)
         {
@@ -144,6 +155,32 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.HEAD, userInfo.Head);
             responseData.Add(MyCommon.GAMEDATA, JsonConvert.SerializeObject(userGameJsonObject));
             responseData.Add("BuffData", JsonConvert.SerializeObject(userProps));
+
+            //得到转盘次数
+            var turnTableJsonObject = new TurnTableJsonObject();
+            turnTableJsonObject.freeCount = userInfo.freeCount;
+            turnTableJsonObject.huizhangCount = userInfo.huizhangCount;
+            turnTableJsonObject.luckyValue = userInfo.luckyValue;
+            responseData.Add("turntableData", JsonConvert.SerializeObject(turnTableJsonObject));
+
+            //获取用户二级密码
+            User user = MySqlService.userManager.GetByUid(userInfo.Uid);
+            if (user != null)
+            {
+                if (string.IsNullOrWhiteSpace(user.Secondpassword))
+                {
+                    responseData.Add("isSetSecondPsw", false);
+                }
+                else
+                {
+                    responseData.Add("isSetSecondPsw", true);
+                }
+            }
+            else
+            {
+                MySqlService.log.Warn($"获取用户失败：{userInfo.Uid}");
+            }
+          
         }
 
         //数据库操作失败

@@ -50,10 +50,11 @@ namespace TLJ_MySqlService.Handler
             {
                 //当天充值金额已超过100元
                 OperatorFail(_responseData);
+                MySqlService.log.Warn($"{Uid}当天充值金额已超过100元,已充值：{commonConfig.recharge_phonefee_amount}");
                 return _responseData.ToString();
             }
 
-//            UseHuaFeiSql(Uid, propId, phone, _responseData);
+            UseHuaFeiSql(Uid, propId, phone, _responseData);
             return _responseData.ToString();
         }
 
@@ -62,7 +63,7 @@ namespace TLJ_MySqlService.Handler
             UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, propId);
             if (userProp == null || userProp.PropNum <= 0)
             {
-                MySqlService.log.Warn("没有该道具或者不能使用该道具");
+                MySqlService.log.Warn($"没有该道具或者不能使用该道具:{uid}");
                 OperatorFail(responseData);
             }
             else
@@ -97,7 +98,7 @@ namespace TLJ_MySqlService.Handler
                     OperatorFail(responseData);
                 }
             }
-        }
+        }   
 
         private bool PhoneFeeRecharge(string uid, int propId, string phone)
         {
@@ -132,7 +133,7 @@ namespace TLJ_MySqlService.Handler
                     var Orderid = (string) result.GetValue("Orderid");
 
                     MySqlService.log.Info("Code:" + Code + " Message:" + Message + " Orderid:" + Orderid);
-                    string format = String.Format("给{0}充值了{1}元话费,订单号：{2}", phone, amount, Orderid);
+                    string format = $"给{phone}充值了{amount}元话费,订单号：{Orderid}";
 
                     if (Code == 0)
                     {
