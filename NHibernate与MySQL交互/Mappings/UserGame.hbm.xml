@@ -9,6 +9,7 @@
       <generator class="assigned"></generator>
     </id>
     <property name="AllGameCount" column="all_game_count" type="Int32"></property>
+    <property name="DailyGameCount" column="daily_game_count" type="Int32"></property>
     <property name="WinCount" column="win_count" type="Int32"></property>
     <property name="RunCount" column="run_count" type="Int32"></property>
     <property name="MeiliZhi" column="meilizhi" type="Int32"></property>

@@ -10,6 +10,7 @@ namespace Zfstu.Model
     {
         public virtual string Uid { get; set; }
         public virtual int AllGameCount { get; set; }
+        public virtual int DailyGameCount { get; set; }
         public virtual int WinCount { get; set; }
         public virtual int RunCount { get; set; }
         public virtual int MeiliZhi { get; set; }

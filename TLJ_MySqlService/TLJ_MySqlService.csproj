@@ -83,7 +83,6 @@
     <Compile Include="Handler\Login\ThirdLoginHandler.cs" />
     <Compile Include="Handler\Phone\CheckSmsHandler.cs" />
     <Compile Include="Handler\Phone\SendSmsHandler.cs" />
-    <Compile Include="Handler\Game\JoinRoomHandler.cs" />
     <Compile Include="Handler\Prop\UseLaBaHandler.cs" />
     <Compile Include="Handler\Prop\ChangeUserWealth.cs" />
     <Compile Include="Handler\Phone\UseHuaFeiHandler.cs" />
@@ -161,6 +160,7 @@
     <Compile Include="Utils\MyCommon.cs" />
     <Compile Include="Utils\MySqlUtil.cs" />
     <Compile Include="Utils\NetConfig.cs" />
+    <Compile Include="Utils\VipUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

@@ -117,7 +117,7 @@ namespace TLJ_MySqlService.Handler
 
             if (isSuccess)
             {
-                OperatorSuccess(uid,reward, subHuiZhangNum, responseData);
+                OperatorSuccess(uid,reward, subHuiZhangNum, userInfo.NickName, responseData );
             }
             else
             {
@@ -125,11 +125,12 @@ namespace TLJ_MySqlService.Handler
             }
         }
 
-        private void OperatorSuccess(string uid,int reward, int subHuiZhangNum, JObject responseData)
+        private void OperatorSuccess(string uid,int reward, int subHuiZhangNum,string name, JObject responseData)
         {
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
             responseData.Add("reward_id", reward);
             responseData.Add("subHuiZhangNum", subHuiZhangNum);
+            responseData.Add("name", name);
             //得到转盘次数
             UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
             var turnTableJsonObject = new TurnTableJsonObject();
@@ -182,7 +183,7 @@ namespace TLJ_MySqlService.Handler
                 list.Add(temp);
             }
 
-            int next = new Random().Next(1, 10000);
+            int next = new Random().Next(1, 10001);
             int num = 0;
             if (next <= list[0]) num = 1;
             else if (next <= list[1]) num = 2;

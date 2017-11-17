@@ -61,6 +61,17 @@ namespace TLJ_MySqlService.Handler
                 {
                     case (int) Consts.GameAction.GameAction_StartGame:
                         userGame.AllGameCount++;
+                        userGame.DailyGameCount++;
+                        //当天每玩一局，转盘次数加1;
+                        if (userGame.DailyGameCount <= 3)
+                        {
+                            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+                            userInfo.freeCount++;
+                            MySqlService.userInfoManager.Update(userInfo);
+                            MySqlService.log.Info($"{uid}-{userInfo.NickName}的转盘次数加1，当前为{userInfo.freeCount}");
+                        }
+
+
                         if (room_type.Equals(Consts.GameRoomType_XiuXian_JingDian_ChuJi))
                         {
                             userGame.XianxianJDPrimary++;
