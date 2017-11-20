@@ -11,10 +11,18 @@ namespace Test
 {
     class Program
     {
+        private static HashSet<string> hashSet = new HashSet<string>();
         static void Main(string[] args)
         {
-//            List<TurnTable> turnTables = MySqlService.turnTableManager.GetAll().ToList();
-//            var signConfigs = MySqlService.signConfigManager.GetAll().ToList();
+            bool a = hashSet.Add("123");
+            Console.WriteLine(a);
+            bool b = hashSet.Add("123");
+            Console.WriteLine(b);
+
+            bool contains = hashSet.Contains("123");
+            Console.WriteLine(contains);
+            //            List<TurnTable> turnTables = MySqlService.turnTableManager.GetAll().ToList();
+            //            var signConfigs = MySqlService.signConfigManager.GetAll().ToList();
 
             //            List<UserInfo> userInfos = TLJ_MySqlService.MySqlService.userInfoManager.GetAll().ToList();
             //
@@ -26,11 +34,12 @@ namespace Test
             //                TLJ_MySqlService.MySqlService.userInfoManager.Update(userInfo);
             //            }
 
-            GetProbabilityReward();
-//            var next = new Random().Next(0, 2);
-//            Console.WriteLine(next);
-            float j = 1f;
-            int i = 1;
+            //            GetProbabilityReward();
+            //            var next = new Random().Next(0, 2);
+            //            Console.WriteLine(next);
+            //            float j = 1;
+            //            int i = 1;
+            //            Console.WriteLine(i == j);
             Console.ReadKey();
         }
 

@@ -45,10 +45,10 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.TAG, Tag);
             _responseData.Add(MyCommon.CONNID, ConnId);
 
-            CommonConfig commonConfig = MySqlService.commonConfigManager.GetByUid("6506476654");
+            //当天充值金额已超过100元
+            CommonConfig commonConfig = MySqlService.commonConfigManager.GetByUid(Uid);
             if (commonConfig?.recharge_phonefee_amount >= 100)
             {
-                //当天充值金额已超过100元
                 OperatorFail(_responseData);
                 MySqlService.log.Warn($"{Uid}当天充值金额已超过100元,已充值：{commonConfig.recharge_phonefee_amount}");
                 return _responseData.ToString();

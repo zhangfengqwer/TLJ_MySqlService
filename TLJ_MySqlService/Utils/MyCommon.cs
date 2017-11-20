@@ -17,6 +17,7 @@
         public static readonly string BUYYUANBAO = "buy_yuanbao";
         public static readonly string BUYPROP = "buy_prop";
         public static readonly string RECHARGE_PHONEFEE = "recharge_phonefee";
+        public static readonly string CHANGE_WEALTH = "change_wealth";
     }
 
     public static string Tag_Login = "Login";

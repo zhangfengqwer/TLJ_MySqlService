@@ -10,6 +10,8 @@ namespace TLJ_MySqlService.Handler
 {
     class BuyYuanBaoHandler : BaseHandler
     {
+        private HashSet<string> hashSet = new HashSet<string>();
+        
         public BuyYuanBaoHandler()
         {
             Tag = Consts.Tag_BuyYuanBao;
@@ -55,6 +57,14 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.CONNID, ConnId);
             _responseData.Add(MyCommon.UID, uid);
 
+            //判断订单重复
+            if (!hashSet.Add(orderid))
+            {
+                MySqlService.log.Warn($"有订单重复,{orderid}");
+                OperatorFail(_responseData);
+                return _responseData.ToString();
+            }
+
             BuyYuanBaoSql(goodId, num, uid, price, orderid, _responseData);
             return _responseData.ToString();
         }
@@ -74,7 +84,7 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                string msg = $"购买元宝失败，uid: {uid},goodid: {goodId},num: {num},price：{price},orderid: {orderid}";
+                string msg = $"购买元宝失败，uid: {uid},goodid: {goodId},num: {num},price：{price},goodsprice:{goods.price * num},orderid: {orderid}";
                 MySqlService.log.Warn(msg);
                 LogUtil.Log(uid, MyCommon.OpType.BUYYUANBAO, msg);
                 OperatorFail(responseData);
@@ -87,11 +97,10 @@ namespace TLJ_MySqlService.Handler
             //需要的人民币
             int sumPrice = goods.price * num;
 
-//            if (sumPrice != price)
-//            {
-//                MySqlService.log.Warn("价格不一致：" + sumPrice + "-" + price);
-//                return false;
-//            }
+            if (sumPrice != price)
+            {
+                return false;
+            }
 
             UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
             //只能用人民币

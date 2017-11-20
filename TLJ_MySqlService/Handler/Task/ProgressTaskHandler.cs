@@ -47,7 +47,7 @@ namespace TLJ_MySqlService.Handler
             UserTask userTask = MySqlService.userTaskManager.GetUserTask(uid, task_id);
             if (userTask == null)
             {
-                MySqlService.log.Warn("没有该用户的任务");
+                MySqlService.log.Warn($"没有该用户的任务{uid}");
             }
             else
             {
@@ -64,17 +64,17 @@ namespace TLJ_MySqlService.Handler
                         }
                         else
                         {
-                            MySqlService.log.Warn("更新任务失败");
+                            MySqlService.log.Warn("更新任务失败:" + uid);
                         }
                     }
                     else
                     {
-                        MySqlService.log.Warn("玩家任务已完成，请领取奖励");
+                        MySqlService.log.Warn("玩家任务已完成，请领取奖励:" + uid);
                     }
                 }
                 else
                 {
-                    MySqlService.log.Warn("任务奖励已领取");
+                    MySqlService.log.Warn("任务奖励已领取:" + uid);
                 }
             }
         }

@@ -67,6 +67,11 @@ namespace TLJ_MySqlService.Utils
                         MySqlService.log.Warn("添加金币失败");
                         return false;
                     }
+                    else
+                    {
+                        string msg = $"改变了{propNum}金币";
+                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+                    }
                 }
                 else
                 {
@@ -85,6 +90,11 @@ namespace TLJ_MySqlService.Utils
                         MySqlService.log.Warn("添加元宝失败");
                         return false;
                     }
+                    else
+                    {
+                        string msg = $"改变了{propNum}元宝";
+                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+                    }
                 }
                 else
                 {
@@ -101,6 +111,11 @@ namespace TLJ_MySqlService.Utils
                     {
                         MySqlService.log.Warn($"添加徽章失败-medal:{userInfo.Medel}-改变的数量:{propNum}");
                         return false;
+                    }
+                    else
+                    {
+                        string msg = $"改变了{propNum}徽章";
+                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                     }
                 }
                 else
@@ -125,6 +140,11 @@ namespace TLJ_MySqlService.Utils
                         MySqlService.log.Warn($"添加道具失败-propId：{propId}-propNum：{propNum}");
                         return false;
                     }
+                    else
+                    {
+                        string msg = $"改变了{propId}道具,{propNum}个";
+                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+                    }
                 }
                 else
                 {
@@ -135,6 +155,11 @@ namespace TLJ_MySqlService.Utils
                         {
                             MySqlService.log.Warn("更新道具失败");
                             return false;
+                        }
+                        else
+                        {
+                            string msg = $"改变了{propId}道具,{propNum}个";
+                            LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                         }
                     }
                     else
