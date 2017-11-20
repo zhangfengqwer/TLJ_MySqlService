@@ -1,9 +1,8 @@
-/.vs
+﻿/.vs
 packages
 /TLJ_MySqlService/obj
 /NHibernate与MySQL交互/obj
 /每周一更新签到数据/obj
 /NHibernate与MySQL交互/bin
 /每周一更新签到数据/bin
-/TLJ_MySqlService/bin
 /计划任务/bin
