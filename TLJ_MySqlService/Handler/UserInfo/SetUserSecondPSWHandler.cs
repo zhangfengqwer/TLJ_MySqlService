@@ -2,9 +2,9 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using NhInterMySQL;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -48,7 +48,7 @@ namespace TLJ_MySqlService.Handler
 
         private void SetUserSecondPSWSql(string uid, string password, JObject responseData)
         {
-            User user = MySqlService.userManager.GetByUid(uid);
+            User user = NHibernateHelper.userManager.GetByUid(uid);
             if (user == null)
             {
                 OperatorFail(responseData);
@@ -60,7 +60,7 @@ namespace TLJ_MySqlService.Handler
                 {
                     //设置二级密码
                     user.Secondpassword = password;
-                    if (MySqlService.userManager.Update(user))
+                    if (NHibernateHelper.userManager.Update(user))
                     {
                         OperatorSuccess(responseData);
                     }

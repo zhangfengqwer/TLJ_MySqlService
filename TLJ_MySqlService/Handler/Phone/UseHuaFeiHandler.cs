@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using System.Xml;
 using TLJ_MySqlService.Model;
-using TLJCommon;
 using TLJ_MySqlService.Utils;
-using Zfstu.Model;
+using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -46,10 +47,10 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.CONNID, ConnId);
 
             //当天充值金额已超过100元
-            CommonConfig commonConfig = MySqlService.commonConfigManager.GetByUid(Uid);
+            CommonConfig commonConfig = NHibernateHelper.commonConfigManager.GetByUid(Uid);
             if (commonConfig?.recharge_phonefee_amount >= 100)
             {
-                OperatorFail(_responseData);
+                OperatorFail(_responseData, $"当天充值金额已超过100元,已充值：{commonConfig.recharge_phonefee_amount}");
                 MySqlService.log.Warn($"{Uid}当天充值金额已超过100元,已充值：{commonConfig.recharge_phonefee_amount}");
                 return _responseData.ToString();
             }
@@ -60,11 +61,11 @@ namespace TLJ_MySqlService.Handler
 
         private void UseHuaFeiSql(string uid, int propId, string phone, JObject responseData)
         {
-            UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, propId);
+            UserProp userProp = NHibernateHelper.userPropManager.GetUserProp(uid, propId);
             if (userProp == null || userProp.PropNum <= 0)
             {
                 MySqlService.log.Warn($"没有该道具或者不能使用该道具:{uid}");
-                OperatorFail(responseData);
+                OperatorFail(responseData, "没有该道具或者不能使用该道具");
             }
             else
             {
@@ -82,27 +83,27 @@ namespace TLJ_MySqlService.Handler
                 }
                 if (isPhoneFee)
                 {
-                    if (MySqlService.userPropManager.Update(userProp))
+                    if (NHibernateHelper.userPropManager.Update(userProp))
                     {
                         OperatorSuccess(responseData);
                     }
                     else
                     {
                         MySqlService.log.Warn("更新话费道具失败："+uid+" "+userProp.PropId);
-                        OperatorFail(responseData);
+                        OperatorFail(responseData, "更新话费道具失败");
                     }
                 }
                 else
                 {
                     MySqlService.log.Warn("充值话费失败：" + uid + " " + propId);
-                    OperatorFail(responseData);
+                    OperatorFail(responseData, "充值话费失败");
                 }
             }
         }   
 
         private bool PhoneFeeRecharge(string uid, int propId, string phone)
         {
-            var prop = MySqlService.propManager.GetProp(propId);
+            var prop = NHibernateHelper.propManager.GetProp(propId);
             string amount = "0";
             if (propId == 111)
             {
@@ -137,7 +138,7 @@ namespace TLJ_MySqlService.Handler
 
                     if (Code == 0)
                     {
-                        CommonConfig commonConfig = MySqlService.commonConfigManager.GetByUid(uid);
+                        CommonConfig commonConfig = NHibernateHelper.commonConfigManager.GetByUid(uid);
                         if (commonConfig == null)
                         {
                             commonConfig = new CommonConfig()
@@ -145,12 +146,12 @@ namespace TLJ_MySqlService.Handler
                                 Uid = uid,
                                 recharge_phonefee_amount = 0,
                             };
-                            MySqlService.commonConfigManager.Add(commonConfig);
+                            NHibernateHelper.commonConfigManager.Add(commonConfig);
                         }
                         //限制充值数量
                         commonConfig.recharge_phonefee_amount += Convert.ToInt32(amount);
 
-                        MySqlService.commonConfigManager.Update(commonConfig);
+                        NHibernateHelper.commonConfigManager.Update(commonConfig);
 
                         LogUtil.Log(uid, MyCommon.OpType.RECHARGE_PHONEFEE, format);
                         return true;
@@ -167,9 +168,10 @@ namespace TLJ_MySqlService.Handler
         }
 
         //数据库操作失败
-        private void OperatorFail(JObject responseData)
+        private void OperatorFail(JObject responseData, string s)
         {
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
+            responseData.Add("msg", s);
         }
     }
 }

@@ -5,7 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Zfstu.Model;
+using NhInterMySQL;
+using NhInterMySQL.Model;
+using NhInterMySQL.Model;
 
 public class LogUtil
 {
@@ -30,7 +32,7 @@ public class LogUtil
             optype = optype,
             message = message
         };
-        TLJ_MySqlService.MySqlService.logManager.Add(myLog);
+       NHibernateHelper.logManager.Add(myLog);
     }
 
 

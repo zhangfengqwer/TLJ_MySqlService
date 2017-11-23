@@ -2,9 +2,9 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using NhInterMySQL;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -47,7 +47,7 @@ namespace TLJ_MySqlService.Handler
 
         private void GetUserInfoSql(string uid, JObject responseData)
         {
-            User user = MySqlService.userManager.GetByUid(uid);
+            User user = NHibernateHelper.userManager.GetByUid(uid);
             List<UserBuffJsonObject> userBuffJsonObjects = new List<UserBuffJsonObject>();
             if (user == null)
             {
@@ -56,8 +56,8 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
-                UserGame userGame = MySqlService.userGameManager.GetByUid(uid);
+                UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
+                UserGame userGame = NHibernateHelper.userGameManager.GetByUid(uid);
 
                 //用户信息表中没有用户信息
                 if (userInfo == null)
@@ -80,7 +80,7 @@ namespace TLJ_MySqlService.Handler
                     };
 
 
-                    if (MySqlService.userInfoManager.Add(userInfo) && MySqlService.userGameManager.Add(userGame))
+                    if (NHibernateHelper.userInfoManager.Add(userInfo) && NHibernateHelper.userGameManager.Add(userGame))
                     {
                         OperatorSuccess(userInfo, userGame, userBuffJsonObjects, false,responseData);
                     }
@@ -93,7 +93,7 @@ namespace TLJ_MySqlService.Handler
                 else
                 {
                     //得到buff数据
-                    List<UserProp> userProps = MySqlService.userPropManager.GetListByUid(uid);
+                    List<UserProp> userProps = NHibernateHelper.userPropManager.GetListByUid(uid);
                     if (userProps != null)
                     {
                         for (int i = 0; i < userProps.Count; i++)
@@ -111,7 +111,7 @@ namespace TLJ_MySqlService.Handler
                     }
 
                     //是否实名
-                    UserRealName userRealName = MySqlService.userRealNameManager.GetByUid(uid);
+                    UserRealName userRealName = NHibernateHelper.userRealNameManager.GetByUid(uid);
                     OperatorSuccess(userInfo, userGame, userBuffJsonObjects, userRealName != null, responseData);
                 }
             }
@@ -125,7 +125,7 @@ namespace TLJ_MySqlService.Handler
             {
                 Uid = uid,
                 NickName = nickName,
-                Head = new Random().Next(1, 16),
+                Head = new Random().Next(1, 17),
                 Phone = "",
                 Gold = 2000,
                 YuanBao = 0,
@@ -164,7 +164,7 @@ namespace TLJ_MySqlService.Handler
             responseData.Add("turntableData", JsonConvert.SerializeObject(turnTableJsonObject));
 
             //获取用户二级密码
-            User user = MySqlService.userManager.GetByUid(userInfo.Uid);
+            User user = NHibernateHelper.userManager.GetByUid(userInfo.Uid);
             if (user != null)
             {
                 if (string.IsNullOrWhiteSpace(user.Secondpassword))

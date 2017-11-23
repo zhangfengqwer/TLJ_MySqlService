@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using NhInterMySQL;
 using TLJ_MySqlService.Utils;
 using TLJCommon;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -53,7 +54,7 @@ namespace TLJ_MySqlService.Handler
         /// <param name="responseData"></param>
         private void SignSql(string signUid, JObject responseData)
         {
-            Sign signByUid = MySqlService.signManager.GetByName(signUid);
+            Sign signByUid = NHibernateHelper.signManager.GetByName(signUid);
             if (signByUid == null)
             {
                 OperatorFail(responseData);
@@ -82,7 +83,7 @@ namespace TLJ_MySqlService.Handler
                     signByUid.SignWeekDays++;
                     signByUid.UpdateTime = DateTime.Now;
                     MySqlService.log.Info(signConfig.goods_prop);
-                    if (MySqlService.signManager.Update(signByUid) && MySqlUtil.AddProp(signUid,signConfig.goods_prop))
+                    if (NHibernateHelper.signManager.Update(signByUid) && MySqlUtil.AddProp(signUid,signConfig.goods_prop))
                     {
                         OperatorSuccess(responseData);
                     }

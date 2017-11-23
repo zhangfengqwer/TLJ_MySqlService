@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using TLJCommon;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -48,7 +49,7 @@ namespace TLJ_MySqlService.Handler
         private void ThirdLoginSQL(string thirdId, string nickname, int platform, JObject responseData)
         {
             //通过第三方查询用户
-            User user = MySqlService.userManager.GetUserByTid(thirdId);
+            User user = NHibernateHelper.userManager.GetUserByTid(thirdId);
             if (user == null)
             {
                 string uid = UidUtil.createUID();
@@ -76,7 +77,7 @@ namespace TLJ_MySqlService.Handler
                 Random random = new Random();
 
                 //注册用户数据 并 注册新手邮箱
-                if (MySqlService.userManager.Add(user) && MySqlService.userEmailManager.Add(userEmail))
+                if (NHibernateHelper.userManager.Add(user) && NHibernateHelper.userEmailManager.Add(userEmail))
                 {
                     OperatorSuccess(user, responseData);
                 }
@@ -87,7 +88,7 @@ namespace TLJ_MySqlService.Handler
                     {
                         int next = random.Next(1, 100);
                         user.Username += next;
-                        if (MySqlService.userManager.Add(user))
+                        if (NHibernateHelper.userManager.Add(user))
                         {
                             flag = true;
                             break;

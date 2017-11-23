@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using NhInterMySQL;
 using TLJ_MySqlService.Model;
 using TLJ_MySqlService.Utils;
 using TLJCommon;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -44,7 +45,7 @@ namespace TLJ_MySqlService.Handler
 
         private void ProgressTaskSql(int task_id, string uid)
         {
-            UserTask userTask = MySqlService.userTaskManager.GetUserTask(uid, task_id);
+            UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask(uid, task_id);
             if (userTask == null)
             {
                 MySqlService.log.Warn($"没有该用户的任务{uid}");
@@ -53,28 +54,28 @@ namespace TLJ_MySqlService.Handler
             {
                 if (userTask.isover == 0)
                 {
-                    Task task = MySqlService.taskManager.GetTask(task_id);
+                    Task task = NHibernateHelper.taskManager.GetTask(task_id);
                     if (task.target - userTask.progress >= 1)
                     {
                         //任务进度加一
                         userTask.progress++;
-                        if (MySqlService.userTaskManager.Update(userTask))
+                        if (NHibernateHelper.userTaskManager.Update(userTask))
                         {
                             MySqlService.log.Info("更新任务成功");
                         }
                         else
                         {
-                            MySqlService.log.Warn("更新任务失败:" + uid);
+                            MySqlService.log.Info("更新任务失败:" + uid);
                         }
                     }
                     else
                     {
-                        MySqlService.log.Warn("玩家任务已完成，请领取奖励:" + uid);
+                        MySqlService.log.Info("玩家任务已完成，请领取奖励:" + uid + " " + Tag);
                     }
                 }
                 else
                 {
-                    MySqlService.log.Warn("任务奖励已领取:" + uid);
+                    MySqlService.log.Info("任务奖励已领取:" + uid);
                 }
             }
         }

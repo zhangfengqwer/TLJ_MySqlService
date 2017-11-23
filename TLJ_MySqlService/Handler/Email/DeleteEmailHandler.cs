@@ -1,15 +1,15 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using TLJCommon;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
     class DeleteEmailHandler : BaseHandler
     {
         private int connId;
-
         public DeleteEmailHandler()
         {
             Tag = Consts.Tag_DeleteMail;
@@ -49,7 +49,7 @@ namespace TLJ_MySqlService.Handler
 
         private void DeleteEmailSql(int emailId, string uid, JObject responseData)
         {
-            UserEmail userEmail = MySqlService.userEmailManager.GetEmail(emailId, uid);
+            UserEmail userEmail = NHibernateHelper.userEmailManager.GetEmail(emailId, uid);
             if (userEmail == null)
             {
                 MySqlService.log.Warn("该邮件不存在");
@@ -60,10 +60,10 @@ namespace TLJ_MySqlService.Handler
                 //已读
                 if (userEmail.State == 1)
                 {
-                    if (MySqlService.userEmailManager.Delete(userEmail))
+                    if (NHibernateHelper.userEmailManager.Delete(userEmail))
                     {
                         OperatorSuccess(responseData);
-                        MySqlService.log.Warn("删除邮件成功:" + uid);
+                        MySqlService.log.Info("删除邮件成功:" + uid);
                     }
                     else
                     {

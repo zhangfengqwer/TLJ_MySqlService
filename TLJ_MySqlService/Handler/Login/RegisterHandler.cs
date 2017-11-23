@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -54,7 +54,7 @@ namespace TLJ_MySqlService.Handler
         //注册 数据库操作
         private void RegisterSQL(User user, JObject responseData)
         {
-            User userByName = MySqlService.userManager.GetByName(user.Username);
+            User userByName = NHibernateHelper.userManager.GetByName(user.Username);
             if (userByName != null)
             {
                 OperatorFail(responseData);
@@ -79,7 +79,7 @@ namespace TLJ_MySqlService.Handler
                 };
 
                 //注册用户数据 并 注册新手邮箱
-                if (MySqlService.userManager.Add(user)&& MySqlService.userEmailManager.Add(userEmail))
+                if (NHibernateHelper.userManager.Add(user)&& NHibernateHelper.userEmailManager.Add(userEmail))
                 {
                     OperatorSuccess(user, responseData);
                 }

@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
-using Task = Zfstu.Model.Task;
+using NhInterMySQL.Model;
+using Task = NhInterMySQL.Model.Task;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -51,8 +51,8 @@ namespace TLJ_MySqlService.Handler
 
         private void GetTaskSql(string Uid, JObject responseData)
         {
-            List<Task> tasks = MySqlService.taskManager.GetAll().ToList();
-            List<UserTask> userTasks = MySqlService.userTaskManager.GetListByUid(Uid);
+            List<Task> tasks = NHibernateHelper.taskManager.GetAll().ToList();
+            List<UserTask> userTasks = NHibernateHelper.userTaskManager.GetListByUid(Uid);
             if (tasks.Count != userTasks.Count)
             {
                 userTasks.Clear();
@@ -67,7 +67,7 @@ namespace TLJ_MySqlService.Handler
                         task_id = task.task_id,
                     };
                     userTasks.Add(userTask);
-                    MySqlService.userTaskManager.Add(userTask);
+                    NHibernateHelper.userTaskManager.Add(userTask);
                 }
             }
             List<UserTaskJsonObject> userTaskJsonObjects = new List<UserTaskJsonObject>();

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
+using System;
+using System.Collections.Generic;
 using TLJCommon;
-using TLJ_MySqlService.Model;
-using Zfstu.Manager;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -50,7 +46,7 @@ namespace TLJ_MySqlService.Handler
 
         private void RecordUserGameDataSql( string uid, string room_type, int actionType)
         {
-            UserGame userGame = MySqlService.userGameManager.GetByUid(uid);
+            UserGame userGame = NHibernateHelper.userGameManager.GetByUid(uid);
             if (userGame == null)
             {
                 MySqlService.log.Warn("userGame表内没有改uid：" + uid);
@@ -65,9 +61,9 @@ namespace TLJ_MySqlService.Handler
                         //当天每玩一局，转盘次数加1;
                         if (userGame.DailyGameCount <= 3)
                         {
-                            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+                            UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
                             userInfo.freeCount++;
-                            MySqlService.userInfoManager.Update(userInfo);
+                            NHibernateHelper.userInfoManager.Update(userInfo);
                             MySqlService.log.Info($"{uid}-{userInfo.NickName}的转盘次数加1，当前为{userInfo.freeCount}");
                         }
 
@@ -107,7 +103,7 @@ namespace TLJ_MySqlService.Handler
                 }
 
                 MySqlService.log.Info("RecordUserGameDataHandler-actionType:" + actionType+ "room_type:"+ room_type);
-                if (MySqlService.userGameManager.Update(userGame))
+                if (NHibernateHelper.userGameManager.Update(userGame))
                 {
                 }
                 else

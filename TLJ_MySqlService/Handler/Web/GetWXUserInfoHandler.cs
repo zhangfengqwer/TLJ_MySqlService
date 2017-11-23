@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using NhInterMySQL;
 using TLJCommon;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -46,7 +47,7 @@ namespace TLJ_MySqlService.Handler
 
         private void GetUserInfoSql(string uid, JObject responseData)
         {
-            User user = MySqlService.userManager.GetByUid(uid);
+            User user = NHibernateHelper.userManager.GetByUid(uid);
 
             if (user == null)
             {
@@ -55,7 +56,7 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+                UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
                 if (userInfo != null)
                 {
                     OperatorSuccess(userInfo, responseData);

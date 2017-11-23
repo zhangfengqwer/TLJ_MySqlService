@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Zfstu.Model;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Utils
 {
@@ -38,7 +39,7 @@ namespace TLJ_MySqlService.Utils
         /// <returns></returns>
         public static bool ChangeProp(string uid, int propId, int propNum)
         {
-            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+            UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
             if (userInfo == null)
             {
                 MySqlService.log.Warn("用户不存在");
@@ -50,7 +51,7 @@ namespace TLJ_MySqlService.Utils
                 userInfo.Gold += propNum;
                 if (userInfo.Gold < 0)
                 {
-                    User user = MySqlService.userManager.GetByUid(uid);
+                    User user = NHibernateHelper.userManager.GetByUid(uid);
                     if (user.IsRobot == 1)
                     {
                         userInfo.Gold = new Random().Next(80000,100000);
@@ -62,7 +63,7 @@ namespace TLJ_MySqlService.Utils
                 }
                 if (userInfo.Gold >= 0)
                 {
-                    if (!MySqlService.userInfoManager.Update(userInfo))
+                    if (!NHibernateHelper.userInfoManager.Update(userInfo))
                     {
                         MySqlService.log.Warn("添加金币失败");
                         return false;
@@ -85,7 +86,7 @@ namespace TLJ_MySqlService.Utils
                
                 if (userInfo.YuanBao >= 0)
                 {
-                    if (!MySqlService.userInfoManager.Update(userInfo))
+                    if (!NHibernateHelper.userInfoManager.Update(userInfo))
                     {
                         MySqlService.log.Warn("添加元宝失败");
                         return false;
@@ -107,7 +108,7 @@ namespace TLJ_MySqlService.Utils
                 userInfo.Medel += propNum;
                 if (userInfo.Medel >= 0)
                 {
-                    if (!MySqlService.userInfoManager.Update(userInfo))
+                    if (!NHibernateHelper.userInfoManager.Update(userInfo))
                     {
                         MySqlService.log.Warn($"添加徽章失败-medal:{userInfo.Medel}-改变的数量:{propNum}");
                         return false;
@@ -126,7 +127,7 @@ namespace TLJ_MySqlService.Utils
             }
             else
             {
-                UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, propId);
+                UserProp userProp = NHibernateHelper.userPropManager.GetUserProp(uid, propId);
                 if (userProp == null)
                 {
                     userProp = new UserProp()
@@ -135,7 +136,7 @@ namespace TLJ_MySqlService.Utils
                         PropId = propId,
                         PropNum = propNum
                     };
-                    if (!MySqlService.userPropManager.Add(userProp))
+                    if (!NHibernateHelper.userPropManager.Add(userProp))
                     {
                         MySqlService.log.Warn($"添加道具失败-propId：{propId}-propNum：{propNum}");
                         return false;
@@ -151,7 +152,7 @@ namespace TLJ_MySqlService.Utils
                     userProp.PropNum += propNum;
                     if (userProp.PropNum >= 0)
                     {
-                        if (!MySqlService.userPropManager.Update(userProp))
+                        if (!NHibernateHelper.userPropManager.Update(userProp))
                         {
                             MySqlService.log.Warn("更新道具失败");
                             return false;

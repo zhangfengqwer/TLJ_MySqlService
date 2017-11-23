@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Zfstu.Model
+﻿namespace NhInterMySQL.Model
 {
     public class Task
     {

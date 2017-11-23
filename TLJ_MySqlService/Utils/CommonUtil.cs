@@ -5,8 +5,13 @@ using System.Text;
 
 class CommonUtil
 {
-
-
+    public static int GetRandomSeed()
+    {
+        byte[] bytes = new byte[4];
+        System.Security.Cryptography.RNGCryptoServiceProvider rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
+        rng.GetBytes(bytes);
+        return BitConverter.ToInt32(bytes, 0);
+    }
 
 
     // 格式2017/7/12 15:05:03
@@ -45,7 +50,7 @@ class CommonUtil
                 b = true;
             }
         }
-        
+
         splitStr(str, list, c);
 
         return b;
@@ -85,7 +90,7 @@ class CommonUtil
      * subStringEndByChar("1/2/3/4/5/6",'/')
      * 返回6
      */
-    static public string subStringEndByChar(string str,char c)
+    static public string subStringEndByChar(string str, char c)
     {
         return str.Substring(str.LastIndexOf(c) + 1);
     }

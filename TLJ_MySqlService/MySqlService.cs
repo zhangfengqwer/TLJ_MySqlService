@@ -1,16 +1,16 @@
 ﻿using HPSocketCS;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL.Model;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
-using System.Threading;
+using NhInterMySQL;
 using TLJ_MySqlService.Handler;
-using Zfstu.Manager;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService
 {
@@ -36,30 +36,13 @@ namespace TLJ_MySqlService
         public static Logger DBLog = LogManager.GetLogger("DBLog");
         public static Dictionary<string, BaseHandler> handlerDic = new Dictionary<string, BaseHandler>();
 
-        public static MySqlManager<UserTask> userTaskManager = new MySqlManager<UserTask>();
-        public static MySqlManager<UserInfo> userInfoManager = new MySqlManager<UserInfo>();
-        public static MySqlManager<UserGame> userGameManager = new MySqlManager<UserGame>();
-        public static MySqlManager<User> userManager = new MySqlManager<User>();
-        public static MySqlManager<UserProp> userPropManager = new MySqlManager<UserProp>();
-        public static MySqlManager<UserRealName> userRealNameManager = new MySqlManager<UserRealName>();
-        public static MySqlManager<UserNotice> userNoticeManager = new MySqlManager<UserNotice>();
-        public static MySqlManager<UserEmail> userEmailManager = new MySqlManager<UserEmail>();
-        public static MySqlManager<Goods> goodsManager = new MySqlManager<Goods>();
-        public static MySqlManager<Notice> noticeManager = new MySqlManager<Notice>();
-        public static MySqlManager<Sign> signManager = new MySqlManager<Sign>();
-        public static MySqlManager<PVPGameRoom> PVPGameRoomManager = new MySqlManager<PVPGameRoom>();
-        public static MySqlManager<Task> taskManager = new MySqlManager<Task>();
-        public static MySqlManager<SignConfig> signConfigManager = new MySqlManager<SignConfig>();
-        public static MySqlManager<Prop> propManager = new MySqlManager<Prop>();
-        public static MySqlManager<MyLog> logManager = new MySqlManager<MyLog>();
-        public static MySqlManager<CommonConfig> commonConfigManager = new MySqlManager<CommonConfig>();
-        public static MySqlManager<TurnTable> turnTableManager = new MySqlManager<TurnTable>();
+      
 
         public static List<PVPGameRoom> PvpGameRooms;
         public static List<Goods> ShopData;
         public static List<SignConfig> SignConfigs;
         public static List<TurnTable> TurnTables;
-
+        public static List<VipData> VipDatas;
         public static string AdminAccount = "admin";
         public static string AdminPassWord = "jinyou123";
 
@@ -77,12 +60,11 @@ namespace TLJ_MySqlService
                 InitHandler();
                 log.Info("Handler初始化完成");
                 InitCommomData();
-                log.Info($"初始数据完成:PvpGameRooms:{PvpGameRooms.Count},ShopData:{ShopData.Count},SignConfigs:{SignConfigs.Count},TurnTables:{TurnTables.Count}");
+                log.Info(
+                    $"初始数据完成:PvpGameRooms:{PvpGameRooms.Count},ShopData:{ShopData.Count},SignConfigs:{SignConfigs.Count},TurnTables:{TurnTables.Count}");
                 NetConfig.init();
                 InitService();
                 StartService();
-               
-
             }
             catch (Exception e)
             {
@@ -92,10 +74,16 @@ namespace TLJ_MySqlService
 
         private void InitCommomData()
         {
-            PvpGameRooms = PVPGameRoomManager.GetAll().ToList();
-            ShopData = goodsManager.GetAll().ToList();
-            SignConfigs = signConfigManager.GetAll().ToList();
-            TurnTables = turnTableManager.GetAll().ToList();
+            PvpGameRooms = NHibernateHelper.PVPGameRoomManager.GetAll().ToList();
+            ShopData = NHibernateHelper.goodsManager.GetAll().ToList().ToList();
+            SignConfigs = NHibernateHelper.signConfigManager.GetAll().ToList();
+            TurnTables = NHibernateHelper.turnTableManager.GetAll().ToList();
+
+            StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "VipRewardData.json");
+            string str = sr.ReadToEnd().ToString();
+            sr.Close();
+
+            VipDatas = JsonConvert.DeserializeObject<List<VipData>>(str);
         }
 
         public static void AddHandler(BaseHandler handler)
@@ -261,11 +249,11 @@ namespace TLJ_MySqlService
                 // 启动服务
                 if (m_tcpServer.Start())
                 {
-                    log.Info("TCP服务启动成功,当前服务器i-:"+ NetConfig.s_mySqlService_ip+":"+ NetConfig.s_mySqlService_port);
+                    log.Info("TCP服务启动成功,当前服务器i-:" + NetConfig.s_mySqlService_ip + ":" + NetConfig.s_mySqlService_port);
                 }
                 else
                 {
-                    log.Warn("TCP服务启动失败");
+                    log.Warn("TCP服务启动失败:="+ NetConfig.s_mySqlService_ip + ":" + NetConfig.s_mySqlService_port);
                 }
             }
             catch (Exception ex)
@@ -327,10 +315,7 @@ namespace TLJ_MySqlService
             try
             {
                 ReceiveObj obj = new ReceiveObj(connId, bytes);
-                System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() =>
-                {
-                    doAskCilentReq(obj);
-                });
+                System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() => { doAskCilentReq(obj); });
                 t.Start();
             }
             catch (Exception e)
@@ -430,7 +415,7 @@ namespace TLJ_MySqlService
             }
             else
             {
-                log.Error("发送失败:"+ bytes.Length);
+                log.Error("发送失败:" + bytes.Length);
             }
         }
     }

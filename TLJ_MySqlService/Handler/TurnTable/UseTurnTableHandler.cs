@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TLJCommon;
+using NhInterMySQL;
+using NhInterMySQL.Model;
+using System;
+using System.Collections.Generic;
 using TLJ_MySqlService.Model;
-using Zfstu.Manager;
-using Zfstu.Model;
+using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -28,7 +25,7 @@ namespace TLJ_MySqlService.Handler
             }
             catch (Exception e)
             {
-                MySqlService.log.Warn("传入的参数有误:"+e);
+                MySqlService.log.Warn("传入的参数有误:" + e);
                 return null;
             }
             string Tag = defaultReq.tag;
@@ -38,7 +35,7 @@ namespace TLJ_MySqlService.Handler
 
             if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || type < 1 || type > 2)
             {
-                MySqlService.log.Warn("字段有空");
+                MySqlService.log.Warn("字段有空:" + uid);
                 return null;
             }
             //传给客户端的数据
@@ -54,8 +51,8 @@ namespace TLJ_MySqlService.Handler
 
         private void UseTurnTableDataSql(string uid, int type, JObject responseData)
         {
-            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
-           
+            UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
+
             bool isSuccess = false;
             int subHuiZhangNum = 0;
             int reward = GetProbabilityReward();
@@ -74,7 +71,7 @@ namespace TLJ_MySqlService.Handler
                     }
                     userInfo.freeCount--;
                     userInfo.luckyValue++;
-                    if (MySqlService.userInfoManager.Update(userInfo))
+                    if (NHibernateHelper.userInfoManager.Update(userInfo))
                     {
                         isSuccess = true;
                     }
@@ -107,7 +104,7 @@ namespace TLJ_MySqlService.Handler
                         userInfo.huizhangCount--;
                         userInfo.Medel -= subHuiZhangNum;
                         userInfo.luckyValue++;
-                        if (MySqlService.userInfoManager.Update(userInfo))
+                        if (NHibernateHelper.userInfoManager.Update(userInfo))
                         {
                             isSuccess = true;
                         }
@@ -117,7 +114,7 @@ namespace TLJ_MySqlService.Handler
 
             if (isSuccess)
             {
-                OperatorSuccess(uid,reward, subHuiZhangNum, userInfo.NickName, responseData );
+                OperatorSuccess(uid, reward, subHuiZhangNum, userInfo.NickName, responseData);
             }
             else
             {
@@ -125,14 +122,14 @@ namespace TLJ_MySqlService.Handler
             }
         }
 
-        private void OperatorSuccess(string uid,int reward, int subHuiZhangNum,string name, JObject responseData)
+        private void OperatorSuccess(string uid, int reward, int subHuiZhangNum, string name, JObject responseData)
         {
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
             responseData.Add("reward_id", reward);
             responseData.Add("subHuiZhangNum", subHuiZhangNum);
             responseData.Add("name", name);
             //得到转盘次数
-            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+            UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
             var turnTableJsonObject = new TurnTableJsonObject();
             turnTableJsonObject.freeCount = userInfo.freeCount;
             turnTableJsonObject.huizhangCount = userInfo.huizhangCount;
@@ -183,7 +180,7 @@ namespace TLJ_MySqlService.Handler
                 list.Add(temp);
             }
 
-            int next = new Random().Next(1, 10001);
+            int next = new Random(CommonUtil.GetRandomSeed()).Next(1, 10001);
             int num = 0;
             if (next <= list[0]) num = 1;
             else if (next <= list[1]) num = 2;

@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using NhInterMySQL;
 using TLJ_MySqlService.Model;
 using TLJCommon;
 using TLJ_MySqlService.Utils;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -49,7 +50,7 @@ namespace TLJ_MySqlService.Handler
 
         private void UsePropSql(string uid, int propId, JObject responseData)
         {
-            UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, propId);
+            UserProp userProp = NHibernateHelper.userPropManager.GetUserProp(uid, propId);
             if (userProp == null || userProp.PropNum <= 0)
             {
                 MySqlService.log.Warn("没有该道具或者不能使用该道具");
@@ -58,9 +59,9 @@ namespace TLJ_MySqlService.Handler
             else
             {
                 userProp.PropNum--;
-                if (MySqlService.userPropManager.Update(userProp))
+                if (NHibernateHelper.userPropManager.Update(userProp))
                 {
-                    UserGame userGame = MySqlService.userGameManager.GetByUid(uid);
+                    UserGame userGame = NHibernateHelper.userGameManager.GetByUid(uid);
                     if (userGame == null)
                     {
                         MySqlService.log.Warn("查找用户游戏数据失败");
@@ -73,12 +74,12 @@ namespace TLJ_MySqlService.Handler
                         //魅力值修正卡
                         case 109:
                             userGame.MeiliZhi = 0;
-                            MySqlService.userGameManager.Update(userGame);
+                            NHibernateHelper.userGameManager.Update(userGame);
                             break;
                         //逃跑率清零卡
                         case 108:
                             userGame.RunCount = 0;
-                            MySqlService.userGameManager.Update(userGame);
+                            NHibernateHelper.userGameManager.Update(userGame);
                             break;
 
                         //记牌器
@@ -88,7 +89,7 @@ namespace TLJ_MySqlService.Handler
                         //出牌发光
                         case 105:
                             userProp.BuffNum++;
-                            MySqlService.userPropManager.Update(userProp);
+                            NHibernateHelper.userPropManager.Update(userProp);
                             break;
 
                         case 111:

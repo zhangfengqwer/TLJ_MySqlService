@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Zfstu.Model
+﻿namespace NhInterMySQL.Model
 {
     public class PVPGameRoom
     {

@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using TLJCommon;
 using TLJ_MySqlService.Model;
-using Zfstu.Manager;
-using Zfstu.Model;
+using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -55,7 +54,7 @@ namespace TLJ_MySqlService.Handler
         private void GetRankSql(JObject responseData)
         {
             //金币榜
-            List<UserInfo> orderByJinbi = MySqlService.userInfoManager.GetGoldRank(30) as List<UserInfo>;
+            List<UserInfo> orderByJinbi = NHibernateHelper.userInfoManager.GetGoldRank(30) as List<UserInfo>;
             List<GoldRankJsonObject> JinbiRanks = new List<GoldRankJsonObject>();
             if (orderByJinbi ==null) orderByJinbi = new List<UserInfo>();
             for (int i = 0; i < orderByJinbi.Count; i++)
@@ -68,7 +67,7 @@ namespace TLJ_MySqlService.Handler
             }
 
             //奖章榜
-            List<UserInfo> orderByMedal = MySqlService.userInfoManager.GetMedalRank(30) as List<UserInfo>;
+            List<UserInfo> orderByMedal = NHibernateHelper.userInfoManager.GetMedalRank(30) as List<UserInfo>;
             List<MedalRankJsonObject> medalRanks = new List<MedalRankJsonObject>();
             if (orderByMedal == null) orderByMedal = new List<UserInfo>();
             for (int i = 0; i < orderByMedal.Count; i++)

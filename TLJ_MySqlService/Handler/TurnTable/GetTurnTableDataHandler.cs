@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using TLJ_MySqlService.Model;
 using TLJCommon;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {

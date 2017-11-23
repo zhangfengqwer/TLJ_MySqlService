@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Zfstu.Model;
+﻿using System.Collections.Generic;
+using NhInterMySQL.Model;
 
-namespace Zfstu.Manager
+namespace NhInterMySQL.Manager
 {
     interface IManager<T>
     {

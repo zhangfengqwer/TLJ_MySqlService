@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using NhInterMySQL;
 using TLJ_MySqlService.Model;
 using TLJ_MySqlService.Utils;
 using TLJCommon;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -49,7 +50,7 @@ namespace TLJ_MySqlService.Handler
 
         private void CompleteTaskSql(int task_id, string uid, JObject responseData)
         {
-            UserTask userTask = MySqlService.userTaskManager.GetUserTask(uid, task_id);
+            UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask(uid, task_id);
             if (userTask == null)
             {
                 MySqlService.log.Warn("没有该用户的任务");
@@ -59,11 +60,11 @@ namespace TLJ_MySqlService.Handler
             {
                 if (userTask.isover == 0 )
                 {
-                    Task task = MySqlService.taskManager.GetTask(task_id);
+                    Task task = NHibernateHelper.taskManager.GetTask(task_id);
                     if (userTask.progress == task.target)
                     {
                         userTask.isover = 1;
-                        if (MySqlService.userTaskManager.Update(userTask) && MySqlUtil.AddProp(uid, task.reward))
+                        if (NHibernateHelper.userTaskManager.Update(userTask) && MySqlUtil.AddProp(uid, task.reward))
                         {
                             OperatorSuccess(responseData);
                         }

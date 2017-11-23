@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using TLJ_MySqlService.JsonObject;
 using TLJCommon;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -48,8 +49,8 @@ namespace TLJ_MySqlService.Handler
 
         private void GetUseNoticeSql(string uid,JObject responseData)
         {
-            List<Notice> notices = MySqlService.noticeManager.GetAll().ToList();
-            List<UserNotice> userNotices = MySqlService.userNoticeManager.GetListByUid(uid);
+            List<Notice> notices = NHibernateHelper.noticeManager.GetAll().ToList();
+            List<UserNotice> userNotices = NHibernateHelper.userNoticeManager.GetListByUid(uid);
             List<UserNoticeJsonObj> tempList = new List<UserNoticeJsonObj>();
 
             if (notices.Count != 0)
@@ -65,14 +66,14 @@ namespace TLJ_MySqlService.Handler
                             NoticeId = notice.NoticeId,
                             State = 0
                         };
-                        if (!MySqlService.userNoticeManager.Add(userNotice))
+                        if (!NHibernateHelper.userNoticeManager.Add(userNotice))
                         {
 //                            OperatorFail(responseData);
                             MySqlService.log.Warn("添加用户通知错误");
 //                            return;
                         }
                     }
-                    userNotices = MySqlService.userNoticeManager.GetListByUid(uid);
+                    userNotices = NHibernateHelper.userNoticeManager.GetListByUid(uid);
                 }
                
             }

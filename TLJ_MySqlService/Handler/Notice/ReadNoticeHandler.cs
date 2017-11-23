@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using TLJ_MySqlService.Model;
 using TLJCommon;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -48,7 +49,7 @@ namespace TLJ_MySqlService.Handler
 
         private void ReadNoticeSql(string uid, int noticeId, JObject responseData)
         {
-            UserNotice userNotice = MySqlService.userNoticeManager.getUserNotice(uid, noticeId);
+            UserNotice userNotice = NHibernateHelper.userNoticeManager.getUserNotice(uid, noticeId);
             if (userNotice == null)
             {
                 MySqlService.log.Warn("该用户没有这条通知");
@@ -59,7 +60,7 @@ namespace TLJ_MySqlService.Handler
                 if (userNotice.State == 0)
                 {
                     userNotice.State = 1;
-                    if (MySqlService.userNoticeManager.Update(userNotice))
+                    if (NHibernateHelper.userNoticeManager.Update(userNotice))
                     {
                         OperatorSuccess(responseData);
                     }

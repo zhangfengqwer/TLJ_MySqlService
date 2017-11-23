@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using NhInterMySQL;
 using TLJ_MySqlService.Model;
 using TLJCommon;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -50,7 +51,7 @@ namespace TLJ_MySqlService.Handler
 
         private void UsePropSql(string uid, int propId, JObject responseData)
         {
-            UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, propId);
+            UserProp userProp = NHibernateHelper.userPropManager.GetUserProp(uid, propId);
             if (userProp == null || userProp.BuffNum <= 0)
             {
                 MySqlService.log.Warn("没有该道具或者不能使用该道具");
@@ -59,7 +60,7 @@ namespace TLJ_MySqlService.Handler
             else
             {
                 userProp.BuffNum--;
-                if (MySqlService.userPropManager.Update(userProp))
+                if (NHibernateHelper.userPropManager.Update(userProp))
                 {
                     //TODO buff为0,删除玩家道具
                     OperatorSuccess(responseData);

@@ -5,9 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Manager;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -40,7 +41,7 @@ namespace TLJ_MySqlService.Handler
                 return null;
             }
             //传给客户端的数据
-            MySqlService.signManager = new MySqlManager<Sign>();
+            NHibernateHelper.signManager = new MySqlManager<Sign>();
             JObject responseData = new JObject();
             responseData.Add(MyCommon.TAG, Tag);
             responseData.Add(MyCommon.CONNID, connId);
@@ -56,7 +57,7 @@ namespace TLJ_MySqlService.Handler
         /// <param name="responseData"></param>
         private void GetSignDataSql(string signUid, JObject responseData)
         {
-            Sign sign = MySqlService.signManager.GetByName(signUid);
+            Sign sign = NHibernateHelper.signManager.GetByName(signUid);
             //签到表中没有用户信息
             if (sign == null)
             {
@@ -67,7 +68,7 @@ namespace TLJ_MySqlService.Handler
                     SignWeekDays = 0,
                     UpdateTime = DateTime.Now
                 };
-                if (MySqlService.signManager.Add(sign))
+                if (NHibernateHelper.signManager.Add(sign))
                 {
                     OperatorSuccess(sign, responseData);
                 }

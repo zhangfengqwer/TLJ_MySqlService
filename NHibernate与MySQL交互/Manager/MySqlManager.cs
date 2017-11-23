@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NhInterMySQL.Model;
 using NHibernate.Criterion;
-using Zfstu.Model;
-using Task = Zfstu.Model.Task;
+using NhInterMySQL;
+using NhInterMySQL.Model;
+using Task = NhInterMySQL.Model.Task;
 
-namespace Zfstu.Manager
+namespace NhInterMySQL.Manager
 {
     public class MySqlManager<T> : IManager<T>
     {

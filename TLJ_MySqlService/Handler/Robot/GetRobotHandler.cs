@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
 using TLJCommon;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -50,7 +51,7 @@ namespace TLJ_MySqlService.Handler
 
         private void GetRobotUidSql(JObject responseData)
         {
-            List<User> aiList = MySqlService.userManager.GetAIList() as List<User>;
+            List<User> aiList = NHibernateHelper.userManager.GetAIList() as List<User>;
             List<AIJsonObject> aiJsonObjects = new List<AIJsonObject>();
             if (aiList == null) return;
             foreach (var ai in aiList)

@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
 using TLJ_MySqlService.Utils;
 using TLJCommon;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -51,7 +52,7 @@ namespace TLJ_MySqlService.Handler
         private void OneKeyReadEmailSql(string uid, JObject responseData)
         {
             //得到未读取的邮件
-            List<UserEmail> userEmails = MySqlService.userEmailManager.GetListByUid(uid);
+            List<UserEmail> userEmails = NHibernateHelper.userEmailManager.GetListByUid(uid);
 
             if (userEmails == null)
             {
@@ -75,7 +76,7 @@ namespace TLJ_MySqlService.Handler
                         }
                     }
 
-                    if (!MySqlService.userEmailManager.Update(email))
+                    if (!NHibernateHelper.userEmailManager.Update(email))
                     {
                         MySqlService.log.Warn("读取失败");
                         OperatorFail(responseData);

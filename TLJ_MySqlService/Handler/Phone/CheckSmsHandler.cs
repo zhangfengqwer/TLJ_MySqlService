@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using System.Xml;
 using TLJ_MySqlService.Model;
 using TLJ_MySqlService.Utils;
 using TLJCommon;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -66,7 +67,7 @@ namespace TLJ_MySqlService.Handler
                         if (ResultCode == 1)
                         {
                             uid = "6" + uid;
-                            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+                            UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
                             if (userInfo == null)
                             {
                                 MySqlService.log.Warn("uid未注册");
@@ -83,7 +84,7 @@ namespace TLJ_MySqlService.Handler
                                     responseData.Add("isFirst", 0);
                                 }
                                 userInfo.Phone = phoneNum;
-                                if (MySqlService.userInfoManager.Update(userInfo))
+                                if (NHibernateHelper.userInfoManager.Update(userInfo))
                                 {
                                     responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
                                 }

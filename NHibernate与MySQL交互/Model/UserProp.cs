@@ -1,4 +1,4 @@
-﻿namespace Zfstu.Model
+﻿namespace NhInterMySQL.Model
 {
     public class UserProp
     {

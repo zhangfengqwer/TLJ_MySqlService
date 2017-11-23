@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using NhInterMySQL;
 using TLJCommon;
 using TLJ_MySqlService.Model;
-using Zfstu.Manager;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -58,7 +58,7 @@ namespace TLJ_MySqlService.Handler
         /// <param name="responseData"></param>
         private void UserRealNameSql(string uid, string realName, string identification, JObject responseData)
         {
-            User user = MySqlService.userManager.GetByUid(uid);
+            User user = NHibernateHelper.userManager.GetByUid(uid);
             if (user == null)
             {
                 OperatorFail(responseData);
@@ -66,7 +66,7 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                UserRealName userRealName = MySqlService.userRealNameManager.GetByUid(uid);
+                UserRealName userRealName = NHibernateHelper.userRealNameManager.GetByUid(uid);
                 if (userRealName == null)
                 {
                     userRealName = new UserRealName();
@@ -75,7 +75,7 @@ namespace TLJ_MySqlService.Handler
                     userRealName.Identification = identification;
                     if (IDCardValidationUtil.CheckRealName(realName) && IDCardValidationUtil.CheckIDCard(identification))
                     {
-                        if (MySqlService.userRealNameManager.Add(userRealName))
+                        if (NHibernateHelper.userRealNameManager.Add(userRealName))
                         {
                             OperatorSuccess(responseData);
                         }

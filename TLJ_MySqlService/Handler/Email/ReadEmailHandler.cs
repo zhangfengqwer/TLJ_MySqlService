@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TLJCommon;
-using TLJ_MySqlService.Model;
+using NhInterMySQL;
+using NhInterMySQL.Model;
+using System;
 using TLJ_MySqlService.Utils;
-using Zfstu.Manager;
-using Zfstu.Model;
+using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -54,7 +49,7 @@ namespace TLJ_MySqlService.Handler
 
         private void ReadEmailSql(int emailId, string uid, JObject responseData)
         {
-            UserEmail userEmail = MySqlService.userEmailManager.GetEmail(emailId, uid);
+            UserEmail userEmail = NHibernateHelper.userEmailManager.GetEmail(emailId, uid);
             if (userEmail == null)
             {
                 MySqlService.log.Warn("该邮件不存在");
@@ -74,7 +69,7 @@ namespace TLJ_MySqlService.Handler
                             MySqlService.log.Warn("读邮件加道具失败：" + uid + " " + userEmail.Reward);
                         }
                     }
-                    if (MySqlService.userEmailManager.Update(userEmail))
+                    if (NHibernateHelper.userEmailManager.Update(userEmail))
                     {
                         OperatorSuccess(responseData);
                     }

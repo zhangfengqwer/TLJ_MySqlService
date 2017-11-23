@@ -2,16 +2,17 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
-    class BuyYuanBaoHandler : BaseHandler
+    public class BuyYuanBaoHandler : BaseHandler
     {
         private HashSet<string> hashSet = new HashSet<string>();
-        
+
         public BuyYuanBaoHandler()
         {
             Tag = Consts.Tag_BuyYuanBao;
@@ -45,7 +46,7 @@ namespace TLJ_MySqlService.Handler
                 return null;
             }
 
-            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || num == 0 || price == 0||
+            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || num == 0 || price == 0 ||
                 string.IsNullOrWhiteSpace(orderid))
             {
                 MySqlService.log.Warn($"字段有空,{defaultReqData}");
@@ -69,9 +70,9 @@ namespace TLJ_MySqlService.Handler
             return _responseData.ToString();
         }
 
-        private void BuyYuanBaoSql(int goodId, int num, string uid, float price, string orderid, JObject responseData)
+        public void BuyYuanBaoSql(int goodId, int num, string uid, float price, string orderid, JObject responseData)
         {
-            Goods goods = MySqlService.goodsManager.GetGoods(goodId);
+            Goods goods = NHibernateHelper.goodsManager.GetGoods(goodId);
             bool IsSuccess = false;
 
             if (goods != null)
@@ -84,7 +85,8 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                string msg = $"购买元宝失败，uid: {uid},goodid: {goodId},num: {num},price：{price},goodsprice:{goods.price * num},orderid: {orderid}";
+                string msg =
+                    $"购买元宝失败，uid: {uid},goodid: {goodId},num: {num},price：{price},goodsprice:{goods.price * num},orderid: {orderid}";
                 MySqlService.log.Warn(msg);
                 LogUtil.Log(uid, MyCommon.OpType.BUYYUANBAO, msg);
                 OperatorFail(responseData);
@@ -102,7 +104,7 @@ namespace TLJ_MySqlService.Handler
                 return false;
             }
 
-            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+            UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
             //只能用人民币
             if (goods.money_type == 3)
             {
@@ -123,11 +125,33 @@ namespace TLJ_MySqlService.Handler
             if (propId == 2)
             {
                 userInfo.YuanBao += propNum * num;
+                //之前的vip等级
+                int vipFirstLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
                 userInfo.RechargeVip += goods.price * num;
-                if (MySqlService.userInfoManager.Update(userInfo))
+                //充值之后的vip等级
+                int vipLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
+                if (NHibernateHelper.userInfoManager.Update(userInfo))
                 {
                     var format = string.Format("花费了{0}元，购买了{1}元宝,订单号：{2}", price, propNum * num, orderid);
                     LogUtil.Log(userInfo.Uid, MyCommon.OpType.BUYYUANBAO, format);
+
+                    var result = vipLevel - vipFirstLevel;
+                    //vip等级发生
+                    if (result > 0)
+                    {
+                        for (int i = vipFirstLevel; i < vipLevel; i++)
+                        {
+                            var reward = $"1:{MySqlService.VipDatas[i].vipOnce.goldNum};{MySqlService.VipDatas[i].vipOnce.prop}";
+
+                            //发送vip一次福利
+                            new AddEmailHandler().AddUserEmailSql(userInfo.Uid, $"Vip一次性福利", $"恭喜您升级到Vip{i + 1}",
+                                reward, new JObject());
+
+                            var temp = string.Format($"恭喜你升级到Vip{i + 1},发送邮件奖励:{reward}");
+                            LogUtil.Log(userInfo.Uid, MyCommon.OpType.VIP_ONCE_REWARD, temp);
+                        }
+                    }
+
                     return true;
                 }
             }

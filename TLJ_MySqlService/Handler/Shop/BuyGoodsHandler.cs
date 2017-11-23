@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -48,7 +48,7 @@ namespace TLJ_MySqlService.Handler
 
         private void BuyGoodsSql(int goodId, int num, string uid, JObject responseData)
         {
-            Goods goods = MySqlService.goodsManager.GetGoods(goodId);
+            Goods goods = NHibernateHelper.goodsManager.GetGoods(goodId);
             bool IsSuccess = false;
             if (goods != null)
             {
@@ -86,7 +86,7 @@ namespace TLJ_MySqlService.Handler
             bool IsSuccess = false;
             //需要的人民币
             int sumPrice = goods.price * num;
-            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+            UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
             //只能用人民币
             if (goods.money_type == 3)
             {
@@ -105,7 +105,7 @@ namespace TLJ_MySqlService.Handler
         {
             bool IsSuccess = false;
             int sumPrice = goods.price * num;
-            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+            UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
             //只能用元宝
             if (goods.money_type == 2)
             {
@@ -115,7 +115,7 @@ namespace TLJ_MySqlService.Handler
                     //先扣钱,添加金币
                     MySqlService.log.Info("先扣钱,添加金币");
                     string temp = "";
-                    if (MySqlService.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, out temp))
+                    if (NHibernateHelper.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, out temp))
                     {
                         string s = string.Format("花费{0}元宝，购买了{1}个{2}", sumPrice, num,goods.goods_name);
                         LogUtil.Log(uid, MyCommon.OpType.BUYGOLD, s);
@@ -135,7 +135,7 @@ namespace TLJ_MySqlService.Handler
             {
                 temp = propNum * num + "";
                 userInfo.Gold += propNum * num;
-                if (MySqlService.userInfoManager.Update(userInfo))
+                if (NHibernateHelper.userInfoManager.Update(userInfo))
                 {
                     return true;
                 }
@@ -152,7 +152,7 @@ namespace TLJ_MySqlService.Handler
             if (propId == 2)
             {
                 userInfo.YuanBao += propNum * num;
-                if (MySqlService.userInfoManager.Update(userInfo))
+                if (NHibernateHelper.userInfoManager.Update(userInfo))
                 {
                     return true;
                 }
@@ -165,7 +165,7 @@ namespace TLJ_MySqlService.Handler
             bool IsSuccess = false;
             //需要付的价格
             int sumPrice = goods.price * num;
-            UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
+            UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
             switch (goods.money_type)
             {
                 //金币付款
@@ -174,7 +174,7 @@ namespace TLJ_MySqlService.Handler
                     {
                         userInfo.Gold -= sumPrice;
                         //先扣钱,添加道具
-                        if (MySqlService.userInfoManager.Update(userInfo))
+                        if (NHibernateHelper.userInfoManager.Update(userInfo))
                         {
                             for (int i = 0; i < num; i++)
                             {
@@ -195,7 +195,7 @@ namespace TLJ_MySqlService.Handler
                     {
                         userInfo.YuanBao -= sumPrice;
                         //先扣钱,添加道具
-                        if (MySqlService.userInfoManager.Update(userInfo))
+                        if (NHibernateHelper.userInfoManager.Update(userInfo))
                         {
                             for (int i = 0; i < num; i++)
                             {
@@ -227,7 +227,7 @@ namespace TLJ_MySqlService.Handler
                 int propId = Convert.ToInt32(strings[0]);
                 int propNum = Convert.ToInt32(strings[1]);
 
-                UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, propId);
+                UserProp userProp = NHibernateHelper.userPropManager.GetUserProp(uid, propId);
                 if (userProp == null)
                 {
                     userProp = new UserProp()
@@ -236,7 +236,7 @@ namespace TLJ_MySqlService.Handler
                         PropId = propId,
                         PropNum = propNum
                     };
-                    if (!MySqlService.userPropManager.Add(userProp))
+                    if (!NHibernateHelper.userPropManager.Add(userProp))
                     {
                         MySqlService.log.Warn("添加道具失败");
                         return false;
@@ -245,7 +245,7 @@ namespace TLJ_MySqlService.Handler
                 else
                 {
                     userProp.PropNum += propNum;
-                    if (!MySqlService.userPropManager.Update(userProp))
+                    if (!NHibernateHelper.userPropManager.Update(userProp))
                     {
                         MySqlService.log.Warn("更新道具失败");
                         return false;

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
-                   assembly="Zfstu"
-                   namespace="Zfstu.Model">
+                   assembly="NhInterMySQL"
+                   namespace="NhInterMySQL.Model">
 
   <class name="CommonConfig" table="common_config">
     <id name="id" column="id" type="Int32">

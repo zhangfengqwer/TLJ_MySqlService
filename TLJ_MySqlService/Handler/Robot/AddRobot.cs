@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using NhInterMySQL;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -23,7 +23,7 @@ namespace TLJ_MySqlService.Handler
                     Userpassword = "",
                     IsRobot = 1
                 };
-                MySqlService.userManager.Add(user);
+                NHibernateHelper.userManager.Add(user);
             }
         }
     }

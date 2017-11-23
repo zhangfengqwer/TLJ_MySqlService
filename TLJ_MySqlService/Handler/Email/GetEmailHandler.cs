@@ -1,14 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NhInterMySQL;
+using NhInterMySQL.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using TLJCommon;
 using TLJ_MySqlService.Model;
-using Zfstu.Manager;
-using Zfstu.Model;
+using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -54,7 +51,7 @@ namespace TLJ_MySqlService.Handler
         {
             try
             {
-                List<UserEmail> userEmailList = MySqlService.userEmailManager.GetListByUid(uid).Take(50).ToList();
+                List<UserEmail> userEmailList = NHibernateHelper.userEmailManager.GetListByUid(uid).Take(50).ToList();
                 mailData mailData;
                 foreach (var userEmail in userEmailList)
                 {

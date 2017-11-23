@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
-  public  class UidUtil
+public  class UidUtil
     {
     // 生成UID
         public static string createUID()

@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
 using TLJCommon;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -49,7 +50,7 @@ namespace TLJ_MySqlService.Handler
 
         private void OneKeyDeleteEmailSql(string uid, JObject responseData)
         {
-            List<UserEmail> userEmails = MySqlService.userEmailManager.GetListByUid(uid);
+            List<UserEmail> userEmails = NHibernateHelper.userEmailManager.GetListByUid(uid);
 
             if (userEmails == null)
             {
@@ -62,7 +63,7 @@ namespace TLJ_MySqlService.Handler
             {
                 if (email.State == 1)
                 {
-                    if (!MySqlService.userEmailManager.Delete(email))
+                    if (!NHibernateHelper.userEmailManager.Delete(email))
                     {
                         MySqlService.log.Warn("删除邮件失败");
                         OperatorFail(responseData);

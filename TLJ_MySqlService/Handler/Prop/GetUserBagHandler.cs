@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -52,7 +52,7 @@ namespace TLJ_MySqlService.Handler
         {
             try
             {
-                List<UserProp> userProps = MySqlService.userPropManager.GetListByUid(uid);
+                List<UserProp> userProps = NHibernateHelper.userPropManager.GetListByUid(uid);
                 List<UserPropJsonObject> tempList = new List<UserPropJsonObject>();
                 UserPropJsonObject userPropJson;
                 foreach (var prop in userProps)

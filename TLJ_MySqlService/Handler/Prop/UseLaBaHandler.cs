@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using NhInterMySQL;
 using TLJ_MySqlService.Model;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -50,7 +50,7 @@ namespace TLJ_MySqlService.Handler
 
         private void UseLaBaSql(string uid, JObject responseData)
         {
-            UserProp userProp = MySqlService.userPropManager.GetUserProp(uid, 106);
+            UserProp userProp = NHibernateHelper.userPropManager.GetUserProp(uid, 106);
             if (userProp == null || userProp.PropNum <= 0)
             {
                 MySqlService.log.Warn("没有喇叭");
@@ -59,7 +59,7 @@ namespace TLJ_MySqlService.Handler
             else
             {
                 userProp.PropNum--;
-                if (MySqlService.userPropManager.Update(userProp))
+                if (NHibernateHelper.userPropManager.Update(userProp))
                 {
                     OperatorSuccess(responseData);
                 }

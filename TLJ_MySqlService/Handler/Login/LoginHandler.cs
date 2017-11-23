@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using TLJCommon;
-using Zfstu.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -59,11 +60,11 @@ namespace TLJ_MySqlService.Handler
             switch (passwordtype)
             {
                 case 1:
-                    loginUser = MySqlService.userManager.VerifyLogin(user.Username, user.Userpassword);
+                    loginUser = NHibernateHelper.userManager.VerifyLogin(user.Username, user.Userpassword);
                   
                     break;
                 case 2:
-                    loginUser = MySqlService.userManager.VerifySecondLogin(user.Username, user.Userpassword);
+                    loginUser = NHibernateHelper.userManager.VerifySecondLogin(user.Username, user.Userpassword);
                     break;
             }
 
@@ -73,7 +74,7 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                User name = MySqlService.userManager.GetByName(user.Username);
+                User name = NHibernateHelper.userManager.GetByName(user.Username);
                 if (name == null)
                 {
                     responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_AccountNoExist);

@@ -2,9 +2,9 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using NhInterMySQL;
 using TLJCommon;
-using Zfstu.Manager;
-using Zfstu.Model;
+using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -52,7 +52,7 @@ namespace TLJ_MySqlService.Handler
 
         private void GetOtherUserInfoSql(string uid, JObject responseData)
         {
-            User user = MySqlService.userManager.GetByUid(uid);
+            User user = NHibernateHelper.userManager.GetByUid(uid);
             if (user == null)
             {
                 OperatorFail(responseData);
@@ -60,8 +60,8 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                UserInfo userInfo = MySqlService.userInfoManager.GetByUid(uid);
-                UserGame userGame = MySqlService.userGameManager.GetByUid(uid);
+                UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
+                UserGame userGame = NHibernateHelper.userGameManager.GetByUid(uid);
 
                 //用户信息表中没有用户信息
                 if (userInfo == null)
@@ -79,7 +79,7 @@ namespace TLJ_MySqlService.Handler
                     };
 
 
-                    if (MySqlService.userInfoManager.Add(userInfo) && MySqlService.userGameManager.Add(userGame))
+                    if (NHibernateHelper.userInfoManager.Add(userInfo) && NHibernateHelper.userGameManager.Add(userGame))
                     {
                         OperatorSuccess(userInfo, userGame, responseData);
                     }
@@ -112,7 +112,7 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.GAMEDATA, gameData);
             //用户buff
             List<UserBuffJsonObject> userBuffJsonObjects = new List<UserBuffJsonObject>();
-            List<UserProp> userProps = MySqlService.userPropManager.GetListByUid(userInfo.Uid);
+            List<UserProp> userProps = NHibernateHelper.userPropManager.GetListByUid(userInfo.Uid);
             if (userProps != null)
             {
                 for (int i = 0; i < userProps.Count; i++)
