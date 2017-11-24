@@ -78,7 +78,6 @@ namespace TLJ_MySqlService.Handler
                         TurnTable turnTable = MySqlService.TurnTables[reward - 1];
                         MySqlService.log.Info($"{uid} 增加转盘奖励{turnTable.reward}");
                         bool addProp = MySqlUtil.AddProp(uid, turnTable.reward);
-                        MySqlService.log.Info($"{uid} 加道具的结果{addProp}");
                         if (addProp)
                         {
                             isSuccess = true;
@@ -122,7 +121,6 @@ namespace TLJ_MySqlService.Handler
                             TurnTable turnTable = MySqlService.TurnTables[reward - 1];
                             MySqlService.log.Info($"{uid} 增加转盘奖励{turnTable.reward}");
                             bool addProp = MySqlUtil.AddProp(uid, turnTable.reward);
-                            MySqlService.log.Info($"{uid} 加道具的结果{addProp}");
                             if (addProp)
                             {
                                 isSuccess = true;
