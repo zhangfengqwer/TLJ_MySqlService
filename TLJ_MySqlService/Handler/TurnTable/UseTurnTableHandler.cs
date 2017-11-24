@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using TLJ_MySqlService.Model;
 using TLJCommon;
+using TLJ_MySqlService.Utils;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -60,6 +61,7 @@ namespace TLJ_MySqlService.Handler
             {
                 if (userInfo.freeCount <= 0)
                 {
+                    MySqlService.log.Warn($"{uid},转盘免费使用次数不足,当前{userInfo.freeCount}");
                     isSuccess = false;
                 }
                 else
@@ -73,7 +75,18 @@ namespace TLJ_MySqlService.Handler
                     userInfo.luckyValue++;
                     if (NHibernateHelper.userInfoManager.Update(userInfo))
                     {
-                        isSuccess = true;
+                        TurnTable turnTable = MySqlService.TurnTables[reward - 1];
+                        MySqlService.log.Info($"{uid} 增加转盘奖励{turnTable.reward}");
+                        bool addProp = MySqlUtil.AddProp(uid, turnTable.reward);
+                        MySqlService.log.Info($"{uid} 加道具的结果{addProp}");
+                        if (addProp)
+                        {
+                            isSuccess = true;
+                        }
+                        else
+                        {
+                            isSuccess = false;
+                        }
                     }
                 }
             }
@@ -106,9 +119,24 @@ namespace TLJ_MySqlService.Handler
                         userInfo.luckyValue++;
                         if (NHibernateHelper.userInfoManager.Update(userInfo))
                         {
-                            isSuccess = true;
+                            TurnTable turnTable = MySqlService.TurnTables[reward - 1];
+                            MySqlService.log.Info($"{uid} 增加转盘奖励{turnTable.reward}");
+                            bool addProp = MySqlUtil.AddProp(uid, turnTable.reward);
+                            MySqlService.log.Info($"{uid} 加道具的结果{addProp}");
+                            if (addProp)
+                            {
+                                isSuccess = true;
+                            }
+                            else
+                            {
+                                isSuccess = false;
+                            }
                         }
                     }
+                }
+                else
+                {
+                    MySqlService.log.Warn($"{uid},转盘徽章使用次数不足,当前{userInfo.huizhangCount}");
                 }
             }
 

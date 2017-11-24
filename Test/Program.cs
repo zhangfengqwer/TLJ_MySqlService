@@ -19,10 +19,8 @@ namespace Test
 
         static void Main(string[] args)
         {
-            string name = RandomName.GetName();
-            string name1 = RandomName.GetName();
-            string name2 = RandomName.GetName();
             //            Console.WriteLine(sb.ToString());
+            NHibernateHelper.goodsManager.GetAll();
             Console.ReadKey();
         }
 

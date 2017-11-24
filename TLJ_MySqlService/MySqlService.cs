@@ -36,8 +36,6 @@ namespace TLJ_MySqlService
         public static Logger DBLog = LogManager.GetLogger("DBLog");
         public static Dictionary<string, BaseHandler> handlerDic = new Dictionary<string, BaseHandler>();
 
-      
-
         public static List<PVPGameRoom> PvpGameRooms;
         public static List<Goods> ShopData;
         public static List<SignConfig> SignConfigs;

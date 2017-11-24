@@ -10,7 +10,9 @@
     </id>
     <property name="goods_type" column="goods_type" type="Int32"></property>
     <property name="price" column="price" type="Int32"></property>
+<!--    <property name="price2" column="price2" type="Int32"></property>-->
     <property name="money_type" column="money_type" type="Int32"></property>
+<!--    <property name="money_type2" column="money_type2" type="Int32"></property>-->
     <property name="props" column="props" type="String"></property>
     <property name="goods_name" column="goods_name" type="String"></property>
   </class>
