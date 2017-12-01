@@ -35,7 +35,7 @@ namespace TLJ_MySqlService.Handler
             }
             UserEmailReq _userEmailReq = new UserEmailReq();
             _userEmailReq.mailData = new List<mailData>();
-            _userEmailReq.tag = base.Tag;
+            _userEmailReq.tag = Tag;
             _userEmailReq.connId = connId;
             //查询
             GetUserEmailSql(uid, _userEmailReq);

@@ -9,6 +9,7 @@
       <generator class="native"></generator>
     </id>
     <property name="target" column="target" type="Int32"></property>
+    <property name="exp" column="exp" type="Int32"></property>
     <property name="title" column="title" type="String"></property>
     <property name="content" column="content" type="String"></property>
     <property name="reward" column="reward" type="String"></property>

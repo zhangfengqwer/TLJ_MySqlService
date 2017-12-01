@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NhInterMySQL.Model;
+using TLJ_MySqlService;
 
 namespace Test
 {
@@ -20,9 +22,11 @@ namespace Test
 
         static void Main(string[] args)
         {
+            Assembly assembly = typeof(MySqlService).Assembly;
+            Console.WriteLine(assembly.FullName);
 
-            UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask("6509453643", 208);
-            Console.Write(userTask.progress);
+//            UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask("6509453643", 208);
+//            Console.Write(userTask.progress);
 
 //            foreach (var userTask in NHibernateHelper.userTaskManager.GetAll())
 //            {

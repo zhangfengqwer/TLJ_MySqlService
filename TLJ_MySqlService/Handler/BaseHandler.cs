@@ -8,8 +8,6 @@ namespace TLJ_MySqlService.Handler
 {
     public abstract class BaseHandler
     {
-        public string Tag;
-
         public abstract string OnResponse(string data);
     }
 }

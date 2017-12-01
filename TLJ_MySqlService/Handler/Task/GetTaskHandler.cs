@@ -78,6 +78,7 @@ namespace TLJ_MySqlService.Handler
                 userTaskJsonObject.title = task.title;
                 userTaskJsonObject.reward = task.reward;
                 userTaskJsonObject.target = task.target;
+                userTaskJsonObject.exp = task.exp;
 
                 userTaskJsonObject.isover = userTask.isover;
                 userTaskJsonObject.progress = userTask.progress;

@@ -14,4 +14,5 @@ public class UserTaskJsonObject
     public string title;
     public string content;
     public string reward;
+    public int exp;
 }

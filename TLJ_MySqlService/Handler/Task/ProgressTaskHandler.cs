@@ -44,7 +44,11 @@ namespace TLJ_MySqlService.Handler
             UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask(uid, task_id);
             if (userTask == null)
             {
-                MySqlService.log.Warn($"没有该用户的任务{uid},task_id:{task_id}");
+                var user = NHibernateHelper.userManager.GetByUid(uid);
+                if (user.IsRobot != 1)
+                {
+                    MySqlService.log.Warn($"没有该用户的任务{uid},task_id:{task_id}");
+                }
             }
             else
             {

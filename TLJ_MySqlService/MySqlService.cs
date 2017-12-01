@@ -84,11 +84,6 @@ namespace TLJ_MySqlService
             VipDatas = JsonConvert.DeserializeObject<List<VipData>>(str);
         }
 
-        public static void AddHandler(BaseHandler handler)
-        {
-            handlerDic.Add(handler.Tag, handler);
-        }
-
         /// <summary>
         /// 初始化Handler
         /// </summary>
@@ -155,11 +150,11 @@ namespace TLJ_MySqlService
                 // 启动服务
                 if (m_tcpServer.Start())
                 {
-                    log.Info("TCP服务启动成功,当前服务器i-:" + NetConfig.s_mySqlService_ip + ":" + NetConfig.s_mySqlService_port);
+                    log.Info("TCP服务启动成功,当前服务器ip," + NetConfig.s_mySqlService_ip + ":" + NetConfig.s_mySqlService_port);
                 }
                 else
                 {
-                    log.Warn("TCP服务启动失败:="+ NetConfig.s_mySqlService_ip + ":" + NetConfig.s_mySqlService_port);
+                    log.Warn("TCP服务启动失败ip,"+ NetConfig.s_mySqlService_ip + ":" + NetConfig.s_mySqlService_port);
                 }
             }
             catch (Exception ex)

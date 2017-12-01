@@ -67,7 +67,7 @@ namespace TLJ_MySqlService.Utils
         public static string SendSms(string uid, string phoneNum)
         {
             string url = "http://servicesy.51v.cn/partnerws/SmsService.asmx/SendSms";
-            string getBody = "?userId=" + uid + "&cellPhoneNum=" + phoneNum + "&keyStr=sy123";
+            string getBody = "?userId=" + uid + "&cellPhoneNum=" + phoneNum + "&keyStr=sy";
             MySqlService.log.Info(url + getBody);
             return GetHttp(url + getBody);
         }
@@ -76,7 +76,7 @@ namespace TLJ_MySqlService.Utils
         {
             string url = "http://servicesy.51v.cn/partnerws/SmsService.asmx/CheckSmsToJson";
             string getBody = "?userId=" + uid + "&cellPhoneNum=" + phoneNum + "&verificationCode=" + verificationCode +
-                             "&keyStr=sy123";
+                             "&keyStr=sy";
             return GetHttp(url + getBody);
         }
 
