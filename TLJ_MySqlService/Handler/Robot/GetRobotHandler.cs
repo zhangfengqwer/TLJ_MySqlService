@@ -8,13 +8,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_GetAIList)]
     class GetRobotHandler : BaseHandler
     {
-        public GetRobotHandler()
-        {
-            Tag = Consts.Tag_GetAIList;
-        }
-
         public override string OnResponse(string data)
         {
             GetAIReq defaultReq = null;

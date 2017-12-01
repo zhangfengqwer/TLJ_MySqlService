@@ -3,11 +3,11 @@
         "vipLevel": 1,
         "medalNum": 1,
         "vipOnce": {
-            "goldNum": 788,
-            "prop": "106:1"
+            "goldNum": 888,
+            "prop": "106:2"
         },
         "vipWeekly": {
-            "goldNum": 688,
+            "goldNum": 588,
             "diamondNum": 1
         }
     },
@@ -16,10 +16,10 @@
         "medalNum": 1,
         "vipOnce": {
             "goldNum": 988,
-            "prop": "102:1"
+            "prop": "102:3"
         },
         "vipWeekly": {
-            "goldNum": 888,
+            "goldNum": 688,
             "diamondNum": 2
         }
     },
@@ -28,10 +28,10 @@
         "medalNum": 1,
         "vipOnce": {
             "goldNum": 1288,
-            "prop": "101:1"
+            "prop": "101:3"
         },
         "vipWeekly": {
-            "goldNum": 1080,
+            "goldNum": 888,
             "diamondNum": 3
         }
     },
@@ -43,7 +43,7 @@
             "prop": "107:8"
         },
         "vipWeekly": {
-            "goldNum": 1288,
+            "goldNum": 1088,
             "diamondNum": 5
         }
     },
@@ -55,7 +55,7 @@
             "prop": "110:2"
         },
         "vipWeekly": {
-            "goldNum": 1588,
+            "goldNum": 1288,
             "diamondNum": 10
         }
     },
@@ -67,7 +67,7 @@
             "prop": "110:3"
         },
         "vipWeekly": {
-            "goldNum":1888,
+            "goldNum":1588,
             "diamondNum": 15
         }
     },
@@ -79,7 +79,7 @@
             "prop": "110:4"
         },
         "vipWeekly": {
-            "goldNum":2888,
+            "goldNum":1888,
             "diamondNum": 20
         }
     },
@@ -91,7 +91,7 @@
             "prop": "110:5"
         },
         "vipWeekly": {
-            "goldNum": 5888,
+            "goldNum": 2888,
             "diamondNum": 50
         }
     },
@@ -103,7 +103,7 @@
             "prop": "110:6"
         },
         "vipWeekly": {
-            "goldNum": 6888,
+            "goldNum": 5888,
             "diamondNum": 65
         }
     },
@@ -115,7 +115,7 @@
             "prop": "110:8"
         },
         "vipWeekly": {
-            "goldNum": 8888,
+            "goldNum": 6888,
             "diamondNum": 80
         }
     }

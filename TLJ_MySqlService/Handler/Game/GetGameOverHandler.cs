@@ -4,11 +4,12 @@ using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
 using TLJCommon;
+using TLJ_MySqlService.Utils;
 
 namespace TLJ_MySqlService.Handler
 {
-    [Handler(Consts.Tag_GetPVPGameRoom)]
-    class GetPVPGameDataHandler : BaseHandler
+    [Handler(Consts.Tag_GameOver)]
+    class GetGameOverHandler : BaseHandler
     {
         public override string OnResponse(string data)
         {
@@ -25,8 +26,10 @@ namespace TLJ_MySqlService.Handler
             string Tag = defaultReq.tag;
             int connId = defaultReq.connId;
             string uid = defaultReq.uid;
+            var gameroomtype = defaultReq.gameroomtype;
 
-            if (string.IsNullOrWhiteSpace(Tag)  || string.IsNullOrWhiteSpace(uid))
+            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) ||
+                string.IsNullOrWhiteSpace(gameroomtype))
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -37,26 +40,42 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.CONNID, connId);
 
             //得到pvp数据
-            GetPVPDataSql(_responseData);
-            return _responseData.ToString() ;
+            GetGameOverSql(uid, gameroomtype);
+            return null;
         }
 
-        private void GetPVPDataSql(JObject responseData)
+        private void GetGameOverSql(string uid, string gameroomtype)
         {
-            OperatorSuccess(MySqlService.PvpGameRooms, responseData);
+            var pvpGameRoom = NhInterMySQL.NHibernateHelper.PVPGameRoomManager.GetPVPRoom(gameroomtype);
+            if (pvpGameRoom != null)
+            {
+                if ("0".Equals(pvpGameRoom.baomingfei)) return;
+               
+                var baomingfei = pvpGameRoom.baomingfei;
+                var split = baomingfei.Split(':');
+                var s1 = split[0];
+                var s2 = split[1];
+                string s3 = "-" + s2;
+                baomingfei = s1 + ":" + s3;
+                MySqlService.log.Info($"uid:{uid},报名费：{baomingfei}");
+
+                MySqlUtil.ConfigExpenseGold(uid, Convert.ToInt32(s2));
+                MySqlUtil.AddProp(uid, baomingfei);
+            }
         }
+
 
         //数据库操作成功
         private void OperatorSuccess(List<PVPGameRoom> pvpGameRooms, JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
             responseData.Add("room_list", JsonConvert.SerializeObject(pvpGameRooms));
         }
 
         //数据库操作失败
         private void OperatorFail(JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
         }
     }
 }

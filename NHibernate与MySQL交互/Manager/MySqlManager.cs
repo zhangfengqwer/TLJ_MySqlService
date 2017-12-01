@@ -58,27 +58,6 @@ namespace NhInterMySQL.Manager
             }
         }
 
-        public bool AddOrUpdate(T t)
-        {
-            using (var Session = NHibernateHelper.OpenSession())
-            {
-                using (var transaction = Session.BeginTransaction())
-                {
-                    try
-                    {
-                        Session.SaveOrUpdate(t);
-                        transaction.Commit();
-                        return true;
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                        return false;
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// 删
         /// </summary>
@@ -120,6 +99,34 @@ namespace NhInterMySQL.Manager
                         lock (Locker)
                         {
                             Session.Update(t);
+                            transaction.Commit();
+                            return true;
+                        }
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 增改
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public bool AddOrUpdate(T t)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    try
+                    {
+                        lock (Locker)
+                        {
+                            Session.SaveOrUpdate(t);
                             transaction.Commit();
                             return true;
                         }
@@ -335,6 +342,18 @@ namespace NhInterMySQL.Manager
             }
         }
 
+        public UserRecharge GetUserRecharge(string uid, int goodId)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var userRecharge = Session.CreateCriteria(typeof(UserRecharge))
+                    .Add(Restrictions.Eq("goods_id", goodId))
+                    .Add(Restrictions.Eq("Uid", uid))
+                    .UniqueResult<UserRecharge>();
+                return userRecharge;
+            }
+        }
+
         public Task GetTask(int taskId)
         {
             using (var Session = NHibernateHelper.OpenSession())
@@ -412,6 +431,18 @@ namespace NhInterMySQL.Manager
                 var Prop = Session.CreateCriteria(typeof(Prop))
                     .Add(Restrictions.Eq("prop_id", propId))
                     .UniqueResult<Prop>();
+
+                return Prop;
+            }
+        }
+
+        public PVPGameRoom GetPVPRoom(string gameroomtype)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var Prop = Session.CreateCriteria(typeof(PVPGameRoom))
+                    .Add(Restrictions.Eq("gameroomtype", gameroomtype))
+                    .UniqueResult<PVPGameRoom>();
 
                 return Prop;
             }

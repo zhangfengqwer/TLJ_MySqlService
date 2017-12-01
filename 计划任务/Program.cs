@@ -19,8 +19,29 @@ namespace UpdateSignMonday
         private static void UpdateDaily()
         {
             UpdateTurnTableCount();
-            UpdateRechargeDayly();
+            UpdateRechargeAndGoldDayly();
             UpdateDailyGameCount();
+            UpdateUserTask();
+        }
+
+        private static void UpdateUserTask()
+        {
+            var sql = "update user_task set progress = '0',isover = '0' ";
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    try
+                    {
+                        session.CreateSQLQuery(sql).ExecuteUpdate();
+                        transaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
         }
 
         private static void UpdateWeekly()
@@ -156,10 +177,10 @@ namespace UpdateSignMonday
             }
         }
 
-        //每天更新充值限额
-        private static void UpdateRechargeDayly()
+        //每天更新充值限额和每天花费金币数
+        private static void UpdateRechargeAndGoldDayly()
         {
-            var sql = "update common_config set recharge_phonefee_amount = '0'";
+            var sql = "update common_config set recharge_phonefee_amount = '0',expense_gold_daily = '0'";
             using (var session = NHibernateHelper.OpenSession())
             {
                 using (var transaction = session.BeginTransaction())

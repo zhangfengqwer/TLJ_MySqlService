@@ -8,13 +8,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_UserInfo_Game)]
     class GetOtherUserInfoHandler : BaseHandler
     {
-        public GetOtherUserInfoHandler()
-        {
-            Tag = Consts.Tag_UserInfo_Game;
-        }
-
         public override string OnResponse(string data)
         {
             OtherUserInfoReq defaultReq = null;
@@ -32,7 +28,7 @@ namespace TLJ_MySqlService.Handler
             string uid = defaultReq.uid;
             int isClientReq = defaultReq.isClientReq;
 
-            if (string.IsNullOrWhiteSpace(Tag) 
+            if (string.IsNullOrWhiteSpace(Tag)
                 || string.IsNullOrWhiteSpace(uid))
             {
                 MySqlService.log.Warn("字段有空");
@@ -68,18 +64,11 @@ namespace TLJ_MySqlService.Handler
                 {
                     //注册用户数据
                     userInfo = GetUserInfoHandler.AddUserInfo(user.Uid, user.Username);
-                   
-                    userGame = new UserGame()
-                    {
-                        Uid = user.Uid,
-                        AllGameCount = 0,
-                        MeiliZhi = 0,
-                        RunCount = 0,
-                        WinCount = 0
-                    };
 
+                    userGame = GetUserInfoHandler.AddUserGame(user.Uid);
 
-                    if (NHibernateHelper.userInfoManager.Add(userInfo) && NHibernateHelper.userGameManager.Add(userGame))
+                    if (NHibernateHelper.userInfoManager.Add(userInfo) &&
+                        NHibernateHelper.userGameManager.Add(userGame))
                     {
                         OperatorSuccess(userInfo, userGame, responseData);
                     }
@@ -130,7 +119,6 @@ namespace TLJ_MySqlService.Handler
             }
 
             responseData.Add("BuffData", JsonConvert.SerializeObject(userBuffJsonObjects));
-
         }
 
         //数据库操作失败

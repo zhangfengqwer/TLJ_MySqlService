@@ -10,13 +10,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_GetNotice)]
     class GetUseNoticeHandler : BaseHandler
     {
-        public GetUseNoticeHandler()
-        {
-            Tag = Consts.Tag_GetNotice;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;
@@ -47,7 +43,7 @@ namespace TLJ_MySqlService.Handler
             return _responseData.ToString();
         }
 
-        private void GetUseNoticeSql(string uid,JObject responseData)
+        private void GetUseNoticeSql(string uid, JObject responseData)
         {
             List<Notice> notices = NHibernateHelper.noticeManager.GetAll().ToList();
             List<UserNotice> userNotices = NHibernateHelper.userNoticeManager.GetListByUid(uid);
@@ -69,13 +65,12 @@ namespace TLJ_MySqlService.Handler
                         if (!NHibernateHelper.userNoticeManager.Add(userNotice))
                         {
 //                            OperatorFail(responseData);
-                            MySqlService.log.Warn("添加用户通知错误");
+                            MySqlService.log.Info($"添加用户通知错误:{userNotice.Uid},{userNotice.NoticeId},{userNotice.State}");
 //                            return;
                         }
                     }
                     userNotices = NHibernateHelper.userNoticeManager.GetListByUid(uid);
                 }
-               
             }
 
             for (int i = 0; i < notices.Count; i++)
@@ -101,7 +96,6 @@ namespace TLJ_MySqlService.Handler
                 }
             }
             OperatorSuccess(tempList, responseData);
-
         }
 
         //数据库操作成功

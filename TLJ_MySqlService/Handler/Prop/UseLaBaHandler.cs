@@ -8,13 +8,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_UseLaBa)]
     class UseLaBaHandler : BaseHandler
     {
-        public UseLaBaHandler()
-        {
-            Tag = Consts.Tag_UseLaBa;
-        }
-
         public override string OnResponse(string data)
         {
             UseLaBaReq defaultReqData = null;

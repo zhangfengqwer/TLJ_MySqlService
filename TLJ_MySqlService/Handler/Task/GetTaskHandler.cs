@@ -12,13 +12,9 @@ using Task = NhInterMySQL.Model.Task;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_GetTask)]
     class GetTaskHandler : BaseHandler
     {
-        public GetTaskHandler()
-        {
-            Tag = Consts.Tag_GetTask;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;
@@ -70,6 +66,7 @@ namespace TLJ_MySqlService.Handler
                     NHibernateHelper.userTaskManager.Add(userTask);
                 }
             }
+
             List<UserTaskJsonObject> userTaskJsonObjects = new List<UserTaskJsonObject>();
             UserTaskJsonObject userTaskJsonObject;
             for (int i = 0; i < userTasks.Count; i++)

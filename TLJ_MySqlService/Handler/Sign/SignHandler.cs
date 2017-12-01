@@ -8,13 +8,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_Sign)]
     class SignHandler : BaseHandler
     {
-        public SignHandler()
-        {
-            Tag = Consts.Tag_Sign;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;

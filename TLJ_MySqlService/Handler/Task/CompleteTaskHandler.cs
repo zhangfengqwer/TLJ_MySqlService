@@ -9,13 +9,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_CompleteTask)]
     class CompleteTaskHandler : BaseHandler
     {
-        public CompleteTaskHandler()
-        {
-            Tag = Consts.Tag_CompleteTask;
-        }
-
         public override string OnResponse(string data)
         {
             CompleteTaskReq completeReq = null;

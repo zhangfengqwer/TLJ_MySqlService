@@ -7,13 +7,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_GetShop)]
     class GetGoodsHandler : BaseHandler
     {
-        public GetGoodsHandler()
-        {
-            Tag = Consts.Tag_GetShop;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;

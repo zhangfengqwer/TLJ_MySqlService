@@ -8,13 +8,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_SetSecondPSW)]
     class SetUserSecondPSWHandler : BaseHandler
     {
-        public SetUserSecondPSWHandler()
-        {
-            Tag = Consts.Tag_SetSecondPSW;
-        }
-
         public override string OnResponse(string data)
         {
             SetUserSecondPSWReq defaultReq = null;

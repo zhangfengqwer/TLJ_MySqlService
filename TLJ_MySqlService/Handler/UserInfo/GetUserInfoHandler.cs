@@ -8,13 +8,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_UserInfo)]
     class GetUserInfoHandler : BaseHandler
     {
-        public GetUserInfoHandler()
-        {
-            Tag = Consts.Tag_UserInfo;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;
@@ -64,20 +60,7 @@ namespace TLJ_MySqlService.Handler
                 {
                     userInfo = AddUserInfo(user.Uid,user.Username);
 
-                    userGame = new UserGame()
-                    {
-                        Uid = user.Uid,
-                        AllGameCount = 0,
-                        MeiliZhi = 0,
-                        RunCount = 0,
-                        WinCount = 0,
-                        XianxianCDHigh = 0,
-                        XianxianCDMiddle = 0,
-                        XianxianCDPrimary = 0,
-                        XianxianJDHigh = 0,
-                        XianxianJDMiddle = 0,
-                        XianxianJDPrimary = 0
-                    };
+                    userGame = AddUserGame(user.Uid);
 
 
                     if (NHibernateHelper.userInfoManager.Add(userInfo) && NHibernateHelper.userGameManager.Add(userGame))
@@ -136,6 +119,26 @@ namespace TLJ_MySqlService.Handler
                 luckyValue = 0
             };
             return userInfo;
+        }
+        
+        //添加用户game数据
+        public static UserGame AddUserGame(string uid)
+        {
+            UserGame  userGame = new UserGame()
+            {
+                Uid = uid,
+                AllGameCount = 0,
+                MeiliZhi = 0,
+                RunCount = 0,
+                WinCount = 0,
+                XianxianCDHigh = 0,
+                XianxianCDMiddle = 0,
+                XianxianCDPrimary = 0,
+                XianxianJDHigh = 0,
+                XianxianJDMiddle = 0,
+                XianxianJDPrimary = 0
+            };
+            return userGame;
         }
 
         //数据库操作成功

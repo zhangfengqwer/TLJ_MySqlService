@@ -8,13 +8,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_ReadNotice)]
     class ReadNoticeHandler : BaseHandler
     {
-        public ReadNoticeHandler()
-        {
-            Tag = Consts.Tag_ReadNotice;
-        }
-
         public override string OnResponse(string data)
         {
             ReadNoticeReq readNoticeReq = null;

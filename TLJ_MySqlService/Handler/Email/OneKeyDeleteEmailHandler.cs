@@ -8,15 +8,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_OneKeyDeleteMail)]
     class OneKeyDeleteEmailHandler : BaseHandler
     {
-     
-
-        public OneKeyDeleteEmailHandler()
-        {
-            Tag = Consts.Tag_OneKeyDeleteMail;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;

@@ -8,15 +8,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_GetTurntable)]
     class GetTurnTableDataHandler : BaseHandler
     {
-       
-
-        public GetTurnTableDataHandler()
-        {
-            Tag = Consts.Tag_GetTurntable;
-        }
-
         public override string OnResponse(string data)
         {
             CommonReq defaultReq = null;

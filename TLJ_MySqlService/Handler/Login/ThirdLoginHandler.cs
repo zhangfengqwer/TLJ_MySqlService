@@ -4,16 +4,13 @@ using NhInterMySQL;
 using NhInterMySQL.Model;
 using System;
 using TLJCommon;
+using TLJ_MySqlService.Utils;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_Third_Login)]
     class ThirdLoginHandler : BaseHandler
     {
-       
-        public ThirdLoginHandler()
-        {
-            Tag = Consts.Tag_Third_Login;
-        }
         public override string OnResponse(string data)
         {
             ThirdLoginReq login = null;
@@ -121,6 +118,9 @@ namespace TLJ_MySqlService.Handler
         {
             responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
             responseData.Add(MyCommon.UID, user.Uid);
+
+            MySqlUtil.UpdateUserTask(user.Uid);
+            ProgressTaskHandler.ProgressTaskSql(208, user.Uid);
         }
 
         //数据库操作失败

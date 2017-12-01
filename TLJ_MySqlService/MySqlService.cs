@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.ServiceProcess;
 using System.Text;
 using NhInterMySQL;
@@ -56,7 +57,6 @@ namespace TLJ_MySqlService
             {
                 InitLog();
                 InitHandler();
-                log.Info("Handler初始化完成");
                 InitCommomData();
                 log.Info(
                     $"初始数据完成:PvpGameRooms:{PvpGameRooms.Count},ShopData:{ShopData.Count},SignConfigs:{SignConfigs.Count},TurnTables:{TurnTables.Count}");
@@ -94,126 +94,34 @@ namespace TLJ_MySqlService
         /// </summary>
         private void InitHandler()
         {
-            LoginHandler loginHandler = new LoginHandler();
-            handlerDic.Add(loginHandler.Tag, loginHandler);
+            Assembly assembly = typeof(MySqlService).Assembly;
 
-            ThirdLoginHandler thirdLoginHandler = new ThirdLoginHandler();
-            handlerDic.Add(thirdLoginHandler.Tag, thirdLoginHandler);
+            Type[] types = assembly.GetTypes();
 
-            RegisterHandler registerHandler = new RegisterHandler();
-            handlerDic.Add(registerHandler.Tag, registerHandler);
+            foreach (var type in types)
+            {
+                var attributes = type.GetCustomAttributes(typeof(HandlerAttribute) ,false);
 
-            GetSignRecordHandler getSignRecordHandler = new GetSignRecordHandler();
-            handlerDic.Add(getSignRecordHandler.Tag, getSignRecordHandler);
-
-            SignHandler signHandler = new SignHandler();
-            handlerDic.Add(signHandler.Tag, signHandler);
-
-            GetUserInfoHandler getUserInfoHandler = new GetUserInfoHandler();
-            handlerDic.Add(getUserInfoHandler.Tag, getUserInfoHandler);
-
-            GetEmailHandler getEmailHandler = new GetEmailHandler();
-            handlerDic.Add(getEmailHandler.Tag, getEmailHandler);
-
-            AddEmailHandler addEmailHandler = new AddEmailHandler();
-            handlerDic.Add(addEmailHandler.Tag, addEmailHandler);
-
-            ReadEmailHandler readEmailHandler = new ReadEmailHandler();
-            handlerDic.Add(readEmailHandler.Tag, readEmailHandler);
-
-            DeleteEmailHandler deleteEmailHandler = new DeleteEmailHandler();
-            handlerDic.Add(deleteEmailHandler.Tag, deleteEmailHandler);
-
-            OneKeyReadEmailHandler OneKeyReadEmailHandler = new OneKeyReadEmailHandler();
-            handlerDic.Add(OneKeyReadEmailHandler.Tag, OneKeyReadEmailHandler);
-
-            OneKeyDeleteEmailHandler OneKeyDeleteEmailHandler = new OneKeyDeleteEmailHandler();
-            handlerDic.Add(OneKeyDeleteEmailHandler.Tag, OneKeyDeleteEmailHandler);
-
-            GetUserBagHandler getUserBagHandler = new GetUserBagHandler();
-            handlerDic.Add(getUserBagHandler.Tag, getUserBagHandler);
-
-            //使用道具
-            UsePropHandler usePropHandler = new UsePropHandler();
-            handlerDic.Add(usePropHandler.Tag, usePropHandler);
-
-            //使用话费
-            UseHuaFeiHandler useHuaFeiHandler = new UseHuaFeiHandler();
-            handlerDic.Add(useHuaFeiHandler.Tag, useHuaFeiHandler);
-
-            GetUseNoticeHandler getUseNoticeHandler = new GetUseNoticeHandler();
-            handlerDic.Add(getUseNoticeHandler.Tag, getUseNoticeHandler);
-
-            ReadNoticeHandler readNoticeHandler = new ReadNoticeHandler();
-            handlerDic.Add(readNoticeHandler.Tag, readNoticeHandler);
-
-            GetGoodsHandler getGoodsHandler = new GetGoodsHandler();
-            handlerDic.Add(getGoodsHandler.Tag, getGoodsHandler);
-
-            BuyGoodsHandler buyGoodsHandler = new BuyGoodsHandler();
-            handlerDic.Add(buyGoodsHandler.Tag, buyGoodsHandler);
-
-            GetTaskHandler getTaskHandler = new GetTaskHandler();
-            handlerDic.Add(getTaskHandler.Tag, getTaskHandler);
-
-            CompleteTaskHandler completeTaskHandler = new CompleteTaskHandler();
-            handlerDic.Add(completeTaskHandler.Tag, completeTaskHandler);
-
-            ProgressTaskHandler progressTaskHandler = new ProgressTaskHandler();
-            handlerDic.Add(progressTaskHandler.Tag, progressTaskHandler);
-
-            GetOtherUserInfoHandler getOtherUserInfoHandler = new GetOtherUserInfoHandler();
-            handlerDic.Add(getOtherUserInfoHandler.Tag, getOtherUserInfoHandler);
-
-            RealNameHandler realNameHandler = new RealNameHandler();
-            handlerDic.Add(realNameHandler.Tag, realNameHandler);
-
-            UseLaBaHandler useLaBaHandler = new UseLaBaHandler();
-            handlerDic.Add(useLaBaHandler.Tag, useLaBaHandler);
-
-            SendSmsHandler sendSmsHandler = new SendSmsHandler();
-            handlerDic.Add(sendSmsHandler.Tag, sendSmsHandler);
-
-            CheckSmsHandler checkSmsHandler = new CheckSmsHandler();
-            handlerDic.Add(checkSmsHandler.Tag, checkSmsHandler);
-
-            GetPVPGameDataHandler getPVPGameDataHandler = new GetPVPGameDataHandler();
-            handlerDic.Add(getPVPGameDataHandler.Tag, getPVPGameDataHandler);
-
-            GetRankHandler getRankHandler = new GetRankHandler();
-            handlerDic.Add(getRankHandler.Tag, getRankHandler);
-
-            ChangeUserWealth changeUserWealth = new ChangeUserWealth();
-            handlerDic.Add(changeUserWealth.Tag, changeUserWealth);
-
-            GetRobotHandler getRobotHandler = new GetRobotHandler();
-            handlerDic.Add(getRobotHandler.Tag, getRobotHandler);
-
-            RecordUserGameDataHandler recordUserGameDataHandler = new RecordUserGameDataHandler();
-            handlerDic.Add(recordUserGameDataHandler.Tag, recordUserGameDataHandler);
-
-            UseBuffPropHandler useBuffPropHandler = new UseBuffPropHandler();
-            handlerDic.Add(useBuffPropHandler.Tag, useBuffPropHandler);
-
-            GetWXUserInfoHandler getWXUserInfoHandler = new GetWXUserInfoHandler();
-            handlerDic.Add(getWXUserInfoHandler.Tag, getWXUserInfoHandler);
-
-            BuyYuanBaoHandler buyYuanBaoHandler = new BuyYuanBaoHandler();
-            handlerDic.Add(buyYuanBaoHandler.Tag, buyYuanBaoHandler);
-
-            SetUserSecondPSWHandler setUserSecondPSWHandler = new SetUserSecondPSWHandler();
-            handlerDic.Add(setUserSecondPSWHandler.Tag, setUserSecondPSWHandler);
-
-            GetTurnTableDataHandler getTurnTableDataHandler = new GetTurnTableDataHandler();
-            handlerDic.Add(getTurnTableDataHandler.Tag, getTurnTableDataHandler);
-
-            UseTurnTableHandler useTurnTableHandler = new UseTurnTableHandler();
-            handlerDic.Add(useTurnTableHandler.Tag, useTurnTableHandler);
+                foreach (var attr in attributes)
+                {
+                    HandlerAttribute handlerAttribute = (HandlerAttribute)attr;
+                    object obj = Activator.CreateInstance(type);
+                    if (!handlerDic.ContainsKey(handlerAttribute.Tag))
+                    {
+                        handlerDic.Add(handlerAttribute.Tag, (BaseHandler) obj);
+                    }
+                    else
+                    {
+                        log.Warn($"key值重复:{handlerAttribute.Tag}");
+                    }
+                }
+            }
+            log.Info($"handlerCount:{handlerDic.Count}");
         }
 
         public void InitLog()
         {
-            log.Info("1");
+            log.Info("log启动");
         }
 
         private void InitService()
@@ -374,9 +282,9 @@ namespace TLJ_MySqlService
                 log.Warn("传入的值没有TAG");
                 return;
             }
+
             BaseHandler baseHandler;
-            handlerDic.TryGetValue(tag.ToString(), out baseHandler);
-            if (baseHandler != null)
+            if(handlerDic.TryGetValue(tag.ToString(), out baseHandler))
             {
                 try
                 {
@@ -384,9 +292,6 @@ namespace TLJ_MySqlService
                     if (onRequest != null)
                     {
                         sendMessage(receiveObj.m_connId, onRequest);
-                    }
-                    else
-                    {
                     }
                 }
                 catch (Exception e)
@@ -413,7 +318,7 @@ namespace TLJ_MySqlService
             }
             else
             {
-                log.Error("发送失败:" + bytes.Length);
+                log.Error("发送失败,数据长度:" + bytes.Length);
             }
         }
     }

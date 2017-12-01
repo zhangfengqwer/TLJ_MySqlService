@@ -11,13 +11,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_GetBag)]
     class GetUserBagHandler : BaseHandler
     {
-        public GetUserBagHandler()
-        {
-            Tag = Consts.Tag_GetBag;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;

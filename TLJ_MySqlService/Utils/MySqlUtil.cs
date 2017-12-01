@@ -5,11 +5,101 @@ using System.Text;
 using System.Threading.Tasks;
 using NhInterMySQL;
 using NhInterMySQL.Model;
+using TLJ_MySqlService.Handler;
+using Task = NhInterMySQL.Model.Task;
 
 namespace TLJ_MySqlService.Utils
 {
     public class MySqlUtil
     {
+        public static void UpdateUserTask(string uid)
+        {
+            List<Task> tasks = NHibernateHelper.taskManager.GetAll().ToList();
+            List<UserTask> userTasks = NHibernateHelper.userTaskManager.GetListByUid(uid);
+            if (tasks.Count != userTasks.Count)
+            {
+                userTasks.Clear();
+                for (int i = 0; i < tasks.Count; i++)
+                {
+                    Task task = tasks[i];
+                    UserTask userTask = new UserTask()
+                    {
+                        isover = 0,
+                        progress = 0,
+                        Uid = uid,
+                        task_id = task.task_id,
+                    };
+                    userTasks.Add(userTask);
+                    NHibernateHelper.userTaskManager.Add(userTask);
+                }
+            }
+        }
+
+        public static void ConfigExpenseGold(string uid, int goldExpense)
+        {
+            var config = NHibernateHelper.commonConfigManager.GetByUid(uid);
+            if (config == null)
+            {
+                config = ModelFactory.CreateConfig(uid);
+            }
+            config.expense_gold_daily += goldExpense;
+            NHibernateHelper.commonConfigManager.Update(config);
+
+            UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask(uid, 216);
+            if (userTask == null)
+            {
+                var user = NHibernateHelper.userManager.GetByUid(uid);
+                if (user == null)
+                {
+                    MySqlService.log.Error($"改用户为注册{uid}");
+                }
+                else
+                {
+                    if (user.IsRobot == 1)
+                    {
+                        MySqlService.log.Info($"机器人没有任务{uid}");
+                    }
+                    else
+                    {
+                        MySqlService.log.Error($"没有改用户任务{uid}，216");
+                    }
+                }
+                
+              
+            }
+            else
+            {
+                if (userTask.isover == 0)
+                {
+                    NhInterMySQL.Model.Task task = NHibernateHelper.taskManager.GetTask(216);
+                    if (task.target - userTask.progress >= 1)
+                    {
+                        //任务进度加一
+                        userTask.progress += goldExpense;
+                        if (userTask.progress > 500) userTask.progress = 500;
+                        if (NHibernateHelper.userTaskManager.Update(userTask))
+                        {
+                            MySqlService.log.Info("更新每日花费任务成功");
+                        }
+                        else
+                        {
+                            MySqlService.log.Info("更新任务失败:" + uid);
+                        }
+                    }
+                    else
+                    {
+                        MySqlService.log.Info("玩家任务已完成，请领取奖励:" + uid + " ");
+                    }
+                }
+                else
+                {
+                    MySqlService.log.Info("任务奖励已领取:" + uid);
+                }
+            }
+
+        }
+
+
         /// <summary>
         /// 添加道具  prop为如下格式："1:123;2:123;106:2"
         /// </summary>
@@ -70,8 +160,8 @@ namespace TLJ_MySqlService.Utils
                     }
                     else
                     {
-                        string msg = $"改变了{propNum}金币";
-                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+//                        string msg = $"改变了{propNum}金币";
+//                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                     }
                 }
                 else
@@ -93,8 +183,8 @@ namespace TLJ_MySqlService.Utils
                     }
                     else
                     {
-                        string msg = $"改变了{propNum}元宝";
-                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+//                        string msg = $"改变了{propNum}元宝";
+//                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                     }
                 }
                 else
@@ -115,8 +205,8 @@ namespace TLJ_MySqlService.Utils
                     }
                     else
                     {
-                        string msg = $"改变了{propNum}徽章";
-                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+//                        string msg = $"改变了{propNum}徽章";
+//                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                     }
                 }
                 else
@@ -143,8 +233,8 @@ namespace TLJ_MySqlService.Utils
                     }
                     else
                     {
-                        string msg = $"改变了{propId}道具,{propNum}个";
-                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+//                        string msg = $"改变了{propId}道具,{propNum}个";
+//                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                     }
                 }
                 else
@@ -159,8 +249,8 @@ namespace TLJ_MySqlService.Utils
                         }
                         else
                         {
-                            string msg = $"改变了{propId}道具,{propNum}个";
-                            LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+//                            string msg = $"改变了{propId}道具,{propNum}个";
+//                            LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                         }
                     }
                     else

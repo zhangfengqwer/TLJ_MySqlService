@@ -5,16 +5,13 @@ using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
 using TLJCommon;
+using TLJ_MySqlService.Utils;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_BuyGoods)]
     class BuyGoodsHandler : BaseHandler
     {
-        public BuyGoodsHandler()
-        {
-            Tag = Consts.Tag_BuyGoods;
-        }
-
         public override string OnResponse(string data)
         {
             BuyGoodReq defaultReqData = null;
@@ -32,7 +29,9 @@ namespace TLJ_MySqlService.Handler
             string uid = defaultReqData.uid;
             int goodId = defaultReqData.goods_id;
             int num = defaultReqData.goods_num;
-            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || num == 0)
+            int money_type = defaultReqData.money_type;
+            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || num == 0 || money_type < 1 ||
+                money_type > 4)
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -42,11 +41,11 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.TAG, Tag);
             _responseData.Add(MyCommon.CONNID, ConnId);
 
-            BuyGoodsSql(goodId, num, uid, _responseData);
+            BuyGoodsSql(goodId, num, uid,money_type, _responseData);
             return _responseData.ToString();
         }
 
-        private void BuyGoodsSql(int goodId, int num, string uid, JObject responseData)
+        private void BuyGoodsSql(int goodId, int num, string uid, int moneyType, JObject responseData)
         {
             Goods goods = NHibernateHelper.goodsManager.GetGoods(goodId);
             bool IsSuccess = false;
@@ -57,17 +56,16 @@ namespace TLJ_MySqlService.Handler
                     //购买的是金币
                     case 1:
                         MySqlService.log.Info("购买的是金币");
-                        IsSuccess = BuyJin(goods, num, uid);
+                        IsSuccess = BuyJin(goods, num, uid, moneyType);
                         break;
                     //购买的是元宝
                     case 2:
-                        MySqlService.log.Warn("购买的是元宝,接口错误："+uid);
-//                        IsSuccess = BuyYuanbao(goods, num, uid);
+                        MySqlService.log.Warn("购买的是元宝,接口错误：" + uid);
                         break;
                     //购买的是道具
                     case 3:
                         MySqlService.log.Info("购买的是道具");
-                        IsSuccess = BuyProp(goods, num, uid);
+                        IsSuccess = BuyProp(goods, num, uid, moneyType);
                         break;
                 }
             }
@@ -101,28 +99,51 @@ namespace TLJ_MySqlService.Handler
         }
 
         //购买金币
-        private bool BuyJin(Goods goods, int num, string uid)
+        private bool BuyJin(Goods goods, int num, string uid, int moneyType)
         {
             bool IsSuccess = false;
             int sumPrice = goods.price * num;
             UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
-            //只能用元宝
-            if (goods.money_type == 2)
+
+            switch (moneyType)
             {
-                if (userInfo.YuanBao >= sumPrice)
-                {
-                    userInfo.YuanBao -= sumPrice;
-                    //先扣钱,添加金币
-                    MySqlService.log.Info("先扣钱,添加金币");
-                    string temp = "";
-                    if (NHibernateHelper.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, out temp))
+                //元宝购买
+                case 2:
+                    if (userInfo.YuanBao >= sumPrice)
                     {
-                        string s = string.Format("花费{0}元宝，购买了{1}个{2}", sumPrice, num,goods.goods_name);
-                        LogUtil.Log(uid, MyCommon.OpType.BUYGOLD, s);
-                        IsSuccess = true;
+                        userInfo.YuanBao -= sumPrice;
+                        //先扣钱,添加金币
+                        MySqlService.log.Info("先扣钱,添加金币");
+                        string temp = "";
+                        if (NHibernateHelper.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, out temp))
+                        {
+                            string s = string.Format("花费{0}元宝，购买了{1}个{2}", sumPrice, num, goods.goods_name);
+                            LogUtil.Log(uid, MyCommon.OpType.BUYGOLD, s);
+                            IsSuccess = true;
+                        }
                     }
-                }
+                    break;
+                case 4:
+                    sumPrice = goods.price2 * num;
+
+                    if (userInfo.Medel >= sumPrice)
+                    {
+                        userInfo.Medel -= sumPrice;
+                        //先扣钱,添加金币
+                        MySqlService.log.Info("先扣徽章,添加金币");
+                        string temp = "";
+                        if (NHibernateHelper.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, out temp))
+                        {
+                            string s = string.Format("花费{0}徽章，购买了{1}个{2}", sumPrice, num, goods.goods_name);
+                            LogUtil.Log(uid, MyCommon.OpType.BUYGOLD, s);
+                            IsSuccess = true;
+                        }
+                    }
+                    break;
             }
+
+
+        
             return IsSuccess;
         }
 
@@ -160,19 +181,25 @@ namespace TLJ_MySqlService.Handler
             return false;
         }
 
-        private bool BuyProp(Goods goods, int num, string uid)
+        private bool BuyProp(Goods goods, int num, string uid, int moneyType)
         {
             bool IsSuccess = false;
             //需要付的价格
             int sumPrice = goods.price * num;
             UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
-            switch (goods.money_type)
+           
+            switch (moneyType)
             {
                 //金币付款
                 case 1:
+                    MySqlUtil.ConfigExpenseGold(uid, sumPrice);
+
+
+
                     if (userInfo.Gold >= sumPrice)
                     {
                         userInfo.Gold -= sumPrice;
+
                         //先扣钱,添加道具
                         if (NHibernateHelper.userInfoManager.Update(userInfo))
                         {
@@ -210,8 +237,29 @@ namespace TLJ_MySqlService.Handler
                         }
                     }
                     break;
-                //人民币付款
-                case 3:
+                //徽章付款
+                case 4:
+                    sumPrice = goods.price2 * num;
+
+                    if (userInfo.Medel >= sumPrice)
+                    {
+                        userInfo.Medel -= sumPrice;
+                        //先扣钱,添加道具
+                        if (NHibernateHelper.userInfoManager.Update(userInfo))
+                        {
+                            for (int i = 0; i < num; i++)
+                            {
+                                if (!AddProp(goods, uid))
+                                {
+                                    return false;
+                                }
+                            }
+                            string s = string.Format("花费{0}徽章，购买了{1}个{2}", sumPrice, num, goods.goods_name);
+                            LogUtil.Log(uid, MyCommon.OpType.BUYPROP, s);
+                            IsSuccess = true;
+                        }
+                    }
+
                     break;
             }
             return IsSuccess;

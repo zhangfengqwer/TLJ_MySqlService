@@ -8,17 +8,13 @@ using Newtonsoft.Json.Linq;
 using NhInterMySQL;
 using TLJCommon;
 using NhInterMySQL.Model;
+using TLJ_MySqlService.Utils;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_QuickRegister)]
     class RegisterHandler : BaseHandler
     {
-      
-        public RegisterHandler()
-        {
-            Tag = Consts.Tag_QuickRegister;
-        }
-
         public override string OnResponse(string data)
         {
             LoginReq login = null;
@@ -77,11 +73,18 @@ namespace TLJ_MySqlService.Handler
                     State = 0,
                     CreateTime = DateTime.Now,
                 };
-
+                    
                 //注册用户数据 并 注册新手邮箱
                 if (NHibernateHelper.userManager.Add(user)&& NHibernateHelper.userEmailManager.Add(userEmail))
                 {
                     OperatorSuccess(user, responseData);
+
+                    SendEmailUtil.SendEmail(uid, "“疯狂升级”新手指引",
+                        @"欢迎来到疯狂升级，本游戏有多种玩法供您选择，更有比赛场可以获取丰厚大奖噢！详细规则可在“关于-游戏规则”中查看，祝您游戏愉快~",
+                        "");
+                    SendEmailUtil.SendEmail(uid, "“疯狂升级”游戏福利",
+                        @"每日登陆可领取签到奖励，通过游戏可获得抽奖机会，完成任务以达成成就，比赛场中获得胜利有丰厚大礼，更多精彩内容等你来玩噢~",
+                        "");
                 }
                 else
                 {
@@ -95,6 +98,9 @@ namespace TLJ_MySqlService.Handler
         {
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
             responseData.Add(MyCommon.UID, user.Uid);
+
+            MySqlUtil.UpdateUserTask(user.Uid);
+            ProgressTaskHandler.ProgressTaskSql(208, user.Uid);
         }
 
         //数据库操作失败

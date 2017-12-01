@@ -73,6 +73,7 @@
     <Compile Include="Handler\Email\OneKeyReadEmailHandler.cs" />
     <Compile Include="Handler\Email\ReadEmailHandler.cs" />
     <Compile Include="Handler\Email\GetEmailHandler.cs" />
+    <Compile Include="Handler\Game\GetGameOverHandler.cs" />
     <Compile Include="Handler\TurnTable\UseTurnTableHandler.cs" />
     <Compile Include="Handler\TurnTable\GetTurnTableDataHandler.cs" />
     <Compile Include="Handler\Game\RecordUserGameDataHandler.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Handler\Prop\GetUserBagHandler.cs" />
     <Compile Include="Handler\Prop\UseBuffPropHandler.cs" />
     <Compile Include="Handler\Web\GetWXUserInfoHandler.cs" />
+    <Compile Include="Model\Object\HandlerAttribute.cs" />
     <Compile Include="Model\Request\BuyYuanBaoReq.cs" />
     <Compile Include="Model\Request\OtherUserInfoReq.cs" />
     <Compile Include="Model\Request\SetUserSecondPSWReq.cs" />
@@ -158,7 +160,6 @@
     <Compile Include="Utils\MyCommon.cs" />
     <Compile Include="Utils\MySqlUtil.cs" />
     <Compile Include="Utils\NetConfig.cs" />
-    <Compile Include="Utils\VipUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config">

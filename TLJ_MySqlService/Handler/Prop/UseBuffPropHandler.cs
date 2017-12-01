@@ -8,13 +8,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_UseBuff)]
     class UseBuffPropHandler : BaseHandler
     {
-        public UseBuffPropHandler()
-        {
-            Tag = Consts.Tag_UseBuff;
-        }
-
         public override string OnResponse(string data) 
         {
             UsePropReq defaultReqData;

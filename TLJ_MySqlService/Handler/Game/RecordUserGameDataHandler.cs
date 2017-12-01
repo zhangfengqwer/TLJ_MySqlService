@@ -8,13 +8,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_RecordUserGameData)]
     class RecordUserGameDataHandler : BaseHandler
     {
-        public RecordUserGameDataHandler()
-        {
-            Tag = Consts.Tag_RecordUserGameData;
-        }
-
         public override string OnResponse(string data)
         {
             RecordUserDataReq defaultReq = null;

@@ -7,14 +7,10 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_DeleteMail)]
     class DeleteEmailHandler : BaseHandler
     {
         private int connId;
-        public DeleteEmailHandler()
-        {
-            Tag = Consts.Tag_DeleteMail;
-        }
-
         public override string OnResponse(string data)
         {
             ReadEmailReq readEmailReq = null;

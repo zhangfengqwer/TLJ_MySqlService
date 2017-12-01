@@ -10,13 +10,9 @@ using TLJ_MySqlService.Utils;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_UseTurntable)]
     class UseTurnTableHandler : BaseHandler
     {
-        public UseTurnTableHandler()
-        {
-            Tag = Consts.Tag_UseTurntable;
-        }
-
         public override string OnResponse(string data)
         {
             CommonReq defaultReq = null;
@@ -43,6 +39,7 @@ namespace TLJ_MySqlService.Handler
             JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, Tag);
             _responseData.Add(MyCommon.CONNID, connId);
+            _responseData.Add(MyCommon.UID, uid);
             _responseData.Add("type", type);
 
             //得到pvp数据

@@ -9,13 +9,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_UseProp)]
     class UsePropHandler : BaseHandler
     {
-        public UsePropHandler()
-        {
-            Tag = Consts.Tag_UseProp;
-        }
-
         public override string OnResponse(string data) 
         {
             UsePropReq defaultReqData;

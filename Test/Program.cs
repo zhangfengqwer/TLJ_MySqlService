@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NhInterMySQL.Model;
 
 namespace Test
 {
@@ -19,8 +20,18 @@ namespace Test
 
         static void Main(string[] args)
         {
-            //            Console.WriteLine(sb.ToString());
-            NHibernateHelper.goodsManager.GetAll();
+
+            UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask("6509453643", 208);
+            Console.Write(userTask.progress);
+
+//            foreach (var userTask in NHibernateHelper.userTaskManager.GetAll())
+//            {
+//                if (userTask.task_id == 219)
+//                {
+//                    NHibernateHelper.userTaskManager.Delete(userTask);
+//                }
+//
+//            }
             Console.ReadKey();
         }
 

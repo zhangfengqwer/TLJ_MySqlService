@@ -7,13 +7,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_WeChat_UserInfo)]
     class GetWXUserInfoHandler : BaseHandler
     {
-        public GetWXUserInfoHandler()
-        {
-            Tag = Consts.Tag_WeChat_UserInfo;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;

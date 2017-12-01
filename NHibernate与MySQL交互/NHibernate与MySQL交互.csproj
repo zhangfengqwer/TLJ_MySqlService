@@ -63,6 +63,7 @@
     <Compile Include="Model\TurnTable.cs" />
     <Compile Include="Model\UserRealName.cs" />
     <Compile Include="Model\MyLog.cs" />
+    <Compile Include="Model\UserRecharge.cs" />
     <Compile Include="Model\UserTask.cs" />
     <Compile Include="Model\Task.cs" />
     <Compile Include="Model\UserGame.cs" />
@@ -74,6 +75,8 @@
     <Compile Include="Model\User.cs" />
     <Compile Include="NHibernateHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\ModelFactory.cs" />
+    <Compile Include="Utils\SendEmailUtil.cs" />
     <Compile Include="Utils\UidUtil.cs" />
     <Compile Include="Utils\VipUtil.cs" />
   </ItemGroup>
@@ -81,6 +84,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Mappings\UserRecharge.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mappings\TurnTable.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

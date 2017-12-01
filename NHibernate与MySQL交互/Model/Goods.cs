@@ -6,6 +6,7 @@
         public virtual int goods_type { set; get; }
         public virtual string props { set; get; }
         public virtual string goods_name { set; get; }
+        public virtual string extra_reward { set; get; }
         public virtual int price { set; get; }
         public virtual int price2 { set; get; }
         public virtual int money_type { set; get; }

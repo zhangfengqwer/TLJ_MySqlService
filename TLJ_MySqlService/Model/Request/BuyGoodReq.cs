@@ -12,4 +12,5 @@ public class BuyGoodReq
     public string uid;
     public int goods_id;
     public int goods_num;
+    public int money_type;
 }

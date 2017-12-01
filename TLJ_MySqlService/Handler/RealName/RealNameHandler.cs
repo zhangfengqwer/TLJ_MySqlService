@@ -8,13 +8,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_RealName)]
     class RealNameHandler : BaseHandler
     {
-        public RealNameHandler()
-        {
-            Tag = Consts.Tag_RealName;
-        }
-
         public override string OnResponse(string data)
         {
             RealNameReq defaultReqData = null;

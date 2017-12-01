@@ -19,9 +19,11 @@
         public static readonly string RECHARGE_PHONEFEE = "recharge_phonefee";
         public static readonly string VIP_ONCE_REWARD = "vip_once_reward";
         public static readonly string CHANGE_WEALTH = "change_wealth";
+        public static readonly string WECHAT_LOGIN_GIFT = "wechat_login_gift";
+        public static readonly string EXTRA_YUANBAO = "extra_yuanbao";
     }
 
-    public static string Tag_Login = "Login";
+    public const string Tag_Login = "Login";
     public static string Tag_QuickRegister = "QuickRegister";
     public static string Tag_Sign = "Sign";
     public static readonly string ACCOUNT = "account";

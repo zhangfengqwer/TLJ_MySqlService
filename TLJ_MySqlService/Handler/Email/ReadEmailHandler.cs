@@ -8,13 +8,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_ReadMail)]
     class ReadEmailHandler : BaseHandler
     {
-        public ReadEmailHandler()
-        {
-            Tag = Consts.Tag_ReadMail;
-        }
-
         public override string OnResponse(string data)
         {
             ReadEmailReq readEmailReq = null;

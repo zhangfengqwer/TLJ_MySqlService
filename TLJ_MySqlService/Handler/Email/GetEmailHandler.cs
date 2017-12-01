@@ -9,14 +9,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_GetMail)]
     class GetEmailHandler : BaseHandler
     {
-       
-        public GetEmailHandler()
-        {
-            Tag = Consts.Tag_GetMail;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;

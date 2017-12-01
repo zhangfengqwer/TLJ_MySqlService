@@ -9,13 +9,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
-    class ProgressTaskHandler : BaseHandler
+    [Handler(Consts.Tag_ProgressTask)]
+    public class ProgressTaskHandler : BaseHandler
     {
-        public ProgressTaskHandler()
-        {
-            Tag = Consts.Tag_ProgressTask;
-        }
-
         public override string OnResponse(string data)
         {
             CompleteTaskReq completeReq = null;
@@ -34,7 +30,7 @@ namespace TLJ_MySqlService.Handler
             int task_id = completeReq.task_id;
             if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || task_id < 0)
             {
-                MySqlService.log.Warn("字段有空");
+                MySqlService.log.Warn($"字段有空:{data}");
                 return null;
             }
 
@@ -43,12 +39,12 @@ namespace TLJ_MySqlService.Handler
             return null;
         }
 
-        private void ProgressTaskSql(int task_id, string uid)
+        public static void ProgressTaskSql(int task_id, string uid)
         {
             UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask(uid, task_id);
             if (userTask == null)
             {
-                MySqlService.log.Warn($"没有该用户的任务{uid}");
+                MySqlService.log.Warn($"没有该用户的任务{uid},task_id:{task_id}");
             }
             else
             {
@@ -65,12 +61,12 @@ namespace TLJ_MySqlService.Handler
                         }
                         else
                         {
-                            MySqlService.log.Info("更新任务失败:" + uid);
+                            MySqlService.log.Info("更新任务失败:" + uid + task_id);
                         }
                     }
                     else
                     {
-                        MySqlService.log.Info("玩家任务已完成，请领取奖励:" + uid + " " + Tag);
+                        MySqlService.log.Info("玩家任务已完成，请领取奖励:" + uid);
                     }
                 }
                 else

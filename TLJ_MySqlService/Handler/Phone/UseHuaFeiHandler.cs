@@ -10,13 +10,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_UseHuaFei)]
     class UseHuaFeiHandler : BaseHandler
     {
-        public UseHuaFeiHandler()
-        {
-            Tag = Consts.Tag_UseHuaFei;
-        }
-
         public override string OnResponse(string data)
         {
             UseHuaFeiReq defaultReqData;
@@ -141,12 +137,7 @@ namespace TLJ_MySqlService.Handler
                         CommonConfig commonConfig = NHibernateHelper.commonConfigManager.GetByUid(uid);
                         if (commonConfig == null)
                         {
-                            commonConfig = new CommonConfig()
-                            {
-                                Uid = uid,
-                                recharge_phonefee_amount = 0,
-                            };
-                            NHibernateHelper.commonConfigManager.Add(commonConfig);
+                            commonConfig = ModelFactory.CreateConfig(uid);
                         }
                         //限制充值数量
                         commonConfig.recharge_phonefee_amount += Convert.ToInt32(amount);

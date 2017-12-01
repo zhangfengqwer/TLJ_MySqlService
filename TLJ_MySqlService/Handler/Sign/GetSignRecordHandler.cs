@@ -12,13 +12,9 @@ using NhInterMySQL.Model;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_GetSignRecord)]
     class GetSignRecordHandler : BaseHandler
     {
-        public GetSignRecordHandler()
-        {
-            Tag = Consts.Tag_GetSignRecord;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;

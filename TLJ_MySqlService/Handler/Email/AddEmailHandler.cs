@@ -4,16 +4,11 @@ using NhInterMySQL;
 using NhInterMySQL.Model;
 using System;
 using TLJCommon;
-
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_SendMailToUser)]
     class AddEmailHandler : BaseHandler
     {
-        public AddEmailHandler()
-        {
-            Tag = Consts.Tag_SendMailToUser;
-        }
-
         public override string OnResponse(string data)
         {
             AddEmailReq defaultReq = null;

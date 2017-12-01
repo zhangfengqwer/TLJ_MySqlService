@@ -6,13 +6,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_ChangeUserWealth)]
     class ChangeUserWealth : BaseHandler
     {
-        public ChangeUserWealth()
-        {
-            Tag = Consts.Tag_ChangeUserWealth;
-        }
-
         public override string OnResponse(string data) 
         {
             AddPropReq defaultReqData;

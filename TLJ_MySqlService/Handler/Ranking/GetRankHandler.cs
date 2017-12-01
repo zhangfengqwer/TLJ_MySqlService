@@ -9,14 +9,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_GetRank)]
     class GetRankHandler : BaseHandler
     {
-
-        public GetRankHandler()
-        {
-            Tag = Consts.Tag_GetRank;
-        }
-
         public override string OnResponse(string data)
         {
             CommonReq defaultReqData = null;

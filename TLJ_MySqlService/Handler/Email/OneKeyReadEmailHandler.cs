@@ -9,15 +9,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_OneKeyReadMail)]
     class OneKeyReadEmailHandler : BaseHandler
     {
-      
-
-        public OneKeyReadEmailHandler()
-        {
-            Tag = Consts.Tag_OneKeyReadMail;
-        }
-
         public override string OnResponse(string data)
         {
             DefaultReq defaultReq = null;

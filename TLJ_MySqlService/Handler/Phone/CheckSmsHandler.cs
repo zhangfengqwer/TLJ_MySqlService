@@ -10,13 +10,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_CheckSMS)]
     class CheckSmsHandler : BaseHandler
     {
-        public CheckSmsHandler()
-        {
-            Tag = Consts.Tag_CheckSMS;
-        }
-
         public override string OnResponse(string data)
         {
             CheckSmsReq defaultReqData = null;

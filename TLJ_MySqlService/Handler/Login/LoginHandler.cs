@@ -3,17 +3,16 @@ using Newtonsoft.Json.Linq;
 using NhInterMySQL;
 using NhInterMySQL.Model;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using TLJCommon;
+using TLJ_MySqlService.Utils;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_Login)]
     class LoginHandler : BaseHandler
     {
-       
-        public LoginHandler()
-        {
-            Tag = Consts.Tag_Login;
-        }
         public override string OnResponse(string data)
         {
             LoginReq login = null;
@@ -23,7 +22,7 @@ namespace TLJ_MySqlService.Handler
             }
             catch (Exception e)
             {
-                MySqlService.log.Warn("传入的参数有误");
+                MySqlService.log.Warn("传入的参数有误：" + e);
                 return null;
             }
 
@@ -32,13 +31,14 @@ namespace TLJ_MySqlService.Handler
             string _username = login.account;
             string _userpassword = login.password;
             int passwordtype = login.passwordtype;
-            if (string.IsNullOrWhiteSpace(_tag) || string.IsNullOrWhiteSpace(_username) ||  string.IsNullOrWhiteSpace(_userpassword))
+            if (string.IsNullOrWhiteSpace(_tag) || string.IsNullOrWhiteSpace(_username) ||
+                string.IsNullOrWhiteSpace(_userpassword))
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
             }
             //传给客户端的数据
-            JObject _responseData; _responseData = new JObject();
+            JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, _tag);
             _responseData.Add("passwordtype", passwordtype);
 
@@ -46,25 +46,43 @@ namespace TLJ_MySqlService.Handler
             {
                 _responseData.Add(MyCommon.CONNID, _connId);
             }
-         
-            User _user = new User() { Username = _username, Userpassword = _userpassword };
+
+            User _user = new User() {Username = _username, Userpassword = _userpassword};
             LoginSQL(_user, passwordtype, _responseData);
             return _responseData.ToString();
-
         }
 
         //登录 数据库操作
-        private  void LoginSQL(User user, int passwordtype, JObject responseData)
+        private void LoginSQL(User user, int passwordtype, JObject responseData)
         {
             User loginUser = null;
             switch (passwordtype)
             {
                 case 1:
                     loginUser = NHibernateHelper.userManager.VerifyLogin(user.Username, user.Userpassword);
-                  
                     break;
+                //公众号登陆
                 case 2:
                     loginUser = NHibernateHelper.userManager.VerifySecondLogin(user.Username, user.Userpassword);
+                    var userConfig = NHibernateHelper.commonConfigManager.GetByUid(user.Uid);
+                    if (userConfig == null)
+                    {
+                        userConfig = ModelFactory.CreateConfig(user.Uid);
+                    }
+
+                    if (userConfig.wechat_login_gift == 0)
+                    {
+                        SendEmailUtil.SendEmail(user.Uid, "神秘礼包", "您已成功关注微信公众号，并已绑定游戏账号，恭喜你获得一下奖励", "110:2;1:1888");
+                        userConfig.wechat_login_gift = 1;
+                        NHibernateHelper.commonConfigManager.Update(userConfig);
+                        LogUtil.Log(user.Uid, MyCommon.OpType.WECHAT_LOGIN_GIFT, $"获得神秘礼包：110:2;1:1888");
+                    }
+                    MySqlService.log.Info($"公众号二级密码登陆");
+                    break;
+                //游戏客户端登陆
+                case 3:
+                    loginUser = NHibernateHelper.userManager.VerifySecondLogin(user.Username, user.Userpassword);
+                    MySqlService.log.Info($"客户端二级密码登陆");
                     break;
             }
 
@@ -77,27 +95,31 @@ namespace TLJ_MySqlService.Handler
                 User name = NHibernateHelper.userManager.GetByName(user.Username);
                 if (name == null)
                 {
-                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_AccountNoExist);
+                    responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_AccountNoExist);
                 }
                 else
                 {
-                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_PasswordError);
+                    responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_PasswordError);
                 }
             }
-
         }
 
         //数据库操作成功
-        private  void OperatorSuccess(User user, JObject responseData)
+        private void OperatorSuccess(User user, JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
             responseData.Add(MyCommon.UID, user.Uid);
+
+            //更新下用户的任务
+            MySqlUtil.UpdateUserTask(user.Uid);
         }
 
+       
+
         //数据库操作失败
-        private  void OperatorFail(JObject responseData)
+        private void OperatorFail(JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
         }
     }
 }

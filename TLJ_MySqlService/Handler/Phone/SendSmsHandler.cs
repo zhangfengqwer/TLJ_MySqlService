@@ -7,13 +7,9 @@ using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_SendSMS)]
     class SendSmsHandler : BaseHandler
     {
-        public SendSmsHandler()
-        {
-            Tag = Consts.Tag_SendSMS;
-        }
-
         public override string OnResponse(string data)
         {
             SendSmsReq defaultReqData = null;

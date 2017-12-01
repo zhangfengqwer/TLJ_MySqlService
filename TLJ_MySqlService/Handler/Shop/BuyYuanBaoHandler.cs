@@ -6,17 +6,14 @@ using NhInterMySQL;
 using NhInterMySQL.Model;
 using TLJCommon;
 using NhInterMySQL.Model;
+using TLJ_MySqlService.Utils;
 
 namespace TLJ_MySqlService.Handler
 {
+    [Handler(Consts.Tag_BuyYuanBao)]
     public class BuyYuanBaoHandler : BaseHandler
     {
         private HashSet<string> hashSet = new HashSet<string>();
-
-        public BuyYuanBaoHandler()
-        {
-            Tag = Consts.Tag_BuyYuanBao;
-        }
 
         public override string OnResponse(string data)
         {
@@ -81,16 +78,54 @@ namespace TLJ_MySqlService.Handler
             }
             if (IsSuccess)
             {
+                //加赠元宝
+                AddExtraYuanBao(uid, goods);
+                //首充礼包
+                AddFirstRechargeGift();
                 OperatorSuccess(responseData);
             }
             else
             {
                 string msg =
-                    $"购买元宝失败，uid: {uid},goodid: {goodId},num: {num},price：{price},goodsprice:{goods.price * num},orderid: {orderid}";
+                    $"购买元宝失败，uid: {uid},goodid: {goodId},num: {num},price：{price},goodsprice:{goods?.price * num},orderid: {orderid}";
                 MySqlService.log.Warn(msg);
                 LogUtil.Log(uid, MyCommon.OpType.BUYYUANBAO, msg);
                 OperatorFail(responseData);
             }
+        }
+
+        private void AddFirstRechargeGift()
+        {
+        }
+
+        /// <summary>
+        /// 加赠元宝
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="goods"></param>
+        private void AddExtraYuanBao(string uid, Goods goods)
+        {
+            //更新userRecharge数据
+            var userRecharge = NHibernateHelper.userRechargeManager.GetUserRecharge(uid, goods.goods_id);
+            if (userRecharge == null)
+            {
+                userRecharge = ModelFactory.CreateUserRecharge(uid, goods.goods_id);
+            }
+            //首次充值，加送元宝
+            if (userRecharge.recharge_count == 0)
+            {
+                if (MySqlUtil.AddProp(uid, goods.extra_reward))
+                {
+                    LogUtil.Log(uid, MyCommon.OpType.EXTRA_YUANBAO,
+                        $"购买了{goods.goods_id},{goods.goods_name},加赠了{goods.extra_reward}");
+                }
+                else
+                {
+                    MySqlService.log.Warn($"{uid},{goods.goods_id} 加赠元宝失败，数据库内部错误");
+                }
+            }
+            userRecharge.recharge_count++;
+            NHibernateHelper.userRechargeManager.Update(userRecharge);
         }
 
         private bool BuyYuanbao(Goods goods, int num, float price, string orderid, string uid)
@@ -127,6 +162,7 @@ namespace TLJ_MySqlService.Handler
                 userInfo.YuanBao += propNum * num;
                 //之前的vip等级
                 int vipFirstLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
+
                 userInfo.RechargeVip += goods.price * num;
                 //充值之后的vip等级
                 int vipLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
@@ -144,11 +180,26 @@ namespace TLJ_MySqlService.Handler
                             var reward = $"1:{MySqlService.VipDatas[i].vipOnce.goldNum};{MySqlService.VipDatas[i].vipOnce.prop}";
 
                             //发送vip一次福利
-                            new AddEmailHandler().AddUserEmailSql(userInfo.Uid, $"Vip一次性福利", $"恭喜您升级到Vip{i + 1}",
-                                reward, new JObject());
+                            SendEmailUtil.SendEmail(userInfo.Uid, $"贵族一次性福利", $"恭喜您升级到贵族{i + 1}", reward);
 
                             var temp = string.Format($"恭喜你升级到Vip{i + 1},发送邮件奖励:{reward}");
                             LogUtil.Log(userInfo.Uid, MyCommon.OpType.VIP_ONCE_REWARD, temp);
+                        }
+                    }
+
+                    //首充礼包
+                    if (userInfo.RechargeVip >= 6)
+                    {
+                        var commonConfig = NHibernateHelper.commonConfigManager.GetByUid(userInfo.Uid);
+                        if (commonConfig == null)
+                        {
+                            commonConfig = ModelFactory.CreateConfig(userInfo.Uid);
+                        }
+                        if (commonConfig.first_recharge_gift == 0)
+                        {
+                            SendEmailUtil.SendEmail(userInfo.Uid, "首充礼包", "恭喜您获得首充奖励", "1:30000;107:30;102:3;106:3;110:2");
+                            commonConfig.first_recharge_gift = 1;
+                            NHibernateHelper.commonConfigManager.Update(commonConfig);
                         }
                     }
 
