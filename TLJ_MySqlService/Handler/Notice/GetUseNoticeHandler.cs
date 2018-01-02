@@ -79,6 +79,11 @@ namespace TLJ_MySqlService.Handler
                 for (int j = 0; j < userNotices.Count; j++)
                 {
                     UserNotice userNotice = userNotices[j];
+                    if (userNotice.NoticeId == 1)
+                    {
+                        continue;
+                    }
+
                     if (notice.NoticeId == userNotice.NoticeId)
                     {
                         UserNoticeJsonObj userNoticeJsonObj = new UserNoticeJsonObj()
@@ -89,7 +94,9 @@ namespace TLJ_MySqlService.Handler
                             type = notice.Type,
                             state = userNotice.State,
                             start_time = notice.StartTime.ToLongDateString(),
-                            end_time = notice.EndTime.ToLongDateString()
+                            end_time = notice.EndTime.ToLongDateString(),
+                            title_limian = notice.TitleLiMian,
+                            from = notice.From
                         };
                         tempList.Add(userNoticeJsonObj);
                     }

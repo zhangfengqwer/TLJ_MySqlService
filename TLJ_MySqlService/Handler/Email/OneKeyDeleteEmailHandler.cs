@@ -4,6 +4,7 @@ using NhInterMySQL;
 using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
@@ -44,7 +45,7 @@ namespace TLJ_MySqlService.Handler
 
         private void OneKeyDeleteEmailSql(string uid, JObject responseData)
         {
-            List<UserEmail> userEmails = NHibernateHelper.userEmailManager.GetListByUid(uid);
+            List<UserEmail> userEmails = NHibernateHelper.userEmailManager.GetListByUid(uid).OrderByDescending(i => i.CreateTime).Take(50).ToList();
 
             if (userEmails == null)
             {

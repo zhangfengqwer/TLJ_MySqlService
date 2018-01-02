@@ -6,22 +6,58 @@ using System.Threading;
 using Newtonsoft.Json;
 using NhInterMySQL;
 using NhInterMySQL.Model;
+using NLog;
 
 namespace UpdateSignMonday
 {
     class Program
     {
+        public static Logger log = LogManager.GetLogger("MySqlService");
+
         static void Main(string[] args)
         {
-            new Thread(() => { UpdateDaily(); }).Start();
+            new Thread(() =>
+            {
+                UpdateDaily();
+            }).Start();
         }
 
         private static void UpdateDaily()
         {
             UpdateTurnTableCount();
-            UpdateRechargeAndGoldDayly();
+            UpdateCommonConfig();
             UpdateDailyGameCount();
             UpdateUserTask();
+            UpdateFreeGold();
+            log.Info("数据库每天更新啦");
+        }
+
+        private static void UpdateWeekly()
+        {
+            UpdateSignDays();
+            UpdateCommonData();
+            SendVipWeeklyReWard();
+            log.Info("数据库每周一更新啦");
+        }
+
+        private static void UpdateFreeGold()
+        {
+            var sql = "update user_task set progress = '0',isover = '0' ";
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    try
+                    {
+                        session.CreateSQLQuery(sql).ExecuteUpdate();
+                        transaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
         }
 
         private static void UpdateUserTask()
@@ -43,14 +79,6 @@ namespace UpdateSignMonday
                 }
             }
         }
-
-        private static void UpdateWeekly()
-        {
-            UpdateSignDays();
-            UpdateCommonData();
-            SendVipWeeklyReWard();
-        }
-
         /// <summary>
         /// 每周发放vip奖励
         /// </summary>
@@ -177,10 +205,10 @@ namespace UpdateSignMonday
             }
         }
 
-        //每天更新充值限额和每天花费金币数
-        private static void UpdateRechargeAndGoldDayly()
+        //每天更新充值限额和每天花费金币数,每天发放3次免费
+        private static void UpdateCommonConfig()
         {
-            var sql = "update common_config set recharge_phonefee_amount = '0',expense_gold_daily = '0'";
+            var sql = "update common_config set recharge_phonefee_amount = '0',expense_gold_daily = '0',free_gold_count = '3'";
             using (var session = NHibernateHelper.OpenSession())
             {
                 using (var transaction = session.BeginTransaction())

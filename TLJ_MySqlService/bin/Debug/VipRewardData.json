@@ -1,7 +1,8 @@
 [
     {
         "vipLevel": 1,
-        "medalNum": 1,
+        "medalNum": 0,
+        "turnTableCount" : 0,
         "vipOnce": {
             "goldNum": 888,
             "prop": "106:2"
@@ -14,6 +15,7 @@
     {
         "vipLevel": 2,
         "medalNum": 1,
+        "turnTableCount" : 0,
         "vipOnce": {
             "goldNum": 988,
             "prop": "102:3"
@@ -26,6 +28,7 @@
     {
         "vipLevel": 3,
         "medalNum": 1,
+        "turnTableCount" : 0,
         "vipOnce": {
             "goldNum": 1288,
             "prop": "101:3"
@@ -37,10 +40,11 @@
     },
     {
         "vipLevel": 4,
-        "medalNum": 2,
+        "medalNum": 1,
+        "turnTableCount" : 1,
         "vipOnce": {
             "goldNum": 2288,
-            "prop": "107:8"
+            "prop": "107:8;106:1"
         },
         "vipWeekly": {
             "goldNum": 1088,
@@ -50,9 +54,10 @@
     {
         "vipLevel": 5,
         "medalNum": 2,
+        "turnTableCount" : 1,
         "vipOnce": {
             "goldNum": 2888,
-            "prop": "110:2"
+            "prop": "110:2;106:2"
         },
         "vipWeekly": {
             "goldNum": 1288,
@@ -62,9 +67,10 @@
     {
         "vipLevel": 6,
         "medalNum": 2,
+        "turnTableCount" : 2,
         "vipOnce": {
             "goldNum": 3288,
-            "prop": "110:3"
+            "prop": "110:3;101:1"
         },
         "vipWeekly": {
             "goldNum":1588,
@@ -74,9 +80,10 @@
     {
         "vipLevel": 7,
         "medalNum": 2,
+        "turnTableCount" : 2,
         "vipOnce": {
             "goldNum": 4288,
-            "prop": "110:4"
+            "prop": "110:4;101:2"
         },
         "vipWeekly": {
             "goldNum":1888,
@@ -86,9 +93,10 @@
     {
         "vipLevel": 8,
         "medalNum": 3,
+        "turnTableCount" : 2,
         "vipOnce": {
             "goldNum": 6288,
-            "prop": "110:5"
+            "prop": "110:5;101:2;102:1"
         },
         "vipWeekly": {
             "goldNum": 2888,
@@ -98,9 +106,10 @@
     {
         "vipLevel": 9,
         "medalNum": 3,
+        "turnTableCount" : 3,
         "vipOnce": {
             "goldNum": 7288,
-            "prop": "110:6"
+            "prop": "110:6;101:3;107:5"
         },
         "vipWeekly": {
             "goldNum": 5888,
@@ -110,9 +119,10 @@
     {
         "vipLevel": 10,
         "medalNum": 3,
+        "turnTableCount" : 3,
         "vipOnce": {
             "goldNum": 9288,
-            "prop": "110:8"
+            "prop": "110:7;101:5;107:10"
         },
         "vipWeekly": {
             "goldNum": 6888,

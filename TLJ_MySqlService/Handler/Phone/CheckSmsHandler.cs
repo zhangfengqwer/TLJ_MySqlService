@@ -60,6 +60,9 @@ namespace TLJ_MySqlService.Handler
 
                         JObject result = JObject.Parse(nodeValue);
                         var ResultCode = (int) result.GetValue("ResultCode");
+                        var ResultMessage = (string) result.GetValue("ResultMessageDetails");
+                        responseData.Add("msg", ResultMessage);
+
                         if (ResultCode == 1)
                         {
                             uid = "6" + uid;

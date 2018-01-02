@@ -46,8 +46,8 @@ namespace TLJ_MySqlService.Handler
             CommonConfig commonConfig = NHibernateHelper.commonConfigManager.GetByUid(Uid);
             if (commonConfig?.recharge_phonefee_amount >= 100)
             {
-                OperatorFail(_responseData, $"当天充值金额已超过100元,已充值：{commonConfig.recharge_phonefee_amount}");
-                MySqlService.log.Warn($"{Uid}当天充值金额已超过100元,已充值：{commonConfig.recharge_phonefee_amount}");
+                OperatorFail(_responseData, $"今日话费兑换额度已达上限");
+                MySqlService.log.Error($"{Uid}当天充值金额已超过100元,已充值：{commonConfig.recharge_phonefee_amount}");
                 return _responseData.ToString();
             }
 
@@ -73,8 +73,10 @@ namespace TLJ_MySqlService.Handler
                     case 111:
                     //5元话费
                     case 112:
+                    //10元话费
+                    case 113:
                         //测试环境不需要到账
-//                        isPhoneFee = PhoneFeeRecharge(uid, propId, phone);
+                        isPhoneFee = PhoneFeeRecharge(uid, propId, phone);
                         break;
                 }
                 if (isPhoneFee)
@@ -91,7 +93,7 @@ namespace TLJ_MySqlService.Handler
                 }
                 else
                 {
-                    MySqlService.log.Warn("充值话费失败：" + uid + " " + propId);
+                    MySqlService.log.Warn($"充值话费失败,uid:{uid},propid:{propId},phone:{phone}");
                     OperatorFail(responseData, "充值话费失败");
                 }
             }
@@ -108,6 +110,13 @@ namespace TLJ_MySqlService.Handler
             else if (propId == 112)
             {
                 amount = "5";
+            }else if (propId == 113)
+            {
+                amount = "10";
+            }
+            else
+            {
+                return false;
             }
             uid = uid.Substring(1, uid.Length - 1);
             string phoneFeeRecharge = HttpUtil.PhoneFeeRecharge(uid, prop.prop_name, amount, phone, propId + "", "1");

@@ -3,13 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NhInterMySQL.Model;
-using TLJ_MySqlService;
 
 namespace Test
 {
@@ -19,27 +24,156 @@ namespace Test
         private static List<String> xingList = new List<string>();
         private static List<String> maleList = new List<string>();
         private static List<String> femaleList = new List<string>();
-
+//        public static Dictionary<TljServiceType, IntPtr> serviceDic = new Dictionary<TljServiceType, IntPtr>();
         static void Main(string[] args)
         {
-            Assembly assembly = typeof(MySqlService).Assembly;
-            Console.WriteLine(assembly.FullName);
 
-//            UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask("6509453643", 208);
-//            Console.Write(userTask.progress);
+            //            var md5 = GetMD5("123");
+            //            string changePsw = ChangePsw("123");
+            //            var checkPsw = CheckPsw("202CB962AC5975B964B7152D234B70");
 
-//            foreach (var userTask in NHibernateHelper.userTaskManager.GetAll())
-//            {
-//                if (userTask.task_id == 219)
-//                {
-//                    NHibernateHelper.userTaskManager.Delete(userTask);
-//                }
-//
-//            }
+            //            Console.WriteLine(checkPsw);
+            //            Console.WriteLine(checkPsw);
+
+            //            foreach (var user in NHibernateHelper.userNoticeManager.GetAll())
+            //            {
+            //                if (user.NoticeId == 4)
+            //                {
+            //                    NHibernateHelper.userNoticeManager.Delete(user);
+            //                }
+            //            }
+            //            var user = new User();
+            //            string uid = UidUtil.createUID();
+            //            user.Uid = uid;
+            //            user.Platform = 0;
+            //            user.ThirdId = "";
+            //            user.Secondpassword = "";
+            //            user.IsRobot = 0;
+            //            user.Userpassword = "C3981FA8D26E95D911FE8EAEB657F2F";
+            //            NHibernateHelper.userManager.Add(user);
+            //         
+            //            string changePsw = ChangePsw("lq3445www");
+            //            Console.WriteLine(changePsw);
+            //            var stopwatch = new Stopwatch();
+            //            stopwatch.Start();
+            //            NHibernateHelper.userManager.VerifyLogin("123", "123");
+            //            stopwatch.Stop();
+            //            Console.WriteLine(stopwatch.ElapsedMilliseconds+"ms");
+            //
+            //            stopwatch.Restart();
+            //            var sql = $"select username, userpassword from user where username = '123' and userpassword = '123' ";
+            //
+            //            using (var session = NHibernateHelper.OpenSession())
+            //            {
+            //                using (var transaction = session.BeginTransaction())
+            //                {
+            //                    var user = session.CreateSQLQuery(sql).UniqueResult();
+            //                    var user1 = user as User;
+            //                    Console.WriteLine(user1);
+            //
+            //                }
+            //            }
+            //
+            //            stopwatch.Stop();
+            //            Console.WriteLine(stopwatch.ElapsedMilliseconds + "ms");
+
+
+            //            // 异步方法全部会回掉到主线程
+            //            OneThreadSynchronizationContext contex = new OneThreadSynchronizationContext();
+            //            SynchronizationContext.SetSynchronizationContext(contex);
+            //
+            //            while (true)
+            //            {
+            //                try
+            //                {
+            //                    Thread.Sleep(1);
+            //                    contex.Update();
+            //                }
+            //                catch (Exception e)
+            //                {
+            //                    Console.WriteLine(e);
+            //                }
+            //            }
+
+            //            string directory = Environment.CurrentDirectory;
+            //            for (int i = 0; i < 3; i++)
+            //            {
+            //                directory = CommonUtil.GetFrontDirectory(directory);
+            //            }
+            //           
+            //
+            //            string path = Path.Combine(directory, @"TLJ_MySqlService\Lib\test.txt");
+            ////            int lastIndexOf = path.LastIndexOf('\\');
+            ////            path = path.Remove(lastIndexOf);
+            //
+            //            Console.WriteLine(path);
+            //            if (File.Exists(path))
+            //            {
+            //                using (FileStream fs = new FileStream(path, FileMode.Open))
+            //                {
+            //                    StreamReader reader = new StreamReader(fs);
+            //                    var readLine = reader.ReadLine();
+            //                    Console.WriteLine(readLine);
+            //                }
+            //            }
+            //            else
+            //            {
+            //                Console.WriteLine("meiyou");
+            //            }
+
+            //            for (int i = 10001; i < 20001; i++)
+            //            {
+            //                ModelFactory.CreateUser(i+"");
+            //            }
+            //
+            //
+            //            Assembly assembly = typeof(MySqlService).Assembly;
+            //            Console.WriteLine(assembly.FullName);
+
+            //            UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask("6509453643", 208);
+            //            Console.Write(userTask.progress);
+
+            //            foreach (var userTask in NHibernateHelper.userTaskManager.GetAll())
+            //            {
+            //                if (userTask.task_id == 219)
+            //                {
+            //                    NHibernateHelper.userTaskManager.Delete(userTask);
+            //                }
+            //
+            //            }
+
             Console.ReadKey();
         }
+//
+        public static string GetMD5(string password)
+        {
+            string cl = password;
+            string pwd = "";
+            MD5 md5 = MD5.Create(); //实例化一个md5对像
+            // 加密后是一个字节类型的数组，这里要注意编码UTF8/Unicode等的选择　
+            byte[] s = md5.ComputeHash(Encoding.UTF8.GetBytes(cl));
+            // 通过使用循环，将字节类型的数组转换为字符串，此字符串是常规字符格式化所得
+            for (int i = 0; i < s.Length; i++)
+            {
+                // 将得到的字符串使用十六进制类型格式。格式后的字符是小写的字母，如果使用大写（X）则格式后的字符是大写字符 
+                pwd = pwd + s[i].ToString("X2");
+            }
+            return pwd;
+        }
 
-            private static string GetName()
+        public static string ChangePsw(string password)
+        {
+            var md5 = GetMD5("jinyou123" + GetMD5(password));
+            return md5;
+        }
+
+        public static string CheckPsw(string password)
+        {
+            var md5 = GetMD5("jinyou123" + password);
+            return md5;
+        }
+
+        private static string GetName()
             {
                 StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "RandomName.json");
                 string str = sr.ReadToEnd().ToString();

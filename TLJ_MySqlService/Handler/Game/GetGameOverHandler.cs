@@ -28,8 +28,7 @@ namespace TLJ_MySqlService.Handler
             string uid = defaultReq.uid;
             var gameroomtype = defaultReq.gameroomtype;
 
-            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) ||
-                string.IsNullOrWhiteSpace(gameroomtype))
+            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || string.IsNullOrWhiteSpace(gameroomtype))
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
@@ -50,7 +49,7 @@ namespace TLJ_MySqlService.Handler
             if (pvpGameRoom != null)
             {
                 if ("0".Equals(pvpGameRoom.baomingfei)) return;
-               
+
                 var baomingfei = pvpGameRoom.baomingfei;
                 var split = baomingfei.Split(':');
                 var s1 = split[0];
@@ -60,16 +59,15 @@ namespace TLJ_MySqlService.Handler
                 MySqlService.log.Info($"uid:{uid},报名费：{baomingfei}");
 
                 MySqlUtil.ConfigExpenseGold(uid, Convert.ToInt32(s2));
-                MySqlUtil.AddProp(uid, baomingfei);
+//                MySqlUtil.AddProp(uid, baomingfei);
             }
         }
 
 
         //数据库操作成功
-        private void OperatorSuccess(List<PVPGameRoom> pvpGameRooms, JObject responseData)
+        private void OperatorSuccess(JObject responseData)
         {
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
-            responseData.Add("room_list", JsonConvert.SerializeObject(pvpGameRooms));
         }
 
         //数据库操作失败

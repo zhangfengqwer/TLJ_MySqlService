@@ -194,8 +194,6 @@ namespace TLJ_MySqlService.Handler
                 case 1:
                     MySqlUtil.ConfigExpenseGold(uid, sumPrice);
 
-
-
                     if (userInfo.Gold >= sumPrice)
                     {
                         userInfo.Gold -= sumPrice;

@@ -53,7 +53,7 @@ namespace TLJ_MySqlService.Handler
             User userByName = NHibernateHelper.userManager.GetByName(user.Username);
             if (userByName != null)
             {
-                OperatorFail(responseData);
+                OperatorFail(responseData,"用户已存在");
             }
             else
             {
@@ -63,6 +63,7 @@ namespace TLJ_MySqlService.Handler
                 user.ThirdId = "";
                 user.Secondpassword = "";
                 user.IsRobot = 0;
+                user.Userpassword = CommonUtil.CheckPsw(user.Userpassword);
 
                 var userEmail = new UserEmail()
                 {
@@ -88,7 +89,8 @@ namespace TLJ_MySqlService.Handler
                 }
                 else
                 {
-                    OperatorFail(responseData);
+                    
+                    OperatorFail(responseData,"用户注册失败");
                 }
             }
         }
@@ -104,9 +106,10 @@ namespace TLJ_MySqlService.Handler
         }
 
         //数据库操作失败
-        private void OperatorFail(JObject responseData)
+        private void OperatorFail(JObject responseData,string msg)
         {
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
+            responseData.Add("msg", msg);
         }
     }
 }

@@ -62,7 +62,6 @@ namespace TLJ_MySqlService.Handler
 
                     userGame = AddUserGame(user.Uid);
 
-
                     if (NHibernateHelper.userInfoManager.Add(userInfo) && NHibernateHelper.userGameManager.Add(userGame))
                     {
                         OperatorSuccess(userInfo, userGame, userBuffJsonObjects, false,responseData);
@@ -110,7 +109,7 @@ namespace TLJ_MySqlService.Handler
                 NickName = nickName,
                 Head = new Random().Next(1, 17),
                 Phone = "",
-                Gold = 2000,
+                Gold = 5000,
                 YuanBao = 0,
                 RechargeVip = 0,
                 Medel = 0,
@@ -183,7 +182,11 @@ namespace TLJ_MySqlService.Handler
             {
                 MySqlService.log.Warn($"获取用户失败：{userInfo.Uid}");
             }
-          
+
+            //获取用户充值次数
+            var userRecharges = NHibernateHelper.userRechargeManager.GetListByUid(userInfo.Uid);
+
+            responseData.Add("userRecharge", JsonConvert.SerializeObject(userRecharges));
         }
 
         //数据库操作失败

@@ -38,7 +38,7 @@ namespace TLJ_MySqlService.Handler
 
             if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(Uid) || reward_num == 0)
             {
-                MySqlService.log.Warn("字段有空");
+                MySqlService.log.Warn($"字段有空:{data}");
                 return null;
             }
             //传给客户端的数据

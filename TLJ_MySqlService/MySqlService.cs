@@ -10,8 +10,11 @@ using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using NhInterMySQL;
+using TLJCommon;
 using TLJ_MySqlService.Handler;
+using TLJ_MySqlService.Utils;
 
 namespace TLJ_MySqlService
 {
@@ -29,13 +32,14 @@ namespace TLJ_MySqlService
 
     public partial class MySqlService : ServiceBase
     {
-        TcpPackServer m_tcpServer = new TcpPackServer();
+        public static TcpPackServer m_tcpServer = new TcpPackServer();
 //        TcpServer m_tcpServer = new TcpServer();
 
         public static string TAG = "MySqlService";
         public static Logger log = LogManager.GetLogger("MySqlService");
         public static Logger DBLog = LogManager.GetLogger("DBLog");
         public static Dictionary<string, BaseHandler> handlerDic = new Dictionary<string, BaseHandler>();
+        public static Dictionary<TljServiceType, IntPtr> serviceDic = new Dictionary<TljServiceType, IntPtr>();
 
         public static List<PVPGameRoom> PvpGameRooms;
         public static List<Goods> ShopData;
@@ -44,11 +48,23 @@ namespace TLJ_MySqlService
         public static List<VipData> VipDatas;
         public static string AdminAccount = "admin";
         public static string AdminPassWord = "jinyou123";
+        public static bool IsTest = true;
 
 
         public MySqlService()
         {
             InitializeComponent();
+        }
+
+        private static MySqlService instance;
+
+        public static MySqlService Instance()
+        {
+            if (instance == null)
+            {
+                instance = new MySqlService();
+            }
+            return instance;
         }
 
         protected override void OnStart(string[] args)
@@ -61,12 +77,36 @@ namespace TLJ_MySqlService
                 log.Info(
                     $"初始数据完成:PvpGameRooms:{PvpGameRooms.Count},ShopData:{ShopData.Count},SignConfigs:{SignConfigs.Count},TurnTables:{TurnTables.Count}");
                 NetConfig.init();
+                InitData();
                 InitService();
                 StartService();
             }
             catch (Exception e)
             {
                 log.Error("OnStart:" + e);
+            }
+        }
+
+        /// <summary>
+        /// 初始化 webapi相关的参数
+        /// </summary>
+        private void InitData()
+        {
+            if ("10.224.4.135".Equals(NetConfig.s_mySqlService_ip))
+            {
+                IsTest = true;
+                log.Info("测试环境");
+                HttpUtil.sendKey = "sy";
+                HttpUtil.phoneFeeKey = "sy";
+                HttpUtil.clientip = "58.210.102.138";
+            }
+            else
+            {
+                IsTest = false;
+                log.Info("正式环境");
+                HttpUtil.sendKey = "sy123";
+                HttpUtil.phoneFeeKey = "fw123";
+                HttpUtil.clientip = "139.196.193.185";
             }
         }
 
@@ -85,7 +125,7 @@ namespace TLJ_MySqlService
         }
 
         /// <summary>
-        /// 初始化Handler
+        /// InitHandler
         /// </summary>
         private void InitHandler()
         {
@@ -95,11 +135,11 @@ namespace TLJ_MySqlService
 
             foreach (var type in types)
             {
-                var attributes = type.GetCustomAttributes(typeof(HandlerAttribute) ,false);
+                var attributes = type.GetCustomAttributes(typeof(HandlerAttribute), false);
 
                 foreach (var attr in attributes)
                 {
-                    HandlerAttribute handlerAttribute = (HandlerAttribute)attr;
+                    HandlerAttribute handlerAttribute = (HandlerAttribute) attr;
                     object obj = Activator.CreateInstance(type);
                     if (!handlerDic.ContainsKey(handlerAttribute.Tag))
                     {
@@ -135,8 +175,10 @@ namespace TLJ_MySqlService
             //设置包头标识,与对端设置保证一致性
             m_tcpServer.PackHeaderFlag = 0xff;
             // 设置最大封包大小
-            m_tcpServer.MaxPackSize = 0x2000;
+            m_tcpServer.MaxPackSize = Consts.MaxPackSize;
         }
+
+        
 
         private void StartService()
         {
@@ -154,7 +196,7 @@ namespace TLJ_MySqlService
                 }
                 else
                 {
-                    log.Warn("TCP服务启动失败ip,"+ NetConfig.s_mySqlService_ip + ":" + NetConfig.s_mySqlService_port);
+                    log.Warn("TCP服务启动失败ip," + NetConfig.s_mySqlService_ip + ":" + NetConfig.s_mySqlService_port);
                 }
             }
             catch (Exception ex)
@@ -182,7 +224,7 @@ namespace TLJ_MySqlService
             ushort port = 0;
             if (m_tcpServer.GetRemoteAddress(connId, ref ip, ref port))
             {
-                log.Info("有客户端连接--ip = " + ip + "--port = " + port);
+                log.Info("有客户端连接--ip = " + ip + "--port = " + port + "\nconnid:" + connId + ",pClient:" + pClient);
             }
             else
             {
@@ -213,11 +255,12 @@ namespace TLJ_MySqlService
 
         HandleResult OnReceive(IntPtr connId, byte[] bytes)
         {
+            log.Info($"收到消息，connId:{connId}");
             try
             {
                 ReceiveObj obj = new ReceiveObj(connId, bytes);
-                System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() => { doAskCilentReq(obj); });
-                t.Start();
+                new System.Threading.Tasks.Task(() => { doAskCilentReq(obj); }).Start();
+//                new Thread(() => { doAskCilentReq(obj); }).Start();
             }
             catch (Exception e)
             {
@@ -235,6 +278,25 @@ namespace TLJ_MySqlService
         HandleResult OnClose(IntPtr connId, SocketOperation enOperation, int errorCode)
         {
             log.Info("与客户端断开:" + connId);
+
+            TljServiceType type = TljServiceType.None;
+            foreach (var key in serviceDic.Keys)
+            {
+                IntPtr value;
+                if (serviceDic.TryGetValue(key, out value))
+                {
+                    if (connId == value)
+                    {
+                        type = key;
+                    }
+                }
+            }
+
+            if (type != TljServiceType.None)
+            {
+                serviceDic.Remove(type);
+            }
+
             return HandleResult.Ok;
         }
 
@@ -278,8 +340,30 @@ namespace TLJ_MySqlService
                 return;
             }
 
+            if (tag.ToString().Equals(Consts.Tag_Login))
+            {
+                if (!serviceDic.ContainsKey(TljServiceType.LoginService))
+                {
+                    serviceDic.Add(TljServiceType.LoginService, receiveObj.m_connId);
+                }
+            }
+            else if (tag.ToString().Equals(Consts.Tag_GetAIList))
+            {
+                if (!serviceDic.ContainsKey(TljServiceType.LoginService))
+                {
+                    serviceDic.Add(TljServiceType.PlayService, receiveObj.m_connId);
+                }
+            }
+            else if (tag.ToString().Equals(Consts.Tag_GetTurntable))
+            {
+                if (!serviceDic.ContainsKey(TljServiceType.LoginService))
+                {
+                    serviceDic.Add(TljServiceType.LogicService, receiveObj.m_connId);
+                }
+            }
+
             BaseHandler baseHandler;
-            if(handlerDic.TryGetValue(tag.ToString(), out baseHandler))
+            if (handlerDic.TryGetValue(tag.ToString(), out baseHandler))
             {
                 try
                 {
@@ -309,11 +393,11 @@ namespace TLJ_MySqlService
             {
                 //OnSend函数会记录日志，这里不需要重复记录了
                 //addDebugLog.WriteLine("发送消息：{0}，{1}", connId, text);
-                log.Info("发送消息：" + text);
+                log.Info("发送消息：" + text + "\nconnid:" + connId);
             }
             else
             {
-                log.Error("发送失败,数据长度:" + bytes.Length);
+                log.Error("发送失败,数据长度:" + bytes.Length+",data:"+text);
             }
         }
     }

@@ -12,8 +12,6 @@ public class VipUtil
 	private static int vip9 = 18000;
 	private static int vip10 = 30000;
 	
-	
-	
 	public static int GetVipLevel(int recharge)
 	{
 		if (recharge > 0 && recharge < vip1) return 0;

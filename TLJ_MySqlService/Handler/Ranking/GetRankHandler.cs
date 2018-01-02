@@ -58,6 +58,7 @@ namespace TLJ_MySqlService.Handler
                 jinbiRankJsonObject.name = orderByJinbi[i].NickName;
                 jinbiRankJsonObject.gold = orderByJinbi[i].Gold;
                 jinbiRankJsonObject.head = orderByJinbi[i].Head;
+                jinbiRankJsonObject.recharge = orderByJinbi[i].RechargeVip;
                 JinbiRanks.Add(jinbiRankJsonObject);
             }
 
@@ -71,6 +72,7 @@ namespace TLJ_MySqlService.Handler
                 medalRankJsonObject.name = orderByMedal[i].NickName;
                 medalRankJsonObject.medal = orderByMedal[i].Medel;
                 medalRankJsonObject.head = orderByMedal[i].Head;
+                medalRankJsonObject.recharge = orderByMedal[i].RechargeVip;
                 medalRanks.Add(medalRankJsonObject);
             }
             OperatorSuccess(JinbiRanks,medalRanks, responseData);

@@ -10,11 +10,17 @@ namespace TLJ_MySqlService.Utils
 {
     public class HttpUtil
     {
-        private static string phoneFeeKey = "fw123";
+        //线上
+        //private static string phoneFeeKey = "fw123";
+        //private static string clientip = "139.196.193.185";
+        //测试
+
+        public static string sendKey = "sy";
+        public static string phoneFeeKey = "sy";
+        public static string clientip = "58.210.102.138";
+
         private static string gameid = "210";
         private static string flatFrom = "70";
-        private static string clientip = "139.196.193.185";
-
 
         //body是要传递的参数,格式"roleId=1&uid=2"
         //post的cotentType填写:
@@ -67,7 +73,7 @@ namespace TLJ_MySqlService.Utils
         public static string SendSms(string uid, string phoneNum)
         {
             string url = "http://servicesy.51v.cn/partnerws/SmsService.asmx/SendSms";
-            string getBody = "?userId=" + uid + "&cellPhoneNum=" + phoneNum + "&keyStr=sy";
+            string getBody = "?userId=" + uid + "&cellPhoneNum=" + phoneNum + "&keyStr="+sendKey;
             MySqlService.log.Info(url + getBody);
             return GetHttp(url + getBody);
         }
@@ -76,7 +82,7 @@ namespace TLJ_MySqlService.Utils
         {
             string url = "http://servicesy.51v.cn/partnerws/SmsService.asmx/CheckSmsToJson";
             string getBody = "?userId=" + uid + "&cellPhoneNum=" + phoneNum + "&verificationCode=" + verificationCode +
-                             "&keyStr=sy";
+                             "&keyStr="+ sendKey;
             return GetHttp(url + getBody);
         }
 

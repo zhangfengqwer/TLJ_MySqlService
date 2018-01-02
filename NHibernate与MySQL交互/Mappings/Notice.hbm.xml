@@ -9,6 +9,8 @@
       <generator class="native"></generator>
     </id>
     <property name="Content" column="content" type="String"></property>
+    <property name="TitleLiMian" column="title_limian" type="String"></property>
+    <property name="From" column="from" type="String"></property>
     <property name="Title" column="title" type="String"></property>
     <property name="Type" column="type" type="Int32"></property>
     <property name="EndTime" column="end_time" type="Timestamp"></property>

@@ -2,10 +2,9 @@
 {
     public int vipLevel;
     public int medalNum;
+    public int turnTableCount;
     public VipOnce vipOnce;
     public VipWeekly vipWeekly;
-
-   
 }
 
 public class VipWeekly

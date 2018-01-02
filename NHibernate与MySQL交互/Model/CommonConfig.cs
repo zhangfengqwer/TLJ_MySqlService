@@ -20,5 +20,9 @@
         /// 首充礼包
         /// </summary>
         public virtual int first_recharge_gift { set; get; }
+        /// <summary>
+        /// 3次补助金
+        /// </summary>
+        public virtual int free_gold_count { set; get; }
     }
 }

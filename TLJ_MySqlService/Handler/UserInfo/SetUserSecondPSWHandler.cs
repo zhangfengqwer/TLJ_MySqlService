@@ -55,7 +55,7 @@ namespace TLJ_MySqlService.Handler
                 if (string.IsNullOrWhiteSpace(user.Secondpassword))
                 {
                     //设置二级密码
-                    user.Secondpassword = password;
+                    user.Secondpassword = CommonUtil.CheckPsw(password);
                     if (NHibernateHelper.userManager.Update(user))
                     {
                         OperatorSuccess(responseData);

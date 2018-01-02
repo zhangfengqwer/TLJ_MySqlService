@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using NhInterMySQL;
 using NhInterMySQL.Model;
+using TLJCommon;
 using TLJ_MySqlService.Handler;
 using Task = NhInterMySQL.Model.Task;
 
@@ -51,7 +53,7 @@ namespace TLJ_MySqlService.Utils
                 var user = NHibernateHelper.userManager.GetByUid(uid);
                 if (user == null)
                 {
-                    MySqlService.log.Error($"改用户为注册{uid}");
+                    MySqlService.log.Error($"改用户未注册{uid}");
                 }
                 else
                 {
@@ -74,7 +76,7 @@ namespace TLJ_MySqlService.Utils
                     NhInterMySQL.Model.Task task = NHibernateHelper.taskManager.GetTask(216);
                     if (task.target - userTask.progress >= 1)
                     {
-                        //任务进度加一
+                        //任务进度加
                         userTask.progress += goldExpense;
                         if (userTask.progress > 500) userTask.progress = 500;
                         if (NHibernateHelper.userTaskManager.Update(userTask))
@@ -139,7 +141,7 @@ namespace TLJ_MySqlService.Utils
             if (propId == 1)
             {
                 userInfo.Gold += propNum;
-                if (userInfo.Gold < 0)
+                if (userInfo.Gold <= 0)
                 {
                     User user = NHibernateHelper.userManager.GetByUid(uid);
                     if (user.IsRobot == 1)
@@ -150,7 +152,9 @@ namespace TLJ_MySqlService.Utils
                     {
                         userInfo.Gold = 0;
                     }
+
                 }
+                
                 if (userInfo.Gold >= 0)
                 {
                     if (!NHibernateHelper.userInfoManager.Update(userInfo))
@@ -160,9 +164,12 @@ namespace TLJ_MySqlService.Utils
                     }
                     else
                     {
+
 //                        string msg = $"改变了{propNum}金币";
 //                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                     }
+                    //发送奖励金;
+                    SendSupplyGold(uid);
                 }
                 else
                 {
@@ -261,6 +268,54 @@ namespace TLJ_MySqlService.Utils
                 }
             }
             return true;
+        }
+
+        //tag(string)：SupplyGold
+        //uid(string)
+        //todayCount(int)
+        //goldNum(int)
+        public static void SendSupplyGold(string uid)
+        {
+            UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
+            if (userInfo.Gold < 1500)
+            {
+                var config = NHibernateHelper.commonConfigManager.GetByUid(uid);
+                if (config == null) config = ModelFactory.CreateConfig(uid);
+                if (config.free_gold_count > 0)
+                {
+                    userInfo.Gold += 2000;
+                    config.free_gold_count--;
+                    NHibernateHelper.commonConfigManager.Update(config);
+                    NHibernateHelper.userInfoManager.Update(userInfo);
+
+                    MySqlService.log.Info($"{uid}发放补助金");
+                    //给logic服务器推送
+                    IntPtr connId;
+                    if (MySqlService.serviceDic.TryGetValue(TljServiceType.LogicService, out connId))
+                    {
+                        var jObject = new JObject();
+                        jObject.Add(MyCommon.TAG, Consts.Tag_SupplyGold);
+                        jObject.Add(MyCommon.UID, uid);
+                        int temp = 0;
+                        if (config.free_gold_count == 2)
+                        {
+                            temp = 1;
+                        }
+                        else if (config.free_gold_count == 1)
+                        {
+                            temp = 2;
+                        }
+                        else if (config.free_gold_count == 0)
+                        {
+                            temp = 3;
+                        }
+                        jObject.Add("todayCount", temp);
+                        jObject.Add("goldNum", 2000);
+                        MySqlService.Instance().sendMessage(connId, jObject.ToString());
+                        MySqlService.log.Info($"主动发送给logic：{jObject.ToString()}");
+                    }
+                }
+            }
         }
     }
 }

@@ -81,7 +81,7 @@ namespace TLJ_MySqlService.Handler
                 //加赠元宝
                 AddExtraYuanBao(uid, goods);
                 //首充礼包
-                AddFirstRechargeGift();
+                AddFirstRechargeGift(uid);
                 OperatorSuccess(responseData);
             }
             else
@@ -94,8 +94,20 @@ namespace TLJ_MySqlService.Handler
             }
         }
 
-        private void AddFirstRechargeGift()
+        private void AddFirstRechargeGift(string uid)
         {
+            var commonConfig = NHibernateHelper.commonConfigManager.GetByUid(uid);
+            if (commonConfig == null) commonConfig = ModelFactory.CreateConfig(uid);
+            if (commonConfig.first_recharge_gift == 0)
+            {
+                var userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
+                if (userInfo?.RechargeVip >= 6)
+                {
+                    commonConfig.first_recharge_gift = 1;
+                    NHibernateHelper.commonConfigManager.Update(commonConfig);
+                    SendEmailUtil.SendEmail(uid, "首充礼包", "恭喜你获得首充礼包", "1:30000;107:30;101:6;106:3;110:2");
+                }
+            }
         }
 
         /// <summary>
@@ -114,16 +126,20 @@ namespace TLJ_MySqlService.Handler
             //首次充值，加送元宝
             if (userRecharge.recharge_count == 0)
             {
-                if (MySqlUtil.AddProp(uid, goods.extra_reward))
+                if (!string.IsNullOrWhiteSpace(goods.extra_reward))
                 {
-                    LogUtil.Log(uid, MyCommon.OpType.EXTRA_YUANBAO,
-                        $"购买了{goods.goods_id},{goods.goods_name},加赠了{goods.extra_reward}");
-                }
-                else
-                {
-                    MySqlService.log.Warn($"{uid},{goods.goods_id} 加赠元宝失败，数据库内部错误");
+                    if (MySqlUtil.AddProp(uid, goods.extra_reward))
+                    {
+                        LogUtil.Log(uid, MyCommon.OpType.EXTRA_YUANBAO,
+                            $"购买了{goods.goods_id},{goods.goods_name},加赠了{goods.extra_reward}");
+                    }
+                    else
+                    {
+                        MySqlService.log.Warn($"{uid},{goods.goods_id} 加赠元宝失败，数据库内部错误");
+                    }
                 }
             }
+
             userRecharge.recharge_count++;
             NHibernateHelper.userRechargeManager.Update(userRecharge);
         }
@@ -185,28 +201,41 @@ namespace TLJ_MySqlService.Handler
                             var temp = string.Format($"恭喜你升级到Vip{i + 1},发送邮件奖励:{reward}");
                             LogUtil.Log(userInfo.Uid, MyCommon.OpType.VIP_ONCE_REWARD, temp);
                         }
-                    }
 
-                    //首充礼包
-                    if (userInfo.RechargeVip >= 6)
-                    {
-                        var commonConfig = NHibernateHelper.commonConfigManager.GetByUid(userInfo.Uid);
-                        if (commonConfig == null)
-                        {
-                            commonConfig = ModelFactory.CreateConfig(userInfo.Uid);
-                        }
-                        if (commonConfig.first_recharge_gift == 0)
-                        {
-                            SendEmailUtil.SendEmail(userInfo.Uid, "首充礼包", "恭喜您获得首充奖励", "1:30000;107:30;102:3;106:3;110:2");
-                            commonConfig.first_recharge_gift = 1;
-                            NHibernateHelper.commonConfigManager.Update(commonConfig);
-                        }
-                    }
+                        var level1 = GetLevel(vipFirstLevel);
+                        var level2 = GetLevel(vipLevel);
 
+                        userInfo.freeCount += level2 - level1;
+                        MySqlService.log.Info($"{userInfo.Uid} vip等级变化:{result},加了转盘次数:{level2 - level1}");
+                        NHibernateHelper.userInfoManager.Update(userInfo);
+                    }
                     return true;
                 }
             }
             return false;
+        }
+
+        private static int GetLevel(int vipFirstLevel)
+        {
+            //vip改变是增加转盘次数
+            if (vipFirstLevel < 3)
+            {
+                return 0;
+            }
+            else if (vipFirstLevel <= 5)
+            {
+                return 1;
+            }
+            else if (vipFirstLevel <= 8)
+            {
+                return 2;
+            }
+            else if (vipFirstLevel <= 10)
+            {
+                return 3;
+            }
+
+            return 0;
         }
 
         //数据库操作成功

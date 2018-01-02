@@ -39,6 +39,7 @@ namespace TLJ_MySqlService.Handler
             _userEmailReq.connId = connId;
             //查询
             GetUserEmailSql(uid, _userEmailReq);
+//            _userEmailReq.mailData = _userEmailReq.mailData.OrderBy(i => i.state).ToList();
             return JsonConvert.SerializeObject(_userEmailReq); ;
         }
 
@@ -46,7 +47,7 @@ namespace TLJ_MySqlService.Handler
         {
             try
             {
-                List<UserEmail> userEmailList = NHibernateHelper.userEmailManager.GetListByUid(uid).Take(50).ToList();
+                List<UserEmail> userEmailList = NHibernateHelper.userEmailManager.GetListByUid(uid).OrderByDescending(i => i.CreateTime).Take(50).ToList();
                 mailData mailData;
                 foreach (var userEmail in userEmailList)
                 {
@@ -56,7 +57,7 @@ namespace TLJ_MySqlService.Handler
                     mailData.state = userEmail.State;
                     mailData.reward = userEmail.Reward;
                     mailData.email_id = userEmail.EmailId;
-                    mailData.time = userEmail.CreateTime.ToLongDateString();
+                    mailData.time = userEmail.CreateTime.ToString("yyyy-MM-dd HH:mm:ss");
                     _userEmailReq.mailData.Add(mailData);
                 }
 

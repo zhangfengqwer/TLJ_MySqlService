@@ -170,14 +170,14 @@ namespace TLJ_MySqlService.Handler
         private static int GetProbabilityReward()
         {
             var probability1 = 32.6 * 100;
-            var probability2 = 10.15 * 100;
-            var probability3 = 5.89 * 100;
+            var probability2 = 9.9 * 100;
+            var probability3 = 6.89 * 100;
             var probability4 = 1 * 100;
             var probability5 = 25.49 * 100;
-            var probability6 = 6 * 100;
+            var probability6 = 3 * 100;
             var probability7 = 9.6 * 100;
-            var probability8 = 6.9 * 100;
-            var probability9 = 2.32 * 100;
+            var probability8 = 7.15 * 100;
+            var probability9 = 5.32 * 100;
             var probability10 = 0.05 * 100;
             var doubles = new List<double>();
 

@@ -2,6 +2,7 @@
 {
     public class UserRecharge
     {
+        [Newtonsoft.Json.JsonIgnore]
         public virtual string Uid { get; set; }
         public virtual int goods_id { get; set; }
         public virtual int recharge_count { get; set; }

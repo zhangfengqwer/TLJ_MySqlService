@@ -38,6 +38,7 @@ public class NetConfig
                     s_mySqlService_ip = j.GetValue("ip").ToString();
                     s_mySqlService_port = Convert.ToInt32(j.GetValue("port"));
                 }
+
             }
 
         }

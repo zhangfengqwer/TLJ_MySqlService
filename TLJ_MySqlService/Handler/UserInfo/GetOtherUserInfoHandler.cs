@@ -90,6 +90,8 @@ namespace TLJ_MySqlService.Handler
         {
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
             responseData.Add(MyCommon.NAME, userInfo.NickName);
+            var vipLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
+            responseData.Add("vipLevel", vipLevel);
             responseData.Add(MyCommon.GOLD, userInfo.Gold);
             responseData.Add(MyCommon.HEAD, userInfo.Head);
             JObject gameData = new JObject();

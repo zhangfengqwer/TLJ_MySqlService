@@ -39,3 +39,6 @@ C:\Users\Administrator\Desktop\TLJ_MySqlService\计划任务\bin\Debug\NhInterMy
 C:\Users\Administrator\Desktop\TLJ_MySqlService\计划任务\bin\Debug\NhInterMySQL.pdb
 C:\Users\Administrator\Desktop\TLJ_MySqlService\计划任务\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Administrator\Desktop\TLJ_MySqlService\计划任务\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Administrator\Desktop\TLJ_MySqlService\计划任务\bin\Debug\NLog.config
+C:\Users\Administrator\Desktop\TLJ_MySqlService\计划任务\bin\Debug\NLog.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\计划任务\bin\Debug\NLog.xml

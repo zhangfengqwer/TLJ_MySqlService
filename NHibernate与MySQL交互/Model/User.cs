@@ -10,7 +10,5 @@
         public virtual string ThirdId { set; get; }
         public virtual int Platform { set; get; }
         public virtual int IsRobot { set; get; }
-
-        public virtual Sign USign { set; get; }
     }
 }

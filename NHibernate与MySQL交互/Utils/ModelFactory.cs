@@ -16,6 +16,7 @@ public class ModelFactory
         commonConfig.wechat_login_gift = 0;
         commonConfig.first_recharge_gift = 0;
         commonConfig.expense_gold_daily = 0;
+        commonConfig.free_gold_count = 3;
 
         NHibernateHelper.commonConfigManager.Add(commonConfig);
 
@@ -34,6 +35,24 @@ public class ModelFactory
         NHibernateHelper.userRechargeManager.Add(userRecharge);
 
         return userRecharge;
+    }
+
+    public static User CreateUser(string uid)
+    {
+        var user = new User()
+        {
+            Uid = uid,
+            IsRobot = 0,
+            Platform = 0,
+            Secondpassword ="",
+            ThirdId ="",
+            Username = uid,
+            Userpassword = uid
+        };
+
+        NHibernateHelper.userManager.Add(user);
+
+        return user;
     }
 
 }

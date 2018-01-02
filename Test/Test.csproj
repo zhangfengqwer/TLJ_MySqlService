@@ -33,7 +33,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=4.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceProcess" />
@@ -46,21 +52,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\ArrayHelper.cs" />
+    <Compile Include="Helper\ByteHelper.cs" />
+    <Compile Include="Helper\EnumHelper.cs" />
+    <Compile Include="Helper\FileHelper.cs" />
+    <Compile Include="Helper\IdGenerater.cs" />
+    <Compile Include="Helper\MD5Helper.cs" />
+    <Compile Include="Helper\NetHelper.cs" />
+    <Compile Include="Helper\RandomHelper.cs" />
+    <Compile Include="Helper\StringHelper.cs" />
+    <Compile Include="Helper\TimeHelper.cs" />
+    <Compile Include="Object\Disposer.cs" />
+    <Compile Include="Object\Entity.cs" />
+    <Compile Include="Object\EntityFatory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\OneThreadSynchronizationContext.cs" />
     <Compile Include="Util\RandomName.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate与MySQL交互\NHibernate与MySQL交互.csproj">
       <Project>{a27fccef-7ccf-4f5d-8609-268afe33ed8a}</Project>
       <Name>NHibernate与MySQL交互</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TLJ_MySqlService\TLJ_MySqlService.csproj">
-      <Project>{74685689-aca8-4087-b4a3-ace58a62ce22}</Project>
-      <Name>TLJ_MySqlService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

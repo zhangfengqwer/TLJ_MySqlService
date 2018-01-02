@@ -15,7 +15,6 @@
     <property name="ThirdId" column="third_id" type="String"></property>
     <property name="Platform" column="platform" type="Int32"></property>
     <property name="IsRobot" column="is_robot" type="Int32"></property>
-    <one-to-one name="USign" cascade="all" />
   </class>
 
 </hibernate-mapping>

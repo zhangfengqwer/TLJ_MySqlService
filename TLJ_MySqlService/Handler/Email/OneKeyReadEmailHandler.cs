@@ -4,6 +4,7 @@ using NhInterMySQL;
 using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TLJ_MySqlService.Utils;
 using TLJCommon;
 
@@ -46,7 +47,7 @@ namespace TLJ_MySqlService.Handler
         private void OneKeyReadEmailSql(string uid, JObject responseData)
         {
             //得到未读取的邮件
-            List<UserEmail> userEmails = NHibernateHelper.userEmailManager.GetListByUid(uid);
+            List<UserEmail> userEmails = NHibernateHelper.userEmailManager.GetListByUid(uid).OrderByDescending(i => i.CreateTime).Take(50).ToList();
 
             if (userEmails == null)
             {
@@ -54,9 +55,19 @@ namespace TLJ_MySqlService.Handler
                 OperatorFail(responseData);
                 return;
             }
+            int temp = 0;
 
-            foreach (var email in userEmails)
+            temp = userEmails.Count >= 50 ? 50 : userEmails.Count;
+
+            for (int i = 0; i < temp; i++)
             {
+                var email = userEmails[i];
+                //没有奖励的不能一键读取
+                if (string.IsNullOrWhiteSpace(email.Reward))
+                {
+                    continue;
+                }
+
                 if (email.State == 0)
                 {
                     email.State = 1;
@@ -78,6 +89,7 @@ namespace TLJ_MySqlService.Handler
                     }
                 }
             }
+           
             OperatorSuccess(responseData);
         }
 

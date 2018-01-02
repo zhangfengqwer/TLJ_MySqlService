@@ -73,6 +73,11 @@ namespace TLJ_MySqlService.Handler
             {
                 UserTask userTask = userTasks[i];
                 Task task = tasks[i];
+
+                if (userTask.task_id == 208 || userTask.task_id == 216 || userTask.task_id == 218)
+                {
+                    continue;
+                }
                 userTaskJsonObject = new UserTaskJsonObject();
                 userTaskJsonObject.content = task.content;
                 userTaskJsonObject.title = task.title;
