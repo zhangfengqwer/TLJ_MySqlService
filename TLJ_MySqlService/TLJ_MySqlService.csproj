@@ -66,6 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\OpCode.cs" />
     <Compile Include="Handler\BaseHandler.cs" />
     <Compile Include="Handler\Email\DeleteEmailHandler.cs" />
     <Compile Include="Handler\Email\AddEmailHandler.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="Handler\Web\GetWXUserInfoHandler.cs" />
     <Compile Include="Model\Object\HandlerAttribute.cs" />
     <Compile Include="Model\Object\ServiceType.cs" />
+    <Compile Include="Model\Object\UserInfo_Game.cs" />
     <Compile Include="Model\Request\BuyYuanBaoReq.cs" />
     <Compile Include="Model\Request\OtherUserInfoReq.cs" />
     <Compile Include="Model\Request\SetUserSecondPSWReq.cs" />
@@ -120,7 +122,6 @@
     <Compile Include="Model\Response\TurnTableJsonObject.cs" />
     <Compile Include="Model\Response\AIJsonObject.cs" />
     <Compile Include="Model\Response\MedalRankJsonObject.cs" />
-    <Compile Include="Model\Response\UserBuffJsonObject.cs" />
     <Compile Include="Model\Response\UserGameJsonObject.cs" />
     <Compile Include="Model\Response\UserNoticeJsonObj.cs" />
     <Compile Include="Model\Response\UserPropJsonObject.cs" />

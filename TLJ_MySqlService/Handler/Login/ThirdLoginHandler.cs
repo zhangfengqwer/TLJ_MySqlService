@@ -28,9 +28,9 @@ namespace TLJ_MySqlService.Handler
             int connId = login.connId;
             string third_id = login.third_id;
             string nickname = login.nickname;
-            int platform = login.platform;
+            string channelname = login.channelname;
             if (string.IsNullOrWhiteSpace(tag) || string.IsNullOrWhiteSpace(third_id)
-                || string.IsNullOrWhiteSpace(nickname) || platform == 0 || "null".Equals(third_id))
+                || string.IsNullOrWhiteSpace(nickname) || string.IsNullOrWhiteSpace(channelname) || "null".Equals(third_id))
             {
                 MySqlService.log.Warn("字段有空:" + data);
                 return null;
@@ -39,11 +39,11 @@ namespace TLJ_MySqlService.Handler
             JObject responseData = new JObject();
             responseData.Add(MyCommon.TAG, tag);
             responseData.Add(MyCommon.CONNID, connId);
-            ThirdLoginSQL(third_id, nickname, platform, responseData);
+            ThirdLoginSQL(third_id, nickname, channelname, responseData);
             return responseData.ToString();
         }
 
-        private void ThirdLoginSQL(string thirdId, string nickname, int platform, JObject responseData)
+        private void ThirdLoginSQL(string thirdId, string nickname, string channelname, JObject responseData)
         {
             //通过第三方查询用户
             User user = NHibernateHelper.userManager.GetUserByTid(thirdId);
@@ -54,7 +54,7 @@ namespace TLJ_MySqlService.Handler
                 {
                     Username = nickname,
                     Userpassword = "",
-                    Platform = platform,
+                    ChannelName = channelname,
                     ThirdId = thirdId,
                     Secondpassword = "",
                     Uid = uid,
@@ -86,6 +86,9 @@ namespace TLJ_MySqlService.Handler
                     {
                         MySqlService.log.Info("第三方重复注册成功 user.Username:" + user.Username + "\nuser.Uid" + user.Uid);
                         OperatorSuccess(user, responseData);
+
+                        //第三方注册
+                        StatisticsHelper.StatisticsRegister(user.Uid);
                     }
                     else
                     {
@@ -95,16 +98,18 @@ namespace TLJ_MySqlService.Handler
                 }
 
                 SendEmailUtil.SendEmail(uid, "新用户奖励", "欢迎来到疯狂升级，为您送上1000金币，快去对战吧!", "1:1000");
-                SendEmailUtil.SendEmail(uid, "“疯狂升级”新手指引",
-                    @"欢迎来到疯狂升级，本游戏有多种玩法供您选择，更有比赛场可以获取丰厚大奖噢！详细规则可在“关于-游戏规则”中查看，祝您游戏愉快~",
-                    "");
-                SendEmailUtil.SendEmail(uid, "“疯狂升级”游戏福利",
-                    @"每日登陆可领取签到奖励，通过游戏可获得抽奖机会，完成任务以达成成就，比赛场中获得胜利有丰厚大礼，更多精彩内容等你来玩噢~",
-                    "");
+//                SendEmailUtil.SendEmail(uid, "“疯狂升级”新手指引",
+//                    @"欢迎来到疯狂升级，本游戏有多种玩法供您选择，更有比赛场可以获取丰厚大奖噢！详细规则可在“关于-游戏规则”中查看，祝您游戏愉快~",
+//                    "");
+//                SendEmailUtil.SendEmail(uid, "“疯狂升级”游戏福利",
+//                    @"每日登陆可领取签到奖励，通过游戏可获得抽奖机会，完成任务以达成成就，比赛场中获得胜利有丰厚大礼，更多精彩内容等你来玩噢~",
+//                    "");
             }
             else
             {
+                //第三方登陆
                 OperatorSuccess(user, responseData);
+                StatisticsHelper.StatisticsLogin(user.Uid);
             }
         }
 

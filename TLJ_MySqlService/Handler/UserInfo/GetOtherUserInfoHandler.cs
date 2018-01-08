@@ -35,23 +35,33 @@ namespace TLJ_MySqlService.Handler
                 return null;
             }
             //传给客户端的数据
-            JObject responseData = new JObject();
-            responseData.Add(MyCommon.TAG, Tag);
-            responseData.Add(MyCommon.CONNID, connId);
-            responseData.Add(MyCommon.UID, uid);
-            responseData.Add("isClientReq", isClientReq);
+//            JObject responseData = new JObject();
+//            responseData.Add(MyCommon.TAG, Tag);
+//            responseData.Add(MyCommon.CONNID, connId);
+//            responseData.Add(MyCommon.UID, uid);
+//            responseData.Add("isClientReq", isClientReq);
 
+            UserInfo_Game userInfoGame = new UserInfo_Game()
+            {
+                connId = connId,
+                tag = Tag,
+                uid = uid,
+                isClientReq = isClientReq,
+            };
 
-            GetOtherUserInfoSql(uid, responseData);
-            return responseData.ToString();
+            GetOtherUserInfoSql(uid, userInfoGame);
+
+           
+
+            return JsonConvert.SerializeObject(userInfoGame);
         }
 
-        private void GetOtherUserInfoSql(string uid, JObject responseData)
+        private void GetOtherUserInfoSql(string uid, UserInfo_Game userInfo_Game)
         {
             User user = NHibernateHelper.userManager.GetByUid(uid);
             if (user == null)
             {
-                OperatorFail(responseData);
+                OperatorFail(userInfo_Game);
                 MySqlService.log.Warn("传入的uid未注册");
             }
             else
@@ -70,39 +80,39 @@ namespace TLJ_MySqlService.Handler
                     if (NHibernateHelper.userInfoManager.Add(userInfo) &&
                         NHibernateHelper.userGameManager.Add(userGame))
                     {
-                        OperatorSuccess(userInfo, userGame, responseData);
+                        OperatorSuccess(userInfo, userGame, userInfo_Game);
                     }
                     else
                     {
-                        OperatorFail(responseData);
+                        OperatorFail(userInfo_Game);
                         MySqlService.log.Warn("添加用户信息失败");
                     }
                 }
                 else
                 {
-                    OperatorSuccess(userInfo, userGame, responseData);
+                    OperatorSuccess(userInfo, userGame, userInfo_Game);
                 }
             }
         }
 
         //数据库操作成功
-        private void OperatorSuccess(UserInfo userInfo, UserGame userGame, JObject responseData)
+        private void OperatorSuccess(UserInfo userInfo, UserGame userGame, UserInfo_Game userInfo_Game)
         {
-            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
-            responseData.Add(MyCommon.NAME, userInfo.NickName);
-            var vipLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
-            responseData.Add("vipLevel", vipLevel);
-            responseData.Add(MyCommon.GOLD, userInfo.Gold);
-            responseData.Add(MyCommon.HEAD, userInfo.Head);
-            JObject gameData = new JObject();
-            gameData.Add("allGameCount", userGame.AllGameCount);
-            gameData.Add("winCount", userGame.WinCount);
-            gameData.Add("runCount", userGame.RunCount);
-            gameData.Add("meiliZhi", userGame.MeiliZhi);
+            userInfo_Game.code = (int)Consts.Code.Code_OK;
+            userInfo_Game.name = userInfo.NickName;
 
-            responseData.Add(MyCommon.GAMEDATA, gameData);
+            var vipLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
+            userInfo_Game.vipLevel = vipLevel;
+            userInfo_Game.gold = userInfo.Gold;
+            userInfo_Game.head = userInfo.Head;
+            userInfo_Game.gameData = new UserInfo_Game.Gamedata();
+            userInfo_Game.gameData.allGameCount = userGame.AllGameCount;
+            userInfo_Game.gameData.winCount = userGame.WinCount;
+            userInfo_Game.gameData.runCount = userGame.RunCount;
+            userInfo_Game.gameData.meiliZhi = userGame.MeiliZhi;
+          
             //用户buff
-            List<UserBuffJsonObject> userBuffJsonObjects = new List<UserBuffJsonObject>();
+            List<UserInfo_Game.UserBuff> userBuffJsonObjects = new List<UserInfo_Game.UserBuff>();
             List<UserProp> userProps = NHibernateHelper.userPropManager.GetListByUid(userInfo.Uid);
             if (userProps != null)
             {
@@ -110,7 +120,7 @@ namespace TLJ_MySqlService.Handler
                 {
                     if (userProps[i].BuffNum > 0)
                     {
-                        UserBuffJsonObject userBuffJsonObject = new UserBuffJsonObject()
+                        UserInfo_Game.UserBuff userBuffJsonObject = new UserInfo_Game.UserBuff()
                         {
                             prop_id = userProps[i].PropId,
                             buff_num = userProps[i].BuffNum
@@ -119,14 +129,13 @@ namespace TLJ_MySqlService.Handler
                     }
                 }
             }
-
-            responseData.Add("BuffData", JsonConvert.SerializeObject(userBuffJsonObjects));
+            userInfo_Game.BuffData = userBuffJsonObjects;
         }
 
         //数据库操作失败
-        private void OperatorFail(JObject responseData)
+        private void OperatorFail(UserInfo_Game userInfo_Game)
         {
-            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
+            userInfo_Game.code = (int) Consts.Code.Code_CommonFail;
         }
     }
 }

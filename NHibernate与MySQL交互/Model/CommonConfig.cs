@@ -24,5 +24,13 @@
         /// 3次补助金
         /// </summary>
         public virtual int free_gold_count { set; get; }
+        /// <summary>
+        /// 每天登陆的次数
+        /// </summary>
+        public virtual int login_count_daily { set; get; }
+        /// <summary>
+        /// 每天充值的次数
+        /// </summary>
+        public virtual int recharge_count_daily { set; get; }
     }
 }

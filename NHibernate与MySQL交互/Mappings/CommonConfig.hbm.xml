@@ -14,5 +14,7 @@
     <property name="wechat_login_gift" column="wechat_login_gift" type="Int32"></property>
     <property name="first_recharge_gift" column="first_recharge_gift" type="Int32"></property>
     <property name="free_gold_count" column="free_gold_count" type="Int32"></property>
+    <property name="login_count_daily" column="login_count_daily" type="Int32"></property>
+    <property name="recharge_count_daily" column="recharge_count_daily" type="Int32"></property>
   </class>
 </hibernate-mapping>

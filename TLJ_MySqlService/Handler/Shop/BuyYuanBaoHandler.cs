@@ -82,6 +82,13 @@ namespace TLJ_MySqlService.Handler
                 AddExtraYuanBao(uid, goods);
                 //首充礼包
                 AddFirstRechargeGift(uid);
+                //充值数据统计
+                Statistics statistics = ModelFactory.CreateStatistics();
+                statistics.recharge_total += price;
+                NHibernateHelper.statisticsManager.Update(statistics);
+                //充值人数数据统计
+                StatisticsHelper.StatisticsRechargePerson(uid);
+
                 OperatorSuccess(responseData);
             }
             else

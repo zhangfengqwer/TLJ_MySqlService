@@ -8,7 +8,7 @@
         public virtual string Secondpassword { set; get; }
         public virtual string Uid { set; get; }
         public virtual string ThirdId { set; get; }
-        public virtual int Platform { set; get; }
+        public virtual string ChannelName { set; get; }
         public virtual int IsRobot { set; get; }
     }
 }

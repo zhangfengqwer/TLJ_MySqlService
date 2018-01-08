@@ -1,21 +1,13 @@
-﻿using NhInterMySQL;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NhInterMySQL;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using System.Windows.Forms;
-using Model;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NhInterMySQL.Model;
-
 namespace Test
 {
     class Program
@@ -24,9 +16,49 @@ namespace Test
         private static List<String> xingList = new List<string>();
         private static List<String> maleList = new List<string>();
         private static List<String> femaleList = new List<string>();
-//        public static Dictionary<TljServiceType, IntPtr> serviceDic = new Dictionary<TljServiceType, IntPtr>();
+
+        private static string privateJavaKey =
+                @"MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAgJ7GQfseQ1XPXqF4pxNOkYIjOEVV5AAJ7RnGZtTOt+elwjIO3rtxascOJZtoLjkKi2VBISmDVUNxifsipAdg3wIDAQABAkBcH91HUzOI7UR7tlIx8U08QacyXc84YKK7ddO6wcBSzg+7A9COQotVft6vRU5hDVNrn6c5lRQYrCTGiUbfA8zhAiEAvBPKfJ/5eUFC5FyYH7o+/CAV0wcQGWToR58ssFqPQC8CIQCvEgdqLqQ/yk4kz4p4WbxDiyMsrFT4MBunSwOZ2gaOUQIgEgob6+Q0O4sk7V5sQO7OR8SUE0+kHatuFCCSWr/06YUCIQCJ3p3ePgr1fYFateKrcqezXXB+7twfc+tjLM0SLUP6cQIgcj0Nu0MeNEyZagFtWpC/OwO4v7ctrXDsovgtRsCdlns="
+            ;
+
+        private static string publicJavaKey =
+                @"MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAICexkH7HkNVz16heKcTTpGCIzhFVeQACe0ZxmbUzrfnpcIyDt67cWrHDiWbaC45CotlQSEpg1VDcYn7IqQHYN8CAwEAAQ=="
+            ;
+
+        private static string content =
+                "amount=0.01&applicationID=100174463&country=CN&currency=CNY&merchantId=900086000000034648&productDesc=shang pin miao shu&productName=ceshi shangpin&requestId=20180103032610997167248&sdkChannel=1&urlver=2"
+            ;
+
+        private static string content1 =
+                "amount=1.00&applicationID=100174463&country=CN&currency=CNY&merchantId=900086000000034648&productDesc=10元宝&productName=10元宝&requestId=10310&sdkChannel=1&urlver=2"
+            ;
+
+        private static string result =
+            @"W6GXLobPVb84rVK/rR0HcgqGHKNztsSql5tmoa8eBypWHxSlFoamUhAK+2/9ehXpNrWPDNfLlW0mP42mosR+Gg==";
+
+
+        //        public static Dictionary<TljServiceType, IntPtr> serviceDic = new Dictionary<TljServiceType, IntPtr>();
+        private static byte[] CombineBytes(byte[] data1, byte[] data2)
+        {
+            byte[] data = new byte[data1.Length + data2.Length];
+            Buffer.BlockCopy(data1, 0, data, 0, data1.Length); //这种方法仅适用于字节数组
+            Buffer.BlockCopy(data2, 0, data, data1.Length, data2.Length);
+            return data;
+        }
+
         static void Main(string[] args)
         {
+            //            string bouncyCastle = RSAHelper.RSASignJavaBouncyCastle(content, privateJavaKey);
+            //            Console.WriteLine($"bouncyCastle:{bouncyCastle}");
+            //
+            //            var rsaPublicKeyJava2DotNet = RSAHelper.RSAPublicKeyJava2DotNet(
+            //                "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAICexkH7HkNVz16heKcTTpGCIzhFVeQACe0ZxmbUzrfnpcIyDt67cWrHDiWbaC45CotlQSEpg1VDcYn7IqQHYN8CAwEAAQ==");
+            //            Console.WriteLine($"rsaPublicKeyJava2DotNet:{rsaPublicKeyJava2DotNet}");
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            Console.WriteLine(baseDirectory);
+            //            SignUtils.RSAKey rasKey = SignUtils.GetRASKey();
+            //            Console.WriteLine($"PrivateKey:{rasKey.PrivateKey}");
+            //            Console.WriteLine($"PublicKey:{rasKey.PublicKey}");
 
             //            var md5 = GetMD5("123");
             //            string changePsw = ChangePsw("123");
@@ -144,6 +176,7 @@ namespace Test
 
             Console.ReadKey();
         }
+
 //
         public static string GetMD5(string password)
         {
@@ -174,33 +207,33 @@ namespace Test
         }
 
         private static string GetName()
+        {
+            StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "RandomName.json");
+            string str = sr.ReadToEnd().ToString();
+            sr.Close();
+
+            JObject jo = JObject.Parse(str);
+
+            List<string> xingList = JsonConvert.DeserializeObject<List<String>>(jo["xing"].ToString());
+            List<string> maleList = JsonConvert.DeserializeObject<List<String>>(jo["maleMing"].ToString());
+            List<string> femaleList = JsonConvert.DeserializeObject<List<String>>(jo["femaleMing"].ToString());
+            int next = new Random(GetRandomSeed()).Next(0, xingList.Count);
+            string xing = xingList[next];
+            string ming = "";
+            int next1 = new Random(GetRandomSeed()).Next(0, 2);
+            switch (next1)
             {
-                StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "RandomName.json");
-                string str = sr.ReadToEnd().ToString();
-                sr.Close();
-
-                JObject jo = JObject.Parse(str);
-
-                List<string> xingList = JsonConvert.DeserializeObject<List<String>>(jo["xing"].ToString());
-                List<string> maleList = JsonConvert.DeserializeObject<List<String>>(jo["maleMing"].ToString());
-                List<string> femaleList = JsonConvert.DeserializeObject<List<String>>(jo["femaleMing"].ToString());
-                int next = new Random(GetRandomSeed()).Next(0, xingList.Count);
-                string xing = xingList[next];
-                string ming = "";
-                int next1 = new Random(GetRandomSeed()).Next(0, 2);
-                switch (next1)
-                {
-                    case 0:
-                        int next2 = new Random(GetRandomSeed()).Next(0, maleList.Count);
-                        ming = maleList[next2];
-                        break;
-                    case 1:
-                        int next3 = new Random(GetRandomSeed()).Next(0, femaleList.Count);
-                        ming = femaleList[next3];
-                        break;
-                }
-                return xing + ming;
+                case 0:
+                    int next2 = new Random(GetRandomSeed()).Next(0, maleList.Count);
+                    ming = maleList[next2];
+                    break;
+                case 1:
+                    int next3 = new Random(GetRandomSeed()).Next(0, femaleList.Count);
+                    ming = femaleList[next3];
+                    break;
             }
+            return xing + ming;
+        }
 
 
         private static StringBuilder BuildAISql()
@@ -210,7 +243,7 @@ namespace Test
             foreach (var ai in aiList)
             {
                 string temp =
-                    $"({ai.UserId},'{ai.Uid}','{ai.Username}','{ai.Userpassword}','{ai.Secondpassword}','{ai.ThirdId}','{ai.Platform}','{ai.IsRobot}'),";
+                    $"({ai.UserId},'{ai.Uid}','{ai.Username}','{ai.Userpassword}','{ai.Secondpassword}','{ai.ThirdId}','{ai.ChannelName}','{ai.IsRobot}'),";
                 sb.Append(temp);
             }
             return sb;

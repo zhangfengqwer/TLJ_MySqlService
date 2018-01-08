@@ -18,7 +18,7 @@ namespace TLJ_MySqlService.Handler
                 {
                     Uid = UidUtil.createUID(),
                     ThirdId = "",
-                    Platform = 0,
+                    ChannelName = "javgame",
                     Username = "ai"+i,
                     Userpassword = "",
                     IsRobot = 1

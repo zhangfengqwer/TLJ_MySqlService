@@ -14,3 +14,4 @@ C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\obj\Debug\Test.pdb
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NhInterMySQL.dll
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NhInterMySQL.pdb
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\BouncyCastle.Crypto.dll

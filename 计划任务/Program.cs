@@ -208,7 +208,8 @@ namespace UpdateSignMonday
         //每天更新充值限额和每天花费金币数,每天发放3次免费
         private static void UpdateCommonConfig()
         {
-            var sql = "update common_config set recharge_phonefee_amount = '0',expense_gold_daily = '0',free_gold_count = '3'";
+            var sql = "update common_config set recharge_phonefee_amount = '0',expense_gold_daily = '0'," +
+                      "login_count_daily = '0',free_gold_count = '3'";
             using (var session = NHibernateHelper.OpenSession())
             {
                 using (var transaction = session.BeginTransaction())

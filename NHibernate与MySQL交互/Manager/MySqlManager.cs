@@ -447,5 +447,17 @@ namespace NhInterMySQL.Manager
                 return Prop;
             }
         }
+
+        public Statistics GetStatisByHour(string currentHour)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var statistics = Session.CreateCriteria(typeof(Statistics))
+                    .Add(Restrictions.Eq("time", currentHour))
+                    .UniqueResult<Statistics>();
+
+                return statistics;
+            }
+        }
     }
 }

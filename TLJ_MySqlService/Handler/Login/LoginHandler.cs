@@ -34,7 +34,7 @@ namespace TLJ_MySqlService.Handler
             if (string.IsNullOrWhiteSpace(_tag) || string.IsNullOrWhiteSpace(_username) ||
                 string.IsNullOrWhiteSpace(_userpassword))
             {
-                MySqlService.log.Warn("字段有空:"+data);
+                MySqlService.log.Warn("字段有空:" + data);
                 return null;
             }
             //传给客户端的数据
@@ -59,17 +59,20 @@ namespace TLJ_MySqlService.Handler
             switch (passwordtype)
             {
                 case 1:
-                    loginUser = NHibernateHelper.userManager.VerifyLogin(user.Username, CommonUtil.CheckPsw(user.Userpassword));
+                    loginUser = NHibernateHelper.userManager.VerifyLogin(user.Username,
+                        CommonUtil.CheckPsw(user.Userpassword));
                     MySqlService.log.Info($"用户登陆");
                     break;
                 //公众号登陆
                 case 2:
-                    loginUser = NHibernateHelper.userManager.VerifySecondLogin(user.Username,CommonUtil.CheckPsw(user.Userpassword));
+                    loginUser = NHibernateHelper.userManager.VerifySecondLogin(user.Username,
+                        CommonUtil.CheckPsw(user.Userpassword));
                     MySqlService.log.Info($"公众号二级密码登陆");
                     break;
                 //游戏客户端登陆
                 case 3:
-                    loginUser = NHibernateHelper.userManager.VerifySecondLogin(user.Username, CommonUtil.CheckPsw(user.Userpassword));
+                    loginUser = NHibernateHelper.userManager.VerifySecondLogin(user.Username,
+                        CommonUtil.CheckPsw(user.Userpassword));
                     MySqlService.log.Info($"客户端二级密码登陆");
                     break;
             }
@@ -86,7 +89,8 @@ namespace TLJ_MySqlService.Handler
 
                     if (userConfig.wechat_login_gift == 0)
                     {
-                        SendEmailUtil.SendEmail(loginUser.Uid, "神秘礼包", "您已成功关注微信公众号，并已绑定游戏账号，恭喜你获得一下奖励", "110:2;1:1888");
+                        SendEmailUtil.SendEmail(loginUser.Uid, "神秘礼包", "您已成功关注微信公众号，并已绑定游戏账号，恭喜你获得一下奖励",
+                            "110:2;1:1888");
                         userConfig.wechat_login_gift = 1;
                         NHibernateHelper.commonConfigManager.Update(userConfig);
                         LogUtil.Log(loginUser.Uid, MyCommon.OpType.WECHAT_LOGIN_GIFT, $"获得神秘礼包：110:2;1:1888");
@@ -116,6 +120,8 @@ namespace TLJ_MySqlService.Handler
 
             //更新下用户的任务
             MySqlUtil.UpdateUserTask(user.Uid);
+
+            StatisticsHelper.StatisticsLogin(user.Uid);
         }
 
 

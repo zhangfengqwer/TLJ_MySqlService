@@ -64,6 +64,7 @@
     <Compile Include="Model\PVPGameRoom.cs" />
     <Compile Include="Model\SignConfig.cs" />
     <Compile Include="Model\TurnTable.cs" />
+    <Compile Include="Model\Statistics.cs" />
     <Compile Include="Model\UserRealName.cs" />
     <Compile Include="Model\MyLog.cs" />
     <Compile Include="Model\UserRecharge.cs" />
@@ -80,10 +81,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ModelFactory.cs" />
     <Compile Include="Utils\SendEmailUtil.cs" />
+    <Compile Include="Utils\StatisticsHelper.cs" />
+    <Compile Include="Utils\TimeHelper.cs" />
     <Compile Include="Utils\UidUtil.cs" />
     <Compile Include="Utils\VipUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Mappings\Statistics.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mappings\UserRecharge.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

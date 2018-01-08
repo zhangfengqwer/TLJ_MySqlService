@@ -44,7 +44,7 @@ namespace TLJ_MySqlService.Handler
         private void GetUserInfoSql(string uid, JObject responseData)
         {
             User user = NHibernateHelper.userManager.GetByUid(uid);
-            List<UserBuffJsonObject> userBuffJsonObjects = new List<UserBuffJsonObject>();
+            List<UserInfo_Game.UserBuff> userBuffJsonObjects = new List<UserInfo_Game.UserBuff>();
             if (user == null)
             {
                 OperatorFail(responseData);
@@ -82,7 +82,7 @@ namespace TLJ_MySqlService.Handler
                         {
                             if (userProps[i].BuffNum > 0)
                             {
-                                UserBuffJsonObject userBuffJsonObject = new UserBuffJsonObject()
+                                UserInfo_Game.UserBuff userBuffJsonObject = new UserInfo_Game.UserBuff()
                                 {
                                     prop_id = userProps[i].PropId,
                                     buff_num = userProps[i].BuffNum
@@ -141,7 +141,7 @@ namespace TLJ_MySqlService.Handler
         }
 
         //数据库操作成功
-        private void OperatorSuccess(UserInfo userInfo, UserGame userGame, List<UserBuffJsonObject> userProps, bool isRealName, JObject responseData)
+        private void OperatorSuccess(UserInfo userInfo, UserGame userGame, List<UserInfo_Game.UserBuff> userProps, bool isRealName, JObject responseData)
         {
             UserGameJsonObject userGameJsonObject = new UserGameJsonObject(userGame.AllGameCount, userGame.WinCount, userGame.RunCount, userGame.MeiliZhi,
                 userGame.XianxianJDPrimary,userGame.XianxianJDMiddle,userGame.XianxianJDHigh,
