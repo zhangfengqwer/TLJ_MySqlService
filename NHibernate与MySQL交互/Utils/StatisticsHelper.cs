@@ -46,7 +46,7 @@ public class StatisticsHelper
         commonConfig.recharge_count_daily++;
         NHibernateHelper.commonConfigManager.Update(commonConfig);
 
-        //第一次登陆的时候，统计加一
+        //第一次充值的时候，统计充值人数加一
         if (commonConfig.recharge_count_daily == 1)
         {
             var statistics = ModelFactory.CreateStatistics();

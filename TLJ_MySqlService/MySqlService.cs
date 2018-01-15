@@ -141,9 +141,17 @@ namespace TLJ_MySqlService
                 {
                     HandlerAttribute handlerAttribute = (HandlerAttribute) attr;
                     object obj = Activator.CreateInstance(type);
+
+                    BaseHandler baseHandler = obj as BaseHandler;
+                    if (baseHandler == null)
+                    {
+                        log.Warn($"没有继承BaseHandler:{type.Name}");
+                        continue;
+                    }
+
                     if (!handlerDic.ContainsKey(handlerAttribute.Tag))
                     {
-                        handlerDic.Add(handlerAttribute.Tag, (BaseHandler) obj);
+                        handlerDic.Add(handlerAttribute.Tag, baseHandler);
                     }
                     else
                     {

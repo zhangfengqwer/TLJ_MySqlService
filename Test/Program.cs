@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
+using System.Net;
+using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Text;
 namespace Test
@@ -54,8 +56,13 @@ namespace Test
             //            var rsaPublicKeyJava2DotNet = RSAHelper.RSAPublicKeyJava2DotNet(
             //                "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAICexkH7HkNVz16heKcTTpGCIzhFVeQACe0ZxmbUzrfnpcIyDt67cWrHDiWbaC45CotlQSEpg1VDcYn7IqQHYN8CAwEAAQ==");
             //            Console.WriteLine($"rsaPublicKeyJava2DotNet:{rsaPublicKeyJava2DotNet}");
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            Console.WriteLine(baseDirectory);
+            //            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            //            Console.WriteLine(baseDirectory);
+            //           
+            IPHostEntry ipHostEntry = Dns.GetHostEntry("fkmpay.51v.cn");
+            foreach (var ipAddress in ipHostEntry.AddressList)
+                Console.WriteLine($"ipAddress:{ipAddress.ToString()}"); 
+
             //            SignUtils.RSAKey rasKey = SignUtils.GetRASKey();
             //            Console.WriteLine($"PrivateKey:{rasKey.PrivateKey}");
             //            Console.WriteLine($"PublicKey:{rasKey.PublicKey}");

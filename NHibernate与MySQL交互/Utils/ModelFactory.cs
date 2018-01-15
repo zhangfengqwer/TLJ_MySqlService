@@ -77,7 +77,7 @@ public class ModelFactory
             recharge_total = 0,
             recharge_person_count = 0,
             register_count = 0,
-            time = DateTime.Now.ToString("yyyy-MM-dd hh"),
+            time = DateTime.Now.ToString("yyyy-MM-dd HH"),
         };
         NHibernateHelper.statisticsManager.Add(statistics);
 

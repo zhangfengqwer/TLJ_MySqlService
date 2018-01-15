@@ -209,7 +209,7 @@ namespace UpdateSignMonday
         private static void UpdateCommonConfig()
         {
             var sql = "update common_config set recharge_phonefee_amount = '0',expense_gold_daily = '0'," +
-                      "login_count_daily = '0',free_gold_count = '3'";
+                      "login_count_daily = '0',recharge_count_daily = '0',free_gold_count = '3'";
             using (var session = NHibernateHelper.OpenSession())
             {
                 using (var transaction = session.BeginTransaction())

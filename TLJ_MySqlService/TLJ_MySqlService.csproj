@@ -75,6 +75,7 @@
     <Compile Include="Handler\Email\ReadEmailHandler.cs" />
     <Compile Include="Handler\Email\GetEmailHandler.cs" />
     <Compile Include="Handler\Game\GetGameOverHandler.cs" />
+    <Compile Include="Handler\Shop\IOSPayHandler.cs" />
     <Compile Include="Handler\TurnTable\UseTurnTableHandler.cs" />
     <Compile Include="Handler\TurnTable\GetTurnTableDataHandler.cs" />
     <Compile Include="Handler\Game\RecordUserGameDataHandler.cs" />

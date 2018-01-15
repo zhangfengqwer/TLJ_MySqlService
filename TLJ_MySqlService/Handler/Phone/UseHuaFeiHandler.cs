@@ -13,6 +13,8 @@ namespace TLJ_MySqlService.Handler
     [Handler(Consts.Tag_UseHuaFei)]
     class UseHuaFeiHandler : BaseHandler
     {
+        private static readonly object Locker = new object();
+
         public override string OnResponse(string data)
         {
             UseHuaFeiReq defaultReqData;
@@ -51,7 +53,10 @@ namespace TLJ_MySqlService.Handler
                 return _responseData.ToString();
             }
 
-            UseHuaFeiSql(Uid, propId, phone, _responseData);
+            lock (Locker)
+            {
+                UseHuaFeiSql(Uid, propId, phone, _responseData);
+            }
             return _responseData.ToString();
         }
 
