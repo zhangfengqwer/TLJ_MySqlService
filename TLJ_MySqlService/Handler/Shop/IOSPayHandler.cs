@@ -63,7 +63,7 @@ namespace TLJ_MySqlService.Handler
                 };
                 response = new BuyYuanBaoHandler().OnResponse(JsonConvert.SerializeObject(baoReq));
 
-                MySqlService.log.Warn($"处理返回：{response}");
+                MySqlService.log.Info($"处理返回：{response}");
 
                 OperatorSuccess(_responseData);
             }
@@ -101,7 +101,7 @@ namespace TLJ_MySqlService.Handler
                 }else if (21007 == (int) status)
                 {
                     string result = HttpUtil.PostHttp(sandboxurl, reqData);
-                    MySqlService.log.Info($"苹果沙箱返回数据：{postHttp}");
+                    MySqlService.log.Info($"苹果沙箱返回数据：{result}");
                     JObject jo = JObject.Parse(result);
                     if (jo.TryGetValue("status", out var sts))
                     {
@@ -115,7 +115,6 @@ namespace TLJ_MySqlService.Handler
 
             return false;
         }
-
 
         //数据库操作成功
         private void OperatorSuccess(JObject responseData)

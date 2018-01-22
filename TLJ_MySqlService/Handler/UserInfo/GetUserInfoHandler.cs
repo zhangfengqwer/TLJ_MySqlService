@@ -187,6 +187,16 @@ namespace TLJ_MySqlService.Handler
             var userRecharges = NHibernateHelper.userRechargeManager.GetListByUid(userInfo.Uid);
 
             responseData.Add("userRecharge", JsonConvert.SerializeObject(userRecharges));
+
+            CommonConfig config = ModelFactory.CreateConfig(userInfo.Uid);
+            if (config.first_recharge_gift == 0)
+            {
+                responseData.Add("hasShouChong", false);
+            }
+            else
+            {
+                responseData.Add("hasShouChong", true);
+            }
         }
 
         //数据库操作失败

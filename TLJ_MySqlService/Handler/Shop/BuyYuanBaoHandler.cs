@@ -93,8 +93,7 @@ namespace TLJ_MySqlService.Handler
             }
             else
             {
-                string msg =
-                    $"购买元宝失败，uid: {uid},goodid: {goodId},num: {num},price：{price},goodsprice:{goods?.price * num},orderid: {orderid}";
+                string msg = $"购买元宝失败，uid: {uid},goodid: {goodId},num: {num},price：{price},goodsprice:{goods?.price * num},orderid: {orderid}";
                 MySqlService.log.Warn(msg);
                 LogUtil.Log(uid, MyCommon.OpType.BUYYUANBAO, msg);
                 OperatorFail(responseData);

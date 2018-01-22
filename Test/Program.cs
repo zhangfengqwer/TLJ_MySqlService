@@ -67,6 +67,12 @@ namespace Test
             var postHttp = HttpUtil.PostHttp("https://pay.vivo.com.cn/vivoPay/getVivoOrderNum",
                 @"appId=4164d42da1fa0deaa27ca8cb4727b618&notifyUrl=http://mapi.javgame.com:14123/mNotify/notify_vivo&orderAmount=0.01&orderDesc=10元宝&orderTime=20180119143557&orderTitle=10元宝&signMethod=MD5&storeId=9fb92f5a285056d48c38&storeOrder=247&version=1.0.0&signature=3dd60db40f63ab610d0bb80699099a62");
             Console.WriteLine($"postHttp:{postHttp}");
+
+#if release
+            Console.WriteLine("test");
+#endif
+            Console.WriteLine("1");
+
             //            SignUtils.RSAKey rasKey = SignUtils.GetRASKey();
             //            Console.WriteLine($"PrivateKey:{rasKey.PrivateKey}");
             //            Console.WriteLine($"PublicKey:{rasKey.PublicKey}");
@@ -185,7 +191,7 @@ namespace Test
             //
             //            }
 
-            Console.ReadKey();
+                        Console.ReadKey();
         }
 
 //
