@@ -39,6 +39,12 @@ namespace TLJ_MySqlService.Handler
             JObject responseData = new JObject();
             responseData.Add(MyCommon.TAG, tag);
             responseData.Add(MyCommon.CONNID, connId);
+
+            if (nickname.Length > 10)
+            {
+                nickname = nickname.Remove(5, nickname.Length - 10);
+            }
+
             ThirdLoginSQL(third_id, nickname, channelname, responseData);
             return responseData.ToString();
         }
@@ -61,7 +67,6 @@ namespace TLJ_MySqlService.Handler
                     IsRobot = 0
                 };
 
-
                 Random random = new Random();
 
                 //注册用户数据 并 注册新手邮箱
@@ -75,6 +80,7 @@ namespace TLJ_MySqlService.Handler
                     for (int i = 0; i < 10; i++)
                     {
                         int next = random.Next(1, 100);
+                        user.Username.Remove(user.Username.Length - 1);
                         user.Username += next;
                         if (NHibernateHelper.userManager.Add(user))
                         {

@@ -81,7 +81,7 @@ namespace TLJ_MySqlService.Handler
                 //加赠元宝
                 AddExtraYuanBao(uid, goods);
                 //首充礼包
-                AddFirstRechargeGift(uid);
+                AddFirstRechargeGift(uid, price);
                 //充值数据统计
                 Statistics statistics = ModelFactory.CreateStatistics();
                 statistics.recharge_total += price;
@@ -101,14 +101,13 @@ namespace TLJ_MySqlService.Handler
             }
         }
 
-        private void AddFirstRechargeGift(string uid)
+        private void AddFirstRechargeGift(string uid, float price)
         {
             var commonConfig = NHibernateHelper.commonConfigManager.GetByUid(uid);
             if (commonConfig == null) commonConfig = ModelFactory.CreateConfig(uid);
             if (commonConfig.first_recharge_gift == 0)
             {
-                var userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
-                if (userInfo?.RechargeVip >= 6)
+                if (price >= 6)
                 {
                     commonConfig.first_recharge_gift = 1;
                     NHibernateHelper.commonConfigManager.Update(commonConfig);

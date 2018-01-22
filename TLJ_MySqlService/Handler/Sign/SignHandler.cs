@@ -27,7 +27,7 @@ namespace TLJ_MySqlService.Handler
             int signConnId = defaultReq.connId;
             string signUid = defaultReq.uid;
 
-            if (string.IsNullOrWhiteSpace(signTag) 
+            if (string.IsNullOrWhiteSpace(signTag)
                 || string.IsNullOrWhiteSpace(signUid))
             {
                 MySqlService.log.Warn("字段有空");
@@ -70,7 +70,7 @@ namespace TLJ_MySqlService.Handler
                     signByUid.SignWeekDays != 0)
                 {
                     OperatorFail(responseData);
-                    MySqlService.log.Warn("已签到");
+                    MySqlService.log.Warn("已签到:" + signUid);
                 }
                 //未签到，可以签到
                 else
@@ -79,7 +79,8 @@ namespace TLJ_MySqlService.Handler
                     signByUid.SignWeekDays++;
                     signByUid.UpdateTime = DateTime.Now;
                     MySqlService.log.Info(signConfig.goods_prop);
-                    if (NHibernateHelper.signManager.Update(signByUid) && MySqlUtil.AddProp(signUid,signConfig.goods_prop))
+                    if (NHibernateHelper.signManager.Update(signByUid) &&
+                        MySqlUtil.AddProp(signUid, signConfig.goods_prop))
                     {
                         OperatorSuccess(responseData);
                     }

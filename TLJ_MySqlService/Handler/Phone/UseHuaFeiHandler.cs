@@ -81,7 +81,10 @@ namespace TLJ_MySqlService.Handler
                     //10元话费
                     case 113:
                         //测试环境不需要到账
-                        isPhoneFee = PhoneFeeRecharge(uid, propId, phone);
+                        if (!MySqlService.IsTest)
+                        {
+                            isPhoneFee = PhoneFeeRecharge(uid, propId, phone);
+                        }
                         break;
                 }
                 if (isPhoneFee)

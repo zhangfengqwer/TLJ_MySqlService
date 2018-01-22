@@ -38,8 +38,6 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.TAG, Tag);
             responseData.Add(MyCommon.CONNID, connId);
 
-
-
             try
             {
                 uid = uid.Substring(1, uid.Length - 1);

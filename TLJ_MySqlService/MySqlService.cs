@@ -74,8 +74,7 @@ namespace TLJ_MySqlService
                 InitLog();
                 InitHandler();
                 InitCommomData();
-                log.Info(
-                    $"初始数据完成:PvpGameRooms:{PvpGameRooms.Count},ShopData:{ShopData.Count},SignConfigs:{SignConfigs.Count},TurnTables:{TurnTables.Count}");
+                log.Info($"初始数据完成:PvpGameRooms:{PvpGameRooms.Count},ShopData:{ShopData.Count},SignConfigs:{SignConfigs.Count},TurnTables:{TurnTables.Count}");
                 NetConfig.init();
                 InitData();
                 InitService();
@@ -244,7 +243,7 @@ namespace TLJ_MySqlService
 
 
         HandleResult OnPointerDataReceive(IntPtr connId, IntPtr pData, int length)
-        {
+        { 
             // 数据到达了
             try
             {
