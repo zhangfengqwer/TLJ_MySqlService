@@ -64,7 +64,7 @@ namespace TLJ_MySqlService.Handler
                     if (userTask.progress == task.target)
                     {
                         userTask.isover = 1;
-                        if (NHibernateHelper.userTaskManager.Update(userTask) && MySqlUtil.AddProp(uid, task.reward))
+                        if (NHibernateHelper.userTaskManager.Update(userTask) && MySqlUtil.AddProp(uid, task.reward,"领取任务"))
                         {
                             OperatorSuccess(responseData);
                         }

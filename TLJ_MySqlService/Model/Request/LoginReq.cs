@@ -5,6 +5,9 @@
     public string account;
     public string password;
     public string channelname;
+    public string ip;
+    public string apkVersion;
+
     public int passwordtype;
 }
 

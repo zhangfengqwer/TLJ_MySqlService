@@ -91,8 +91,6 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.SIGNWEEKDAYS, sign.SignWeekDays);
             responseData.Add(MyCommon.UPDATETIME, updateTime);
             responseData.Add("sign_config", JsonConvert.SerializeObject(MySqlService.SignConfigs));
-
-
         }
 
         //数据库操作失败

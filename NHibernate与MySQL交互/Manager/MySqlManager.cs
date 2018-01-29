@@ -452,11 +452,14 @@ namespace NhInterMySQL.Manager
         {
             using (var Session = NHibernateHelper.OpenSession())
             {
-                var statistics = Session.CreateCriteria(typeof(Statistics))
-                    .Add(Restrictions.Eq("time", currentHour))
-                    .UniqueResult<Statistics>();
+                lock (Locker)
+                {
+                    var statistics = Session.CreateCriteria(typeof(Statistics))
+                        .Add(Restrictions.Eq("time", currentHour))
+                        .UniqueResult<Statistics>();
 
-                return statistics;
+                    return statistics;
+                }
             }
         }
     }

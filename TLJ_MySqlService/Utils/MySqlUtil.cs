@@ -107,8 +107,9 @@ namespace TLJ_MySqlService.Utils
         /// </summary>
         /// <param name="prop">以如下格式："1:123;2:123"</param>
         /// <param name="uid"></param>
+        /// <param name="reason"></param>
         /// <returns></returns>
-        public static bool AddProp(string uid, string prop)
+        public static bool AddProp(string uid, string prop,string reason)
         {
             List<string> list = new List<String>();
             CommonUtil.splitStr(prop, list, ';');
@@ -117,7 +118,7 @@ namespace TLJ_MySqlService.Utils
                 string[] strings = list[i].Split(':');
                 int propId = Convert.ToInt32(strings[0]);
                 int propNum = Convert.ToInt32(strings[1]);
-                if (!ChangeProp(uid, propId, propNum)) return false;
+                if (!ChangeProp(uid, propId, propNum, reason)) return false;
             }
             return true;
         }
@@ -128,8 +129,9 @@ namespace TLJ_MySqlService.Utils
         /// <param name="uid"></param>
         /// <param name="propId">1,2...</param>
         /// <param name="propNum"></param>
+        /// <param name="reason"></param>
         /// <returns></returns>
-        public static bool ChangeProp(string uid, int propId, int propNum)
+        public static bool ChangeProp(string uid, int propId, int propNum,string reason)
         {
             UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
             if (userInfo == null)
@@ -164,6 +166,10 @@ namespace TLJ_MySqlService.Utils
                     }
                     else
                     {
+                        int afterGold = userInfo.Gold;
+                        int changeGold = propNum;
+
+                        StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.GOLD, reason,afterGold - changeGold, changeGold, afterGold);
 
 //                        string msg = $"改变了{propNum}金币";
 //                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
@@ -190,8 +196,13 @@ namespace TLJ_MySqlService.Utils
                     }
                     else
                     {
-//                        string msg = $"改变了{propNum}元宝";
-//                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+                        //记录玩家财富变化日志
+                        int after = userInfo.YuanBao;
+                        int change = propNum;
+
+                        StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.YUANBAO, reason, after - change, change, after);
+                        //                        string msg = $"改变了{propNum}元宝";
+                        //                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                     }
                 }
                 else
@@ -212,8 +223,13 @@ namespace TLJ_MySqlService.Utils
                     }
                     else
                     {
-//                        string msg = $"改变了{propNum}徽章";
-//                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+                        //记录玩家财富变化日志
+                        int after = userInfo.Medel;
+                        int change = propNum;
+
+                        StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.Medal, reason, after - change, change, after);
+                        //                        string msg = $"改变了{propNum}徽章";
+                        //                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                     }
                 }
                 else
@@ -313,6 +329,13 @@ namespace TLJ_MySqlService.Utils
                         jObject.Add("goldNum", 2000);
                         MySqlService.Instance().sendMessage(connId, jObject.ToString());
                         MySqlService.log.Info($"主动发送给logic：{jObject.ToString()}");
+
+
+                        //记录玩家财富变化日志
+                        int afterGold = userInfo.Gold;
+                        int changeGold = 2000;
+
+                        StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.GOLD, "奖励金发放", afterGold - changeGold, changeGold, afterGold);
                     }
                 }
             }

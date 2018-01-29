@@ -80,7 +80,7 @@ namespace TLJ_MySqlService.Handler
                     signByUid.UpdateTime = DateTime.Now;
                     MySqlService.log.Info(signConfig.goods_prop);
                     if (NHibernateHelper.signManager.Update(signByUid) &&
-                        MySqlUtil.AddProp(signUid, signConfig.goods_prop))
+                        MySqlUtil.AddProp(signUid, signConfig.goods_prop,"签到奖励"))
                     {
                         OperatorSuccess(responseData);
                     }

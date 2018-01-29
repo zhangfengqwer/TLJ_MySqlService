@@ -30,7 +30,11 @@ namespace TLJ_MySqlService.Handler
             int _connId = login.connId;
             string _username = login.account;
             string _userpassword = login.password;
+            string ip = login.ip;
+            string apkVersion = login.apkVersion;
             int passwordtype = login.passwordtype;
+            string channelname = login.channelname;
+
             if (string.IsNullOrWhiteSpace(_tag) || string.IsNullOrWhiteSpace(_username) ||
                 string.IsNullOrWhiteSpace(_userpassword))
             {
@@ -48,12 +52,12 @@ namespace TLJ_MySqlService.Handler
             }
 
             User _user = new User() {Username = _username, Userpassword = _userpassword};
-            LoginSQL(_user, passwordtype, _responseData);
+            LoginSQL(_user, passwordtype, channelname, ip, apkVersion, _responseData);
             return _responseData.ToString();
         }
 
         //登录 数据库操作
-        private void LoginSQL(User user, int passwordtype, JObject responseData)
+        private void LoginSQL(User user, int passwordtype, string channeName, string ip, string versionName, JObject responseData)
         {
             User loginUser = null;
             switch (passwordtype)
@@ -96,7 +100,7 @@ namespace TLJ_MySqlService.Handler
                         LogUtil.Log(loginUser.Uid, MyCommon.OpType.WECHAT_LOGIN_GIFT, $"获得神秘礼包：110:2;1:1888");
                     }
                 }
-                OperatorSuccess(loginUser, responseData);
+                OperatorSuccess(loginUser, channeName, ip, versionName, responseData);
             }
             else
             {
@@ -112,18 +116,19 @@ namespace TLJ_MySqlService.Handler
             }
         }
 
-        //数据库操作成功
-        private void OperatorSuccess(User user, JObject responseData)
+        private void OperatorSuccess(User user, string channelName, string ip, string versionName, JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
+            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
             responseData.Add(MyCommon.UID, user.Uid);
 
             //更新下用户的任务
             MySqlUtil.UpdateUserTask(user.Uid);
 
             StatisticsHelper.StatisticsLogin(user.Uid);
-        }
 
+            StatictisLogUtil.Login(user.Uid, user.Username, ip, channelName, versionName, MyCommon.OpType.Login);
+
+        }
 
         //数据库操作失败
         private void OperatorFail(JObject responseData)

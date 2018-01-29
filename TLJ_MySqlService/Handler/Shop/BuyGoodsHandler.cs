@@ -115,8 +115,14 @@ namespace TLJ_MySqlService.Handler
                         //先扣钱,添加金币
                         MySqlService.log.Info("先扣钱,添加金币");
                         string temp = "";
-                        if (NHibernateHelper.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, out temp))
+                        if (NHibernateHelper.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, "元宝购买金币", out temp))
                         {
+                            //记录玩家财富变化日志
+                            int after = userInfo.YuanBao;
+                            int change = -sumPrice;
+                            StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.YUANBAO, "元宝购买金币", after - change, change, after);
+
+                           
                             string s = string.Format("花费{0}元宝，购买了{1}个{2}", sumPrice, num, goods.goods_name);
                             LogUtil.Log(uid, MyCommon.OpType.BUYGOLD, s);
                             IsSuccess = true;
@@ -132,8 +138,12 @@ namespace TLJ_MySqlService.Handler
                         //先扣钱,添加金币
                         MySqlService.log.Info("先扣徽章,添加金币");
                         string temp = "";
-                        if (NHibernateHelper.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, out temp))
+                        if (NHibernateHelper.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, "徽章购买金币", out temp))
                         {
+                            //记录玩家财富变化日志
+                            int after = userInfo.Medel;
+                            int change = -sumPrice;
+                            StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.Medal, "徽章购买金币", after - change, change, after);
                             string s = string.Format("花费{0}徽章，购买了{1}个{2}", sumPrice, num, goods.goods_name);
                             LogUtil.Log(uid, MyCommon.OpType.BUYGOLD, s);
                             IsSuccess = true;
@@ -147,7 +157,7 @@ namespace TLJ_MySqlService.Handler
             return IsSuccess;
         }
 
-        private bool AddJinbi(Goods goods, UserInfo userInfo, int num, out string temp)
+        private bool AddJinbi(Goods goods, UserInfo userInfo, int num, string reason, out string temp)
         {
             string[] strings = goods.props.Split(':');
             int propId = Convert.ToInt32(strings[0]);
@@ -158,6 +168,10 @@ namespace TLJ_MySqlService.Handler
                 userInfo.Gold += propNum * num;
                 if (NHibernateHelper.userInfoManager.Update(userInfo))
                 {
+                    //记录玩家财富变化日志
+                    int after = userInfo.Gold;
+                    int change = propNum * num;
+                    StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.GOLD, reason, after - change, change, after);
                     return true;
                 }
             }

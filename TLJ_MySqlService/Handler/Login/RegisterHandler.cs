@@ -106,6 +106,7 @@ namespace TLJ_MySqlService.Handler
             ProgressTaskHandler.ProgressTaskSql(208, user.Uid);
 
             StatisticsHelper.StatisticsRegister(user.Uid);
+
         }
 
         //数据库操作失败

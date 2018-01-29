@@ -29,6 +29,7 @@ namespace TLJ_MySqlService.Handler
             int reward_id = defaultReqData.reward_id;
             int reward_num = defaultReqData.reward_num;
             string connId = defaultReqData.connId;
+            string reason = defaultReqData.reason;
 
             if (!MySqlService.AdminAccount.Equals(account) || !MySqlService.AdminPassWord.Equals(password))
             {
@@ -46,13 +47,13 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.TAG, Tag);
             _responseData.Add(MyCommon.CONNID, connId);
 
-            AddPropSql(Uid, reward_id, reward_num, _responseData);
+            AddPropSql(Uid, reward_id, reward_num, reason, _responseData);
             return _responseData.ToString();
         }
 
-        private void AddPropSql(string uid, int propId, int num, JObject responseData)
+        private void AddPropSql(string uid, int propId, int num, string reason, JObject responseData)
         {
-            if (MySqlUtil.ChangeProp(uid, propId, num))
+            if (MySqlUtil.ChangeProp(uid, propId, num, reason))
             {
                 OperatorSuccess(responseData);
             }

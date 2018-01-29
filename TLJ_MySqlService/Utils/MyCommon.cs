@@ -13,33 +13,37 @@
 
     public class OpType 
     {
-        public static readonly string BUYGOLD = "buy_gold";
-        public static readonly string BUYYUANBAO = "buy_yuanbao";
-        public static readonly string BUYPROP = "buy_prop";
-        public static readonly string RECHARGE_PHONEFEE = "recharge_phonefee";
-        public static readonly string VIP_ONCE_REWARD = "vip_once_reward";
-        public static readonly string CHANGE_WEALTH = "change_wealth";
-        public static readonly string WECHAT_LOGIN_GIFT = "wechat_login_gift";
-        public static readonly string EXTRA_YUANBAO = "extra_yuanbao";
+        public const string BUYGOLD = "buy_gold";
+        public const string BUYYUANBAO = "buy_yuanbao";
+        public const string BUYPROP = "buy_prop";
+        public const string RECHARGE_PHONEFEE = "recharge_phonefee";
+        public const string VIP_ONCE_REWARD = "vip_once_reward";
+        public const string CHANGE_WEALTH = "change_wealth";
+        public const string WECHAT_LOGIN_GIFT = "wechat_login_gift";
+        public const string EXTRA_YUANBAO = "extra_yuanbao";
+        public const string Login = "login";
+        public const string Logout = "logout";
+        public const string Register = "register";
     }
 
     public const string Tag_Login = "Login";
-    public static string Tag_QuickRegister = "QuickRegister";
-    public static string Tag_Sign = "Sign";
-    public static readonly string ACCOUNT = "account";
-    public static readonly string PASSWORD = "password";
-    public static readonly string UID = "uid";
-    public static readonly string TAG = "tag";
-    public static readonly string CODE = "code";
-    public static readonly string CONNID = "connId";
-    public static readonly string SIGNWEEKDAYS = "signWeekDays";
-    public static readonly string UPDATETIME = "updateTime";
-    public static readonly string NAME = "name";
-    public static readonly string PHONE = "phone";
-    public static readonly string GOLD = "gold";
-    public static readonly string YUANBAO = "yuanbao";
-    public static readonly string HEAD = "head";
-    public static readonly string GAMEDATA = "gameData";
-    public static readonly string PLATFORM = "platform";
-    public static readonly string EMAIL_ID = "email_id";
+    public const string Tag_QuickRegister = "QuickRegister";
+    public const string Tag_Sign = "Sign";
+    public const string ACCOUNT = "account";
+    public const string PASSWORD = "password";
+    public const string UID = "uid";
+    public const string TAG = "tag";
+    public const string CODE = "code";
+    public const string CONNID = "connId";
+    public const string SIGNWEEKDAYS = "signWeekDays";
+    public const string UPDATETIME = "updateTime";
+    public const string NAME = "name";
+    public const string PHONE = "phone";
+    public const string GOLD = "gold";
+    public const string YUANBAO = "yuanbao";
+    public const string HEAD = "head";
+    public const string GAMEDATA = "gameData";
+    public const string PLATFORM = "platform";
+    public const string EMAIL_ID = "email_id";
+    public const string Medal = "medal";
 }

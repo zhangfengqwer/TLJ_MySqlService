@@ -45,6 +45,7 @@ namespace TLJ_MySqlService
         public static List<Goods> ShopData;
         public static List<SignConfig> SignConfigs;
         public static List<TurnTable> TurnTables;
+        public static List<TurnTable> IosTurnTables;
         public static List<VipData> VipDatas;
         public static string AdminAccount = "admin";
         public static string AdminPassWord = "jinyou123";
@@ -115,6 +116,23 @@ namespace TLJ_MySqlService
             ShopData = NHibernateHelper.goodsManager.GetAll().ToList().ToList();
             SignConfigs = NHibernateHelper.signConfigManager.GetAll().ToList();
             TurnTables = NHibernateHelper.turnTableManager.GetAll().ToList();
+            IosTurnTables = NHibernateHelper.turnTableManager.GetAll().ToList();
+          
+            for (int i = 0; i < IosTurnTables.Count; i++)
+            {
+                TurnTable iosTurnTable = IosTurnTables[i];
+                if (iosTurnTable.id == 4)
+                {
+                    iosTurnTable.reward = "102:2";
+                }
+                else if(iosTurnTable.id == 10)
+                {
+                    iosTurnTable.reward = "101:3";
+                }
+            }
+
+            log.Info(JsonConvert.SerializeObject(TurnTables));
+            log.Info(JsonConvert.SerializeObject(IosTurnTables));
 
             StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "VipRewardData.json");
             string str = sr.ReadToEnd().ToString();

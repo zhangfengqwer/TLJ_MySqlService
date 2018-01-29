@@ -5,12 +5,18 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using NhInterMySQL.Model;
 using TLJ_MySqlService.Utils;
+using Task = System.Threading.Tasks.Task;
 
 namespace Test
 {
@@ -50,150 +56,68 @@ namespace Test
             return data;
         }
 
+        private static HttpListener listener;
         static void Main(string[] args)
         {
-            //            string bouncyCastle = RSAHelper.RSASignJavaBouncyCastle(content, privateJavaKey);
-            //            Console.WriteLine($"bouncyCastle:{bouncyCastle}");
-            //
-            //            var rsaPublicKeyJava2DotNet = RSAHelper.RSAPublicKeyJava2DotNet(
-            //                "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAICexkH7HkNVz16heKcTTpGCIzhFVeQACe0ZxmbUzrfnpcIyDt67cWrHDiWbaC45CotlQSEpg1VDcYn7IqQHYN8CAwEAAQ==");
-            //            Console.WriteLine($"rsaPublicKeyJava2DotNet:{rsaPublicKeyJava2DotNet}");
-            //            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            //            Console.WriteLine(baseDirectory);
-            //           
-            //            IPHostEntry ipHostEntry = Dns.GetHostEntry("fkmpay.51v.cn");
-            //            foreach (var ipAddress in ipHostEntry.AddressList)
-            //                Console.WriteLine($"ipAddress:{ipAddress.ToString()}"); 
-            var postHttp = HttpUtil.PostHttp("https://pay.vivo.com.cn/vivoPay/getVivoOrderNum",
-                @"appId=4164d42da1fa0deaa27ca8cb4727b618&notifyUrl=http://mapi.javgame.com:14123/mNotify/notify_vivo&orderAmount=0.01&orderDesc=10元宝&orderTime=20180119143557&orderTitle=10元宝&signMethod=MD5&storeId=9fb92f5a285056d48c38&storeOrder=247&version=1.0.0&signature=3dd60db40f63ab610d0bb80699099a62");
-            Console.WriteLine($"postHttp:{postHttp}");
+           
 
-#if release
-            Console.WriteLine("test");
-#endif
-            Console.WriteLine("1");
-
-            //            SignUtils.RSAKey rasKey = SignUtils.GetRASKey();
-            //            Console.WriteLine($"PrivateKey:{rasKey.PrivateKey}");
-            //            Console.WriteLine($"PublicKey:{rasKey.PublicKey}");
-
-            //            var md5 = GetMD5("123");
-            //            string changePsw = ChangePsw("123");
-            //            var checkPsw = CheckPsw("202CB962AC5975B964B7152D234B70");
-
-            //            Console.WriteLine(checkPsw);
-            //            Console.WriteLine(checkPsw);
-
-            //            foreach (var user in NHibernateHelper.userNoticeManager.GetAll())
-            //            {
-            //                if (user.NoticeId == 4)
-            //                {
-            //                    NHibernateHelper.userNoticeManager.Delete(user);
-            //                }
-            //            }
-            //            var user = new User();
-            //            string uid = UidUtil.createUID();
-            //            user.Uid = uid;
-            //            user.Platform = 0;
-            //            user.ThirdId = "";
-            //            user.Secondpassword = "";
-            //            user.IsRobot = 0;
-            //            user.Userpassword = "C3981FA8D26E95D911FE8EAEB657F2F";
-            //            NHibernateHelper.userManager.Add(user);
-            //         
-            //            string changePsw = ChangePsw("lq3445www");
-            //            Console.WriteLine(changePsw);
-            //            var stopwatch = new Stopwatch();
-            //            stopwatch.Start();
-            //            NHibernateHelper.userManager.VerifyLogin("123", "123");
-            //            stopwatch.Stop();
-            //            Console.WriteLine(stopwatch.ElapsedMilliseconds+"ms");
-            //
-            //            stopwatch.Restart();
-            //            var sql = $"select username, userpassword from user where username = '123' and userpassword = '123' ";
-            //
-            //            using (var session = NHibernateHelper.OpenSession())
-            //            {
-            //                using (var transaction = session.BeginTransaction())
-            //                {
-            //                    var user = session.CreateSQLQuery(sql).UniqueResult();
-            //                    var user1 = user as User;
-            //                    Console.WriteLine(user1);
-            //
-            //                }
-            //            }
-            //
-            //            stopwatch.Stop();
-            //            Console.WriteLine(stopwatch.ElapsedMilliseconds + "ms");
-
-
-            //            // 异步方法全部会回掉到主线程
-            //            OneThreadSynchronizationContext contex = new OneThreadSynchronizationContext();
-            //            SynchronizationContext.SetSynchronizationContext(contex);
-            //
-            //            while (true)
-            //            {
-            //                try
-            //                {
-            //                    Thread.Sleep(1);
-            //                    contex.Update();
-            //                }
-            //                catch (Exception e)
-            //                {
-            //                    Console.WriteLine(e);
-            //                }
-            //            }
-
-            //            string directory = Environment.CurrentDirectory;
-            //            for (int i = 0; i < 3; i++)
-            //            {
-            //                directory = CommonUtil.GetFrontDirectory(directory);
-            //            }
-            //           
-            //
-            //            string path = Path.Combine(directory, @"TLJ_MySqlService\Lib\test.txt");
-            ////            int lastIndexOf = path.LastIndexOf('\\');
-            ////            path = path.Remove(lastIndexOf);
-            //
-            //            Console.WriteLine(path);
-            //            if (File.Exists(path))
-            //            {
-            //                using (FileStream fs = new FileStream(path, FileMode.Open))
-            //                {
-            //                    StreamReader reader = new StreamReader(fs);
-            //                    var readLine = reader.ReadLine();
-            //                    Console.WriteLine(readLine);
-            //                }
-            //            }
-            //            else
-            //            {
-            //                Console.WriteLine("meiyou");
-            //            }
-
-            //            for (int i = 10001; i < 20001; i++)
-            //            {
-            //                ModelFactory.CreateUser(i+"");
-            //            }
-            //
-            //
-            //            Assembly assembly = typeof(MySqlService).Assembly;
-            //            Console.WriteLine(assembly.FullName);
-
-            //            UserTask userTask = NHibernateHelper.userTaskManager.GetUserTask("6509453643", 208);
-            //            Console.Write(userTask.progress);
-
-            //            foreach (var userTask in NHibernateHelper.userTaskManager.GetAll())
-            //            {
-            //                if (userTask.task_id == 219)
-            //                {
-            //                    NHibernateHelper.userTaskManager.Delete(userTask);
-            //                }
-            //
-            //            }
-
-                        Console.ReadKey();
+            Console.ReadLine();
         }
 
+        private static void StartHttp()
+        {
+            listener = new HttpListener();
+
+            listener.Prefixes.Add("http://fksq.javgame.com/test/");
+            listener.Prefixes.Add("http://fksq.javgame.com/test2/");
+
+            listener.Start();
+
+            Accept();
+
+            Console.WriteLine($"1:{1}");
+            Console.ReadKey();
+        }
+
+        public static async void Accept()
+        {
+            while (true)
+            {
+                HttpListenerContext context = await listener.GetContextAsync();
+                Console.WriteLine($"1:{2}");
+                string absoluteUri = context.Request.Url.AbsoluteUri;
+                Console.WriteLine($"{absoluteUri}");
+                string type = context.Request.QueryString["type"];
+                string content = context.Request.QueryString["content"];
+                Console.WriteLine($"type:{type}");
+                Console.WriteLine($"content:{content}");
+
+                Stream outputStream = context.Response.OutputStream;
+                string response = $"<HTML><BODY>我收到你的消息了,type:{type},content:{content}</BODY></HTML>";
+                
+                byte[] bytes = Encoding.UTF8.GetBytes(response);
+                context.Response.ContentLength64 = bytes.Length;
+                context.Response.ContentEncoding = Encoding.UTF8;
+                await outputStream.WriteAsync(bytes,0, bytes.Length);
+            }
+        }
+
+
+        public static async void test2()
+        {
+            await Test1();
+        }
+
+        public static  async Task Test1()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                new System.Threading.Tasks.Task(() =>
+                {
+                    StatictisLogUtil.Login("123", "123", "ip", "channel", "123", "login");
+                }).Start();
+            }
+        }
 //
         public static string GetMD5(string password)
         {
@@ -304,6 +228,7 @@ namespace Test
                     ming = femaleList[next3];
                     break;
             }
+            
             return xing + ming;
         }
 

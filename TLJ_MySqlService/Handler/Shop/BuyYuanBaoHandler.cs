@@ -86,6 +86,10 @@ namespace TLJ_MySqlService.Handler
                 Statistics statistics = ModelFactory.CreateStatistics();
                 statistics.recharge_total += price;
                 NHibernateHelper.statisticsManager.Update(statistics);
+                User user = NHibernateHelper.userManager.GetByUid(uid);
+
+                StatictisLogUtil.Recharge(uid, user?.Username,orderid,goodId+"",num+"",price+"");
+
                 //充值人数数据统计
                 StatisticsHelper.StatisticsRechargePerson(uid);
 
@@ -133,7 +137,7 @@ namespace TLJ_MySqlService.Handler
             {
                 if (!string.IsNullOrWhiteSpace(goods.extra_reward))
                 {
-                    if (MySqlUtil.AddProp(uid, goods.extra_reward))
+                    if (MySqlUtil.AddProp(uid, goods.extra_reward,"元宝加赠"))
                     {
                         LogUtil.Log(uid, MyCommon.OpType.EXTRA_YUANBAO,
                             $"购买了{goods.goods_id},{goods.goods_name},加赠了{goods.extra_reward}");
@@ -189,6 +193,10 @@ namespace TLJ_MySqlService.Handler
                 int vipLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
                 if (NHibernateHelper.userInfoManager.Update(userInfo))
                 {
+                    //记录玩家财富变化日志
+                    int after = userInfo.YuanBao;
+                    int change = propNum * num;
+                    StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.YUANBAO, "人民币购买元宝", after - change, change, after);
                     var format = string.Format("花费了{0}元，购买了{1}元宝,订单号：{2}", price, propNum * num, orderid);
                     LogUtil.Log(userInfo.Uid, MyCommon.OpType.BUYYUANBAO, format);
 

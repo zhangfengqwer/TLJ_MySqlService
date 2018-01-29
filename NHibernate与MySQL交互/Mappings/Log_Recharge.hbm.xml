@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NhInterMySQL"
+                   namespace="NhInterMySQL.Model">
+
+  <class name="Log_Recharge" table="log_recharge">
+    <id name="order_id" column="order_id" type="String">
+      <generator class="assigned"></generator>
+    </id>
+    <property name="uid" column="uid" type="String"></property>
+    <property name="nick_name" column="nick_name" type="String"></property>
+    <property name="goods_id" column="goods_id" type="String"></property>
+    <property name="goods_num" column="goods_num" type="String"></property>
+    <property name="price" column="price" type="String"></property>
+  </class>
+</hibernate-mapping>

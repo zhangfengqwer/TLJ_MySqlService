@@ -27,6 +27,10 @@ namespace NhInterMySQL
         public static MySqlManager<TurnTable> turnTableManager = new MySqlManager<TurnTable>();
         public static MySqlManager<UserRecharge> userRechargeManager = new MySqlManager<UserRecharge>();
         public static MySqlManager<Statistics> statisticsManager = new MySqlManager<Statistics>();
+        public static MySqlManager<Log_Login> LogLoginManager = new MySqlManager<Log_Login>();
+        public static MySqlManager<Log_Recharge> LogRechargeManager = new MySqlManager<Log_Recharge>();
+        public static MySqlManager<Log_Online_Player> LogOnlinePlayerManager = new MySqlManager<Log_Online_Player>();
+        public static MySqlManager<Log_Change_Wealth> LogChangeWealthManager = new MySqlManager<Log_Change_Wealth>();
 
 
         private static ISessionFactory _sessionFactory;

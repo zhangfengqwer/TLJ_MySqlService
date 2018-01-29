@@ -91,6 +91,7 @@ namespace TLJ_MySqlService.Handler
                 {
                     if (NHibernateHelper.userPropManager.Update(userProp))
                     {
+                        MySqlService.log.Info($"成功充值,还剩{userProp.BuffNum}");
                         OperatorSuccess(responseData);
                     }
                     else

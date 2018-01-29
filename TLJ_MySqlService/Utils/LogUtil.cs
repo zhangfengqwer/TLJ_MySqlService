@@ -32,7 +32,7 @@ public class LogUtil
             optype = optype,
             message = message
         };
-       NHibernateHelper.logManager.Add(myLog);
+        NHibernateHelper.logManager.Add(myLog);
     }
 
 

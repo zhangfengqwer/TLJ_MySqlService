@@ -59,7 +59,7 @@ namespace TLJ_MySqlService.Handler
                     userEmail.State = 1;
                     if (!string.IsNullOrWhiteSpace(userEmail.Reward))
                     {
-                        bool addProp = MySqlUtil.AddProp(uid, userEmail.Reward);
+                        bool addProp = MySqlUtil.AddProp(uid, userEmail.Reward, "领取邮件奖励");
                         if (!addProp)
                         {
                             MySqlService.log.Warn("读邮件加道具失败：" + uid + " " + userEmail.Reward);

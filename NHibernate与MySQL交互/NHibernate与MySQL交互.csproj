@@ -58,6 +58,10 @@
     <Compile Include="Manager\IManager.cs" />
     <Compile Include="Manager\MySqlManager.cs" />
     <Compile Include="Model\CommonConfig.cs" />
+    <Compile Include="Model\Log_Change_Wealth.cs" />
+    <Compile Include="Model\Log_Online_Player.cs" />
+    <Compile Include="Model\Log_Recharge.cs" />
+    <Compile Include="Model\Log_Login.cs" />
     <Compile Include="Model\Prop.cs" />
     <Compile Include="Model\Goods.cs" />
     <Compile Include="Model\Notice.cs" />
@@ -81,12 +85,25 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ModelFactory.cs" />
     <Compile Include="Utils\SendEmailUtil.cs" />
+    <Compile Include="Utils\StatictisLogUtil.cs" />
     <Compile Include="Utils\StatisticsHelper.cs" />
     <Compile Include="Utils\TimeHelper.cs" />
     <Compile Include="Utils\UidUtil.cs" />
     <Compile Include="Utils\VipUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Mappings\Log_Change_Wealth.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mappings\Log_Online_Player.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mappings\Log_Recharge.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mappings\Log_Login.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mappings\Statistics.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

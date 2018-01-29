@@ -13,4 +13,5 @@ public class AddPropReq
     public string password;
     public int reward_id;
     public int reward_num;
+    public string reason;
 }

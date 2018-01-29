@@ -5,5 +5,6 @@
     public string third_id;
     public string channelname;
     public string nickname;
+    public string ip;
 }
 

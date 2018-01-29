@@ -25,7 +25,7 @@ namespace TLJ_MySqlService.Handler
             }
             string Tag = defaultReq.tag;
             int connId = defaultReq.connId;
-
+            bool isIosCheck = defaultReq.isIosCheck;
             if (string.IsNullOrWhiteSpace(Tag))
             {
                 MySqlService.log.Warn("字段有空");
@@ -37,26 +37,34 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.CONNID, connId);
 
             //得到pvp数据
-            GetTurnTableDataSql(_responseData);
-            return _responseData.ToString() ;
+            GetTurnTableDataSql(_responseData, isIosCheck);
+            return _responseData.ToString();
         }
 
-        private void GetTurnTableDataSql(JObject responseData)
+        private void GetTurnTableDataSql(JObject responseData, bool isIosCheck)
         {
-            OperatorSuccess(MySqlService.TurnTables, responseData);
+            if (isIosCheck)
+            {
+                OperatorSuccess(MySqlService.IosTurnTables, responseData);
+            }
+            else
+            {
+                MySqlService.log.Info("isIosCheck:" + 1);
+                OperatorSuccess(MySqlService.TurnTables, responseData);
+            }
         }
 
         //数据库操作成功
         private void OperatorSuccess(List<TurnTable> turnTables, JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
             responseData.Add("turntable_list", JsonConvert.SerializeObject(turnTables));
         }
 
         //数据库操作失败
         private void OperatorFail(JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
         }
     }
 }

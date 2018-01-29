@@ -79,10 +79,11 @@ namespace TLJ_MySqlService.Handler
                 for (int j = 0; j < userNotices.Count; j++)
                 {
                     UserNotice userNotice = userNotices[j];
-                    if (userNotice.NoticeId == 1)
-                    {
-                        continue;
-                    }
+                    
+//                    if (userNotice.NoticeId == 1)
+//                    {
+//                        continue;
+//                    }
 
                     if (notice.NoticeId == userNotice.NoticeId)
                     {

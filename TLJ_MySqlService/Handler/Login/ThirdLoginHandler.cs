@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using NhInterMySQL;
 using NhInterMySQL.Model;
 using System;
+using System.Text.RegularExpressions;
 using TLJCommon;
 using TLJ_MySqlService.Utils;
 
@@ -29,6 +30,7 @@ namespace TLJ_MySqlService.Handler
             string third_id = login.third_id;
             string nickname = login.nickname;
             string channelname = login.channelname;
+            string ip = login.ip;
             if (string.IsNullOrWhiteSpace(tag) || string.IsNullOrWhiteSpace(third_id)
                 || string.IsNullOrWhiteSpace(nickname) || string.IsNullOrWhiteSpace(channelname) || "null".Equals(third_id))
             {
@@ -45,12 +47,15 @@ namespace TLJ_MySqlService.Handler
                 nickname = nickname.Remove(5, nickname.Length - 10);
             }
 
-            ThirdLoginSQL(third_id, nickname, channelname, responseData);
+            nickname = Regex.Replace(nickname, @"\p{Cs}", "");
+
+            ThirdLoginSQL(third_id, nickname, channelname, ip, responseData);
             return responseData.ToString();
         }
 
-        private void ThirdLoginSQL(string thirdId, string nickname, string channelname, JObject responseData)
+        private void ThirdLoginSQL(string thirdId, string nickname, string channelname, string ip, JObject responseData)
         {
+
             //通过第三方查询用户
             User user = NHibernateHelper.userManager.GetUserByTid(thirdId);
             if (user == null)
@@ -73,6 +78,7 @@ namespace TLJ_MySqlService.Handler
                 if (NHibernateHelper.userManager.Add(user))
                 {
                     OperatorSuccess(user, responseData);
+                    StatictisLogUtil.Login(uid, user.Username, ip, channelname, "1.0.43", MyCommon.OpType.Register);
                 }
                 else
                 {
@@ -95,6 +101,7 @@ namespace TLJ_MySqlService.Handler
 
                         //第三方注册
                         StatisticsHelper.StatisticsRegister(user.Uid);
+                        StatictisLogUtil.Login(uid, user.Username, ip, channelname, "1.0.43", MyCommon.OpType.Register);
                     }
                     else
                     {

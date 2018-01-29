@@ -29,6 +29,7 @@ namespace TLJ_MySqlService.Handler
             int connId = defaultReq.connId;
             var uid = defaultReq.uid;
             var type = defaultReq.type;
+            var isIosCheck = defaultReq.isIosCheck;
 
             if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(uid) || type < 1 || type > 2)
             {
@@ -42,12 +43,11 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.UID, uid);
             _responseData.Add("type", type);
 
-            //得到pvp数据
-            UseTurnTableDataSql(uid, type, _responseData);
+            UseTurnTableDataSql(uid, type, isIosCheck,_responseData);
             return _responseData.ToString();
         }
 
-        private void UseTurnTableDataSql(string uid, int type, JObject responseData)
+        private void UseTurnTableDataSql(string uid, int type, bool isIosCheck, JObject responseData)
         {
             UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
 
@@ -72,9 +72,17 @@ namespace TLJ_MySqlService.Handler
                     userInfo.luckyValue++;
                     if (NHibernateHelper.userInfoManager.Update(userInfo))
                     {
-                        TurnTable turnTable = MySqlService.TurnTables[reward - 1];
+                        TurnTable turnTable;
+                        if (isIosCheck)
+                        {
+                            turnTable = MySqlService.IosTurnTables[reward - 1];
+                        }
+                        else
+                        {
+                            turnTable = MySqlService.TurnTables[reward - 1];
+                        }
                         MySqlService.log.Info($"{uid} 增加转盘奖励{turnTable.reward}");
-                        bool addProp = MySqlUtil.AddProp(uid, turnTable.reward);
+                        bool addProp = MySqlUtil.AddProp(uid, turnTable.reward,"免费转盘抽奖");
                         if (addProp)
                         {
                             isSuccess = true;
@@ -115,9 +123,17 @@ namespace TLJ_MySqlService.Handler
                         userInfo.luckyValue++;
                         if (NHibernateHelper.userInfoManager.Update(userInfo))
                         {
-                            TurnTable turnTable = MySqlService.TurnTables[reward - 1];
+                            TurnTable turnTable;
+                            if (isIosCheck)
+                            {
+                                turnTable = MySqlService.IosTurnTables[reward - 1];
+                            }
+                            else
+                            {
+                                turnTable = MySqlService.TurnTables[reward - 1];
+                            }
                             MySqlService.log.Info($"{uid} 增加转盘奖励{turnTable.reward}");
-                            bool addProp = MySqlUtil.AddProp(uid, turnTable.reward);
+                            bool addProp = MySqlUtil.AddProp(uid, turnTable.reward, "徽章转盘抽奖");
                             if (addProp)
                             {
                                 isSuccess = true;

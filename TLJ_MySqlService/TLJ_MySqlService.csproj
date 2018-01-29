@@ -76,6 +76,8 @@
     <Compile Include="Handler\Email\GetEmailHandler.cs" />
     <Compile Include="Handler\Game\GetGameOverHandler.cs" />
     <Compile Include="Handler\Shop\IOSPayHandler.cs" />
+    <Compile Include="Handler\Statictis\StatictisOnlineHandler.cs" />
+    <Compile Include="Handler\Statictis\StatictisLoginHandler.cs" />
     <Compile Include="Handler\TurnTable\UseTurnTableHandler.cs" />
     <Compile Include="Handler\TurnTable\GetTurnTableDataHandler.cs" />
     <Compile Include="Handler\Game\RecordUserGameDataHandler.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="Model\Request\RecordUserDataReq.cs" />
     <Compile Include="Model\Request\AddEmailReq.cs" />
     <Compile Include="Model\Request\GetAIReq.cs" />
+    <Compile Include="Model\Request\StatictisLoginReq.cs" />
     <Compile Include="Model\Request\UseHuaFeiReq.cs" />
     <Compile Include="Model\Response\TurnTableJsonObject.cs" />
     <Compile Include="Model\Response\AIJsonObject.cs" />
