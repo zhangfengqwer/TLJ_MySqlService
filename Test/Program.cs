@@ -3,20 +3,24 @@ using Newtonsoft.Json.Linq;
 using NhInterMySQL;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
 using System.Data.OleDb;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using NhInterMySQL.Model;
+using NHibernate.Mapping;
 using TLJ_MySqlService.Utils;
 using Task = System.Threading.Tasks.Task;
+
 
 namespace Test
 {
@@ -28,20 +32,16 @@ namespace Test
         private static List<String> femaleList = new List<string>();
 
         private static string privateJavaKey =
-                @"MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAgJ7GQfseQ1XPXqF4pxNOkYIjOEVV5AAJ7RnGZtTOt+elwjIO3rtxascOJZtoLjkKi2VBISmDVUNxifsipAdg3wIDAQABAkBcH91HUzOI7UR7tlIx8U08QacyXc84YKK7ddO6wcBSzg+7A9COQotVft6vRU5hDVNrn6c5lRQYrCTGiUbfA8zhAiEAvBPKfJ/5eUFC5FyYH7o+/CAV0wcQGWToR58ssFqPQC8CIQCvEgdqLqQ/yk4kz4p4WbxDiyMsrFT4MBunSwOZ2gaOUQIgEgob6+Q0O4sk7V5sQO7OR8SUE0+kHatuFCCSWr/06YUCIQCJ3p3ePgr1fYFateKrcqezXXB+7twfc+tjLM0SLUP6cQIgcj0Nu0MeNEyZagFtWpC/OwO4v7ctrXDsovgtRsCdlns="
-            ;
+            @"MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAgJ7GQfseQ1XPXqF4pxNOkYIjOEVV5AAJ7RnGZtTOt+elwjIO3rtxascOJZtoLjkKi2VBISmDVUNxifsipAdg3wIDAQABAkBcH91HUzOI7UR7tlIx8U08QacyXc84YKK7ddO6wcBSzg+7A9COQotVft6vRU5hDVNrn6c5lRQYrCTGiUbfA8zhAiEAvBPKfJ/5eUFC5FyYH7o+/CAV0wcQGWToR58ssFqPQC8CIQCvEgdqLqQ/yk4kz4p4WbxDiyMsrFT4MBunSwOZ2gaOUQIgEgob6+Q0O4sk7V5sQO7OR8SUE0+kHatuFCCSWr/06YUCIQCJ3p3ePgr1fYFateKrcqezXXB+7twfc+tjLM0SLUP6cQIgcj0Nu0MeNEyZagFtWpC/OwO4v7ctrXDsovgtRsCdlns=";
 
         private static string publicJavaKey =
-                @"MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAICexkH7HkNVz16heKcTTpGCIzhFVeQACe0ZxmbUzrfnpcIyDt67cWrHDiWbaC45CotlQSEpg1VDcYn7IqQHYN8CAwEAAQ=="
-            ;
+            @"MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAICexkH7HkNVz16heKcTTpGCIzhFVeQACe0ZxmbUzrfnpcIyDt67cWrHDiWbaC45CotlQSEpg1VDcYn7IqQHYN8CAwEAAQ==";
 
         private static string content =
-                "amount=0.01&applicationID=100174463&country=CN&currency=CNY&merchantId=900086000000034648&productDesc=shang pin miao shu&productName=ceshi shangpin&requestId=20180103032610997167248&sdkChannel=1&urlver=2"
-            ;
+            "amount=0.01&applicationID=100174463&country=CN&currency=CNY&merchantId=900086000000034648&productDesc=shang pin miao shu&productName=ceshi shangpin&requestId=20180103032610997167248&sdkChannel=1&urlver=2";
 
         private static string content1 =
-                "amount=1.00&applicationID=100174463&country=CN&currency=CNY&merchantId=900086000000034648&productDesc=10元宝&productName=10元宝&requestId=10310&sdkChannel=1&urlver=2"
-            ;
+            "amount=1.00&applicationID=100174463&country=CN&currency=CNY&merchantId=900086000000034648&productDesc=10元宝&productName=10元宝&requestId=10310&sdkChannel=1&urlver=2";
 
         private static string result =
             @"W6GXLobPVb84rVK/rR0HcgqGHKNztsSql5tmoa8eBypWHxSlFoamUhAK+2/9ehXpNrWPDNfLlW0mP42mosR+Gg==";
@@ -57,25 +57,102 @@ namespace Test
         }
 
         private static HttpListener listener;
+        private static TcpListener tcpListenerV4;
+        private static TcpListener tcpListenerV6;
+
         static void Main(string[] args)
         {
-           
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+
+            Console.WriteLine(threadId + ":q");
+
+            new Task(() =>
+            {
+                Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":w");
+
+                new Task(() => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":e"); }).Start();
+
+
+                Console.WriteLine(1);
+            }).Start();
+
+            Console.WriteLine(threadId + ":e");
 
             Console.ReadLine();
+        }
+
+        public class Test5
+        {
+            private string test1;
+        }
+
+        private static IPAddress GetIpFromHost(string host)
+        {
+            IPHostEntry ipHostEntry = Dns.GetHostEntry(host);
+            IPAddress ipAddress = ipHostEntry.AddressList[0];
+
+            return ipAddress;
+        }
+
+        private static void StartV4AndV6()
+        {
+            int port = 9900;
+            tcpListenerV4 = new TcpListener(IPAddress.Any, port);
+            tcpListenerV6 = new TcpListener(IPAddress.IPv6Any, port);
+            if (Socket.OSSupportsIPv6)
+            {
+                Console.WriteLine("支持v6");
+            }
+
+            if (Socket.OSSupportsIPv4)
+            {
+                Console.WriteLine("支持v4");
+            }
+
+            tcpListenerV4.Start();
+            tcpListenerV6.Start();
+            StartReceiveV4();
+            StartReceiveV6();
+        }
+
+        private static async void StartReceiveV4()
+        {
+            while (true)
+            {
+                TcpClient tcpClientV4 = await tcpListenerV4.AcceptTcpClientAsync();
+                Console.WriteLine("v4连接");
+                SocketReceive(tcpClientV4);
+            }
+        }
+
+        private static async void StartReceiveV6()
+        {
+            while (true)
+            {
+                TcpClient tcpClientV6 = await tcpListenerV6.AcceptTcpClientAsync();
+                Console.WriteLine("v6连接");
+                SocketReceive(tcpClientV6);
+            }
+        }
+
+        private static void SocketReceive(TcpClient tcpClient)
+        {
+            string ip = tcpClient.Client.RemoteEndPoint.ToString();
+            Console.WriteLine("ip:" + ip);
         }
 
         private static void StartHttp()
         {
             listener = new HttpListener();
 
-            listener.Prefixes.Add("http://fksq.javgame.com/test/");
-            listener.Prefixes.Add("http://fksq.javgame.com/test2/");
+            listener.Prefixes.Add("http://localhost/test/");
+            listener.Prefixes.Add("http://localhost/test2/");
 
             listener.Start();
 
             Accept();
 
-            Console.WriteLine($"1:{1}");
+            Console.WriteLine($"start");
             Console.ReadKey();
         }
 
@@ -84,31 +161,61 @@ namespace Test
             while (true)
             {
                 HttpListenerContext context = await listener.GetContextAsync();
-                Console.WriteLine($"1:{2}");
                 string absoluteUri = context.Request.Url.AbsoluteUri;
-                Console.WriteLine($"{absoluteUri}");
+                string LocalPath = context.Request.Url.LocalPath;
+                Console.WriteLine($"absoluteUri:{absoluteUri}\nLocalPath:{LocalPath}");
+                string rawUrl = context.Request.RawUrl;
+                string contentType = context.Request.ContentType;
+                Encoding contentEncoding = context.Request.ContentEncoding;
+                string httpMethod = context.Request.HttpMethod;
+                NameValueCollection headers = context.Request.Headers;
+
+                Console.WriteLine(
+                    $"rawUrl:{rawUrl}\ncontentType:{contentType}\ncontentEncoding:{contentEncoding}\nhttpMethod;{httpMethod}");
+
+                //                foreach (var key in headers.AllKeys)
+                //                {
+                //                    string[] strings = headers.GetValues(key);
+                //                    Console.WriteLine($"key:{key},Values:{strings?.ToString()}");
+                //                }
+
                 string type = context.Request.QueryString["type"];
-                string content = context.Request.QueryString["content"];
-                Console.WriteLine($"type:{type}");
-                Console.WriteLine($"content:{content}");
+                string contents = context.Request.QueryString["content"];
+                Console.WriteLine($"type:{type}\ncontent:{contents}");
 
                 Stream outputStream = context.Response.OutputStream;
-                string response = $"<HTML><BODY>我收到你的消息了,type:{type},content:{content}</BODY></HTML>";
-                
+                string response = $"<HTML><BODY>type:{type},content:{contents}</BODY></HTML>";
+
                 byte[] bytes = Encoding.UTF8.GetBytes(response);
                 context.Response.ContentLength64 = bytes.Length;
                 context.Response.ContentEncoding = Encoding.UTF8;
-                await outputStream.WriteAsync(bytes,0, bytes.Length);
+                await outputStream.WriteAsync(bytes, 0, bytes.Length);
             }
         }
 
+        public static void IpConfig()
+        {
+            IPHostEntry ipHostEntry = Dns.GetHostEntry(@"fksq.javgame.com");
+            IPAddress address = ipHostEntry.AddressList[0];
+            if (address.AddressFamily == AddressFamily.InterNetwork)
+            {
+                Console.WriteLine("ipv4");
+            }
+            else if (address.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                Console.WriteLine("ipv6");
+            }
+
+            string ip = address.ToString();
+            Console.WriteLine(ip);
+        }
 
         public static async void test2()
         {
             await Test1();
         }
 
-        public static  async Task Test1()
+        public static async Task Test1()
         {
             for (int i = 0; i < 100; i++)
             {
@@ -118,6 +225,7 @@ namespace Test
                 }).Start();
             }
         }
+
 //
         public static string GetMD5(string password)
         {
@@ -132,6 +240,7 @@ namespace Test
                 // 将得到的字符串使用十六进制类型格式。格式后的字符是小写的字母，如果使用大写（X）则格式后的字符是大写字符 
                 pwd = pwd + s[i].ToString("X2");
             }
+
             return pwd;
         }
 
@@ -173,6 +282,7 @@ namespace Test
                     ming = femaleList[next3];
                     break;
             }
+
             return xing + ming;
         }
 
@@ -187,6 +297,7 @@ namespace Test
                     $"({ai.UserId},'{ai.Uid}','{ai.Username}','{ai.Userpassword}','{ai.Secondpassword}','{ai.ThirdId}','{ai.ChannelName}','{ai.IsRobot}'),";
                 sb.Append(temp);
             }
+
             return sb;
         }
 
@@ -202,10 +313,12 @@ namespace Test
                 {
                     xingList.Add(dataTableRow[0].ToString());
                 }
+
                 if (!string.IsNullOrWhiteSpace(dataTableRow[2].ToString()))
                 {
                     maleList.Add(dataTableRow[2].ToString());
                 }
+
                 if (!string.IsNullOrWhiteSpace(dataTableRow[4].ToString()))
                 {
                     femaleList.Add(dataTableRow[4].ToString());
@@ -228,7 +341,7 @@ namespace Test
                     ming = femaleList[next3];
                     break;
             }
-            
+
             return xing + ming;
         }
 
@@ -311,6 +424,7 @@ namespace Test
                 {
                     temp += doubles[j];
                 }
+
                 list.Add(temp);
             }
 
@@ -322,15 +436,24 @@ namespace Test
             int next = new Random().Next(1, 10001);
             int num = 0;
             if (next <= list[0]) num = 1;
-            else if (next <= list[1]) num = 2;
-            else if (next <= list[2]) num = 3;
-            else if (next <= list[3]) num = 4;
-            else if (next <= list[4]) num = 5;
-            else if (next <= list[5]) num = 6;
-            else if (next <= list[6]) num = 7;
-            else if (next <= list[7]) num = 8;
-            else if (next <= list[8]) num = 9;
-            else if (next <= list[9]) num = 10;
+            else if (next <= list[1])
+                num = 2;
+            else if (next <= list[2])
+                num = 3;
+            else if (next <= list[3])
+                num = 4;
+            else if (next <= list[4])
+                num = 5;
+            else if (next <= list[5])
+                num = 6;
+            else if (next <= list[6])
+                num = 7;
+            else if (next <= list[7])
+                num = 8;
+            else if (next <= list[8])
+                num = 9;
+            else if (next <= list[9])
+                num = 10;
             Console.WriteLine(next);
             Console.WriteLine(num);
             return num;

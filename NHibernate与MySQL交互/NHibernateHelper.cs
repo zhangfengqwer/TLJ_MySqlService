@@ -31,7 +31,7 @@ namespace NhInterMySQL
         public static MySqlManager<Log_Recharge> LogRechargeManager = new MySqlManager<Log_Recharge>();
         public static MySqlManager<Log_Online_Player> LogOnlinePlayerManager = new MySqlManager<Log_Online_Player>();
         public static MySqlManager<Log_Change_Wealth> LogChangeWealthManager = new MySqlManager<Log_Change_Wealth>();
-
+        public static MySqlManager<Log_Game> LogGameManager = new MySqlManager<Log_Game>();
 
         private static ISessionFactory _sessionFactory;
         private static ISessionFactory GetSessionFactory()

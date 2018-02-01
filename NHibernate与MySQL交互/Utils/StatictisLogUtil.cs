@@ -72,5 +72,25 @@ namespace NhInterMySQL
             NHibernateHelper.LogChangeWealthManager.Add(logChangeWealth);
 
         }
+
+        public static void Game(int roomid, string gamename, string play1Uid, string play2Uid, string play3Uid,
+            string play4Uid,int curpvpround ,string win1,string win2,string zhuangUid)
+        {
+            Log_Game logGame = new Log_Game()
+            {
+                roomid = roomid,
+                player1_uid = play1Uid,
+                player2_uid = play2Uid,
+                player3_uid = play3Uid,
+                player4_uid = play4Uid,
+                cur_pvp_round = curpvpround,
+                gameroomname = gamename,
+                winner1_uid = win1,
+                winner2_uid = win2,
+                zhuangjia_uid = zhuangUid
+            };
+
+            NHibernateHelper.LogGameManager.Add(logGame);
+        }
     }
 }

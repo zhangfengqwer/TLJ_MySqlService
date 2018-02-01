@@ -213,7 +213,6 @@ namespace TLJ_MySqlService
                 m_tcpServer.Port = (ushort) NetConfig.s_mySqlService_port;
 //                m_tcpServer.IpAddress = "10.224.5.68";
 //                m_tcpServer.Port = 60005;
-
                 // 启动服务
                 if (m_tcpServer.Start())
                 {

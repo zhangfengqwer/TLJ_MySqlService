@@ -76,6 +76,7 @@
     <Compile Include="Handler\Email\GetEmailHandler.cs" />
     <Compile Include="Handler\Game\GetGameOverHandler.cs" />
     <Compile Include="Handler\Shop\IOSPayHandler.cs" />
+    <Compile Include="Handler\Statictis\StatictisGameHandler.cs" />
     <Compile Include="Handler\Statictis\StatictisOnlineHandler.cs" />
     <Compile Include="Handler\Statictis\StatictisLoginHandler.cs" />
     <Compile Include="Handler\TurnTable\UseTurnTableHandler.cs" />

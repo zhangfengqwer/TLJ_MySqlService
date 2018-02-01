@@ -59,6 +59,7 @@
     <Compile Include="Manager\MySqlManager.cs" />
     <Compile Include="Model\CommonConfig.cs" />
     <Compile Include="Model\Log_Change_Wealth.cs" />
+    <Compile Include="Model\Log_Game.cs" />
     <Compile Include="Model\Log_Online_Player.cs" />
     <Compile Include="Model\Log_Recharge.cs" />
     <Compile Include="Model\Log_Login.cs" />
@@ -92,6 +93,9 @@
     <Compile Include="Utils\VipUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Mappings\Log_Game.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mappings\Log_Change_Wealth.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

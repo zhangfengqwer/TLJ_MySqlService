@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NhInterMySQL"
+                   namespace="NhInterMySQL.Model">
+
+  <class name="Log_Game" table="log_game">
+    <id name="id" column="id" type="Int32">
+      <generator class="native"></generator>
+    </id>
+    <property name="roomid" column="roomid" type="Int32"></property>
+    <property name="cur_pvp_round" column="cur_pvp_round" type="Int32"></property>
+    <property name="gameroomname" column="gameroomname" type="String"></property>
+    <property name="player1_uid" column="player1_uid" type="String"></property>
+    <property name="player2_uid" column="player2_uid" type="String"></property>
+    <property name="player3_uid" column="player3_uid" type="String"></property>
+    <property name="player4_uid" column="player4_uid" type="String"></property>
+    <property name="zhuangjia_uid" column="zhuangjia_uid" type="String"></property>
+    <property name="winner1_uid" column="winner1_uid" type="String"></property>
+    <property name="winner2_uid" column="winner2_uid" type="String"></property>
+    <property name="pvp_reward" column="pvp_reward" type="String"></property>
+  </class>
+</hibernate-mapping>
