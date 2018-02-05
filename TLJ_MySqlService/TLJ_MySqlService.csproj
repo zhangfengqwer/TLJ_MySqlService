@@ -75,6 +75,7 @@
     <Compile Include="Handler\Email\ReadEmailHandler.cs" />
     <Compile Include="Handler\Email\GetEmailHandler.cs" />
     <Compile Include="Handler\Game\GetGameOverHandler.cs" />
+    <Compile Include="Handler\OldGame\BindOldPlayerHandler.cs" />
     <Compile Include="Handler\Shop\IOSPayHandler.cs" />
     <Compile Include="Handler\Statictis\StatictisGameHandler.cs" />
     <Compile Include="Handler\Statictis\StatictisOnlineHandler.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Model\Object\HandlerAttribute.cs" />
     <Compile Include="Model\Object\ServiceType.cs" />
     <Compile Include="Model\Object\UserInfo_Game.cs" />
+    <Compile Include="Model\Request\OldPlayerReq.cs" />
     <Compile Include="Model\Request\BuyYuanBaoReq.cs" />
     <Compile Include="Model\Request\OtherUserInfoReq.cs" />
     <Compile Include="Model\Request\SetUserSecondPSWReq.cs" />
@@ -187,6 +189,10 @@
     <ProjectReference Include="..\NHibernate与MySQL交互\NHibernate与MySQL交互.csproj">
       <Project>{a27fccef-7ccf-4f5d-8609-268afe33ed8a}</Project>
       <Name>NHibernate与MySQL交互</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nhibernate与老手游SqlServer交互\Nhibernate与老手游SqlServer交互.csproj">
+      <Project>{4706c449-0729-41ad-8cb6-54b2be2740ce}</Project>
+      <Name>Nhibernate与老手游SqlServer交互</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

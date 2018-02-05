@@ -89,6 +89,10 @@
       <Project>{a27fccef-7ccf-4f5d-8609-268afe33ed8a}</Project>
       <Name>NHibernate与MySQL交互</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Nhibernate与老手游SqlServer交互\Nhibernate与老手游SqlServer交互.csproj">
+      <Project>{4706c449-0729-41ad-8cb6-54b2be2740ce}</Project>
+      <Name>Nhibernate与老手游SqlServer交互</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NhInterSqlServer"
+                   namespace="NhInterSqlServer.Model">
+
+  <class name="UserSource" table="User_Source">
+    <id name="UserId" column="USERID" type="Int32">
+      <generator class="native"></generator>
+    </id>
+    <property name="SourceCode" column="SourceCode" type="String"></property>
+    <property name="GameID" column="GameID" type="Int32"></property>
+  </class>
+</hibernate-mapping>

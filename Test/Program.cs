@@ -17,6 +17,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using NhInterMySQL.Model;
+using NhInterSqlServer;
 using NHibernate.Mapping;
 using TLJ_MySqlService.Utils;
 using Task = System.Threading.Tasks.Task;
@@ -62,6 +63,21 @@ namespace Test
 
         static void Main(string[] args)
         {
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            Console.WriteLine(baseDirectory);
+
+            string currentDirectory = System.IO.Directory.GetCurrentDirectory();
+            Console.WriteLine(currentDirectory);
+
+            var userSource = NHibernaMsServerteHelper.GetById(115349060);
+
+            Console.WriteLine(userSource.SourceCode);
+
+            Console.ReadLine();
+        }
+
+        private static void Test4()
+        {
             int threadId = Thread.CurrentThread.ManagedThreadId;
 
             Console.WriteLine(threadId + ":q");
@@ -77,8 +93,6 @@ namespace Test
             }).Start();
 
             Console.WriteLine(threadId + ":e");
-
-            Console.ReadLine();
         }
 
         public class Test5
@@ -385,8 +399,7 @@ namespace Test
         static int GetRandomSeed()
         {
             byte[] bytes = new byte[4];
-            System.Security.Cryptography.RNGCryptoServiceProvider rng =
-                new System.Security.Cryptography.RNGCryptoServiceProvider();
+            System.Security.Cryptography.RNGCryptoServiceProvider rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
             rng.GetBytes(bytes);
             return BitConverter.ToInt32(bytes, 0);
         }

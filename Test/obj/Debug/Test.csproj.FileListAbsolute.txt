@@ -15,3 +15,10 @@ C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NhInterMySQL.dll
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NhInterMySQL.pdb
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Config\hibernate.cfg.xml
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Config\Test.exe.config
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Config\Test.exe
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Config\Test.pdb
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\hibernate_sqlserver.cfg.xml
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NhInterSqlServer.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NhInterSqlServer.pdb
