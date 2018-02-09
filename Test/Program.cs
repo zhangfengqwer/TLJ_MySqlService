@@ -12,10 +12,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Model;
 using NhInterMySQL.Model;
 using NhInterSqlServer;
 using NHibernate.Mapping;
@@ -63,17 +65,110 @@ namespace Test
 
         static void Main(string[] args)
         {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            Console.WriteLine(baseDirectory);
+            string path = "NhInterMySQL.dll";
+            byte[] bytes = new byte[] { };
+            if (File.Exists(path))
+            {
+                using (FileStream fs = new FileStream(path, FileMode.Open))
+                {
+                    bytes = new byte[fs.Length];
 
-            string currentDirectory = System.IO.Directory.GetCurrentDirectory();
-            Console.WriteLine(currentDirectory);
+                    fs.Read(bytes, 0, bytes.Length);
+                  
 
-            var userSource = NHibernaMsServerteHelper.GetById(115349060);
+                    MD5 md5 = MD5.Create();
+                    byte[] computeHash = md5.ComputeHash(bytes);
+                    StringBuilder sb = new StringBuilder();
+                    foreach (var b in computeHash)
+                    {
+                        sb.Append(b.ToString("x2"));
+                    }
+                    Console.WriteLine(sb.ToString());
+                }
+            }
 
-            Console.WriteLine(userSource.SourceCode);
+            using (FileStream fs = new FileStream("NhInterMySQL.dll", FileMode.Create))
+            {
+                fs.Seek(0, SeekOrigin.Begin);
+                fs.Write(bytes, 0, bytes.Length);
+
+                fs.Flush();
+            }
+
+            Console.WriteLine(MD5Helper.FileMD5(path));
 
             Console.ReadLine();
+        }
+
+        public static string FileMD5(string filePath)
+        {
+            byte[] retVal;
+            using (FileStream file = new FileStream(filePath, FileMode.Open))
+            {
+                MD5 md5 = new MD5CryptoServiceProvider();
+                retVal = md5.ComputeHash(file);
+            }
+
+            return retVal.ToHex("x2");
+        }
+
+        private static void GetVivoOrder()
+        {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+
+            dictionary.Add("version", "1.0.0");
+            dictionary.Add("signMethod", "MD5");
+            dictionary.Add("storeId", "9fb92f5a285056d48c38");
+            dictionary.Add("appId", "4164d42da1fa0deaa27ca8cb4727b618");
+            dictionary.Add("storeOrder", DateTime.Now.ToString("yyMMddHHmmss"));
+            dictionary.Add("orderTime", DateTime.Now.ToString("yyyyMMddHHmmss"));
+            dictionary.Add("notifyUrl", "http://fksq.javgame.com/notify/vivo_notify");
+            dictionary.Add("orderAmount", "1.00");
+            dictionary.Add("orderTitle", "10元宝");
+            dictionary.Add("orderDesc", "10元宝");
+
+            string result = SortDictionary(dictionary, "signMethod", "signature");
+            result += $"&{GetMD5("91958f99dd2c4b76543a2ea6c3496515").ToLower()}";
+            string sign = GetMD5(result).ToLower();
+            dictionary.Add("signature", sign);
+
+            string body = SortDictionary(dictionary);
+            Console.WriteLine(body);
+
+            string http = HttpUtil.PostHttp("https://pay.vivo.com.cn/vivoPay/getVivoOrderNum", body);
+
+            Console.WriteLine(http);
+        }
+
+
+        /// <summary>
+        /// 对字典进行排序 appid=xxx&secret=xxx
+        /// </summary>
+        /// <param name="dictionary"></param>
+        /// <param name="args">不参与排序的key值</param>
+        /// <returns></returns>
+        public static string SortDictionary(Dictionary<string, string> dictionary, params string[] args)
+        {
+            List<string> keys = new List<string>();
+            keys.AddRange(dictionary.Keys);
+            keys.Sort();
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < keys.Count; i++)
+            {
+                string key = keys[i];
+                dictionary.TryGetValue(key, out var value);
+                sb.Append(key);
+                sb.Append("=");
+                sb.Append(value);
+                if (i != keys.Count - 1)
+                {
+                    sb.Append("&");
+                }
+            }
+
+            return sb.ToString();
         }
 
         private static void Test4()
@@ -158,9 +253,9 @@ namespace Test
         private static void StartHttp()
         {
             listener = new HttpListener();
-
-            listener.Prefixes.Add("http://localhost/test/");
-            listener.Prefixes.Add("http://localhost/test2/");
+            AuthenticationSchemes authenticationSchemes = listener.AuthenticationSchemes;
+            listener.Prefixes.Add("http://fksq.javgame.com/pay/chargeinfo/");
+            listener.Prefixes.Add("http://fksq.javgame.com/notify/vivo_notify/");
 
             listener.Start();
 
@@ -178,14 +273,14 @@ namespace Test
                 string absoluteUri = context.Request.Url.AbsoluteUri;
                 string LocalPath = context.Request.Url.LocalPath;
                 Console.WriteLine($"absoluteUri:{absoluteUri}\nLocalPath:{LocalPath}");
-                string rawUrl = context.Request.RawUrl;
-                string contentType = context.Request.ContentType;
-                Encoding contentEncoding = context.Request.ContentEncoding;
-                string httpMethod = context.Request.HttpMethod;
-                NameValueCollection headers = context.Request.Headers;
-
-                Console.WriteLine(
-                    $"rawUrl:{rawUrl}\ncontentType:{contentType}\ncontentEncoding:{contentEncoding}\nhttpMethod;{httpMethod}");
+                //                string rawUrl = context.Request.RawUrl;
+                //                string contentType = context.Request.ContentType;
+                //                Encoding contentEncoding = context.Request.ContentEncoding;
+                //                string httpMethod = context.Request.HttpMethod;
+                //                NameValueCollection headers = context.Request.Headers;
+                //
+                //                Console.WriteLine(
+                //                    $"rawUrl:{rawUrl}\ncontentType:{contentType}\ncontentEncoding:{contentEncoding}\nhttpMethod;{httpMethod}");
 
                 //                foreach (var key in headers.AllKeys)
                 //                {
@@ -193,12 +288,30 @@ namespace Test
                 //                    Console.WriteLine($"key:{key},Values:{strings?.ToString()}");
                 //                }
 
-                string type = context.Request.QueryString["type"];
-                string contents = context.Request.QueryString["content"];
-                Console.WriteLine($"type:{type}\ncontent:{contents}");
+                //                string type = context.Request.QueryString["type"];
+                //                string contents = context.Request.QueryString["content"];
+                //                Console.WriteLine($"type:{type}\ncontent:{contents}");
+                Stream inputStream = context.Request.InputStream;
+                string contentType = context.Request.ContentType;
+                long length64 = context.Request.ContentLength64;
+                Console.WriteLine($"contentType:{contentType}");
+                byte[] bytes1 = new byte[length64];
+                for (int offset = 0; offset < length64;)
+                {
+                    int i = await inputStream.ReadAsync(bytes1, 0, bytes1.Length - offset);
+
+                    offset += i;
+                }
+
+
+                string data = Encoding.UTF8.GetString(bytes1);
+
+                Order order = JsonConvert.DeserializeObject<Order>(data);
+
+                Console.WriteLine($"data:{data}");
 
                 Stream outputStream = context.Response.OutputStream;
-                string response = $"<HTML><BODY>type:{type},content:{contents}</BODY></HTML>";
+                string response = $"<HTML><BODY>type:,content</BODY></HTML>";
 
                 byte[] bytes = Encoding.UTF8.GetBytes(response);
                 context.Response.ContentLength64 = bytes.Length;
@@ -206,6 +319,25 @@ namespace Test
                 await outputStream.WriteAsync(bytes, 0, bytes.Length);
             }
         }
+
+
+        public class Order
+        {
+            public string total_amount { get; set; }
+            public string gameId { get; set; }
+            public string codePayId { get; set; }
+            public string price { get; set; }
+            public string userId { get; set; }
+            public string version { get; set; }
+            public string ProductNum { get; set; }
+            public string ProductName { get; set; }
+            public string appId { get; set; }
+            public string expand { get; set; }
+            public string ProductDesc { get; set; }
+            public string ProductId { get; set; }
+            public string PhoneModel { get; set; }
+        }
+
 
         public static void IpConfig()
         {
@@ -240,7 +372,7 @@ namespace Test
             }
         }
 
-//
+        //
         public static string GetMD5(string password)
         {
             string cl = password;
@@ -392,14 +524,15 @@ namespace Test
             dt = new DataTable();
             myCommand.Fill(dt);
             return dt;
-//            dataGridView1.DataSource = dt; //绑定到界面
+            //dataGridView1.DataSource = dt; //绑定到界面
         }
 
 
         static int GetRandomSeed()
         {
             byte[] bytes = new byte[4];
-            System.Security.Cryptography.RNGCryptoServiceProvider rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
+            System.Security.Cryptography.RNGCryptoServiceProvider rng =
+                new System.Security.Cryptography.RNGCryptoServiceProvider();
             rng.GetBytes(bytes);
             return BitConverter.ToInt32(bytes, 0);
         }

@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\UserSource.cs" />
-    <Compile Include="NHibernaMsServerteHelper.cs" />
+    <Compile Include="NHiMsServerteHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

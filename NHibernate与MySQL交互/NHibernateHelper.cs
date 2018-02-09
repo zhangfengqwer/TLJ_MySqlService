@@ -44,6 +44,7 @@ namespace NhInterMySQL
                  _sessionFactory = configuration.BuildSessionFactory();
             }
                 return _sessionFactory;
+
         }
 
         public static ISession OpenSession()

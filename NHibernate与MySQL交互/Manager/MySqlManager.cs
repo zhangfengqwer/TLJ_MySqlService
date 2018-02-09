@@ -476,5 +476,20 @@ namespace NhInterMySQL.Manager
                 }
             }
         }
+
+
+        public Log_bind_oldplayer GetOldPlayerByMacId(string machineId)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                lock (Locker)
+                {
+                    var statistics = Session.CreateCriteria(typeof(Log_bind_oldplayer))
+                        .Add(Restrictions.Eq("machine_id", machineId))
+                        .UniqueResult<Log_bind_oldplayer>();
+                    return statistics;
+                }
+            }
+        }
     }
 }

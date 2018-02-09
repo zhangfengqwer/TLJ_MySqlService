@@ -5,22 +5,23 @@ using NHibernate.Cfg;
 
 namespace NhInterSqlServer
 {
-    public class NHibernaMsServerteHelper
+    public class NHiMsServerteHelper
     {
-      
         private static ISessionFactory _sessionFactory;
+
+       
         private static ISessionFactory GetSessionFactory()
         {
             if (_sessionFactory == null)
             {
-                 var configuration = new Configuration();
+                var configuration = new Configuration();
                 string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
                 configuration.Configure(baseDirectory + "hibernate_sqlserver.cfg.xml");
-                 configuration.AddAssembly("NhInterSqlServer");
-                 _sessionFactory = configuration.BuildSessionFactory();
+                configuration.AddAssembly("NhInterSqlServer");
+                _sessionFactory = configuration.BuildSessionFactory();
             }
-                return _sessionFactory;
+
+            return _sessionFactory;
         }
 
         public static ISession OpenSession()
@@ -35,7 +36,7 @@ namespace NhInterSqlServer
         /// <returns></returns>
         public static UserSource GetById(int id)
         {
-            using (var Session = NHibernaMsServerteHelper.OpenSession())
+            using (var Session = NHiMsServerteHelper.OpenSession())
             {
                 using (var transaction = Session.BeginTransaction())
                 {

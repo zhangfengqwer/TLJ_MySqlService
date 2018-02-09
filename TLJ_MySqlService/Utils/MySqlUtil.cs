@@ -280,8 +280,8 @@ namespace TLJ_MySqlService.Utils
                             int change = propNum;
 
                             StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, propId + "", reason, after - change, change, after);
-                            //                            string msg = $"改变了{propId}道具,{propNum}个";
-                            //                            LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+                            //string msg = $"改变了{propId}道具,{propNum}个";
+                            //LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                         }
                     }
                     else

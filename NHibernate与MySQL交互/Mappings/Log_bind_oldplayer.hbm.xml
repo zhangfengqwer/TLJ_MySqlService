@@ -11,5 +11,6 @@
     <property name="Uid" column="uid" type="String"></property>
     <property name="old_uid" column="old_uid" type="String"></property>
     <property name="channel_name" column="channel_name" type="String"></property>
+    <property name="machine_id" column="machine_id" type="String"></property>
   </class>
 </hibernate-mapping>

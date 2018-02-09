@@ -45,7 +45,8 @@ namespace TLJ_MySqlService.Handler
 
         private void GetUseNoticeSql(string uid, JObject responseData)
         {
-            List<Notice> notices = NHibernateHelper.noticeManager.GetAll().ToList();
+            List<Notice> notices = NHibernateHelper.noticeManager.GetAll().ToList().OrderByDescending(i => i.StartTime).ToList();
+
             List<UserNotice> userNotices = NHibernateHelper.userNoticeManager.GetListByUid(uid);
             List<UserNoticeJsonObj> tempList = new List<UserNoticeJsonObj>();
 

@@ -184,7 +184,7 @@ namespace TLJ_MySqlService
         {
             log.Info("log启动");
 
-            UserSource userSource = NhInterSqlServer.NHibernaMsServerteHelper.GetById(115349033);
+            UserSource userSource = NhInterSqlServer.NHiMsServerteHelper.GetById(115349033);
         }
 
         private void InitService()
