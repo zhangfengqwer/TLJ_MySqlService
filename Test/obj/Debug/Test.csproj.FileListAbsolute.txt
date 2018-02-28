@@ -22,3 +22,10 @@ C:\Users\Administrator\Desktop\TLJ_MySqlService\Config\Test.pdb
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\hibernate_sqlserver.cfg.xml
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NhInterSqlServer.dll
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NhInterSqlServer.pdb
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NLog.config
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\TLJ_MySqlService.exe
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\HPSocketCS.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NLog.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\TLJCommon.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\TLJ_MySqlService.pdb
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NLog.xml

@@ -4,7 +4,7 @@
                    assembly="NhInterMySQL"
                    namespace="NhInterMySQL.Model">
 
-  <class name="Log_bind_oldplayer" table="Log_bind_oldplayer">
+  <class name="Log_bind_oldplayer" table="log_bind_oldplayer">
     <id name="id" column="id" type="Int32">
       <generator class="native"></generator>
     </id>

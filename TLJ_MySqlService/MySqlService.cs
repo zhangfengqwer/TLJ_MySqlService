@@ -110,36 +110,18 @@ namespace TLJ_MySqlService
                 HttpUtil.clientip = "139.196.193.185";
             }
         }
-
+            
         private void InitCommomData()
         {
             PvpGameRooms = NHibernateHelper.PVPGameRoomManager.GetAll().ToList();
             ShopData = NHibernateHelper.goodsManager.GetAll().ToList().ToList();
             SignConfigs = NHibernateHelper.signConfigManager.GetAll().ToList();
             TurnTables = NHibernateHelper.turnTableManager.GetAll().ToList();
-            IosTurnTables = NHibernateHelper.turnTableManager.GetAll().ToList();
-          
-            for (int i = 0; i < IosTurnTables.Count; i++)
-            {
-                TurnTable iosTurnTable = IosTurnTables[i];
-                if (iosTurnTable.id == 4)
-                {
-                    iosTurnTable.reward = "102:2";
-                }
-                else if(iosTurnTable.id == 10)
-                {
-                    iosTurnTable.reward = "101:3";
-                }
-            }
-
-            log.Info(JsonConvert.SerializeObject(TurnTables));
-            log.Info(JsonConvert.SerializeObject(IosTurnTables));
-
             StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "VipRewardData.json");
-            string str = sr.ReadToEnd().ToString();
+            string str = sr.ReadToEnd();
             sr.Close();
-
             VipDatas = JsonConvert.DeserializeObject<List<VipData>>(str);
+            Sign30Data.getInstance().init();
         }
 
         /// <summary>
@@ -183,8 +165,6 @@ namespace TLJ_MySqlService
         public void InitLog()
         {
             log.Info("log启动");
-
-            UserSource userSource = NhInterSqlServer.NHiMsServerteHelper.GetById(115349033);
         }
 
         private void InitService()

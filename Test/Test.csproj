@@ -93,6 +93,10 @@
       <Project>{4706c449-0729-41ad-8cb6-54b2be2740ce}</Project>
       <Name>Nhibernate与老手游SqlServer交互</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TLJ_MySqlService\TLJ_MySqlService.csproj">
+      <Project>{74685689-ACA8-4087-B4A3-ACE58A62CE22}</Project>
+      <Name>TLJ_MySqlService</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

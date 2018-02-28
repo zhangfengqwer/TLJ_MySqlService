@@ -11,6 +11,8 @@ namespace TLJ_MySqlService.Utils
 {
     public class MySqlUtil
     {
+        
+
         public static void UpdateUserTask(string uid)
         {
             List<Task> tasks = NHibernateHelper.taskManager.GetAll().ToList();

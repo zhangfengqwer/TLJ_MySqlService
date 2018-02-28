@@ -9,6 +9,8 @@ namespace NhInterMySQL
 {
     public class StatictisLogUtil
     {
+        private static HashSet<string> hashSet = new HashSet<string>();
+
         public static void Login(string uid, string nickName, string ip, string channelName, string versionName,
             string loginType)
         {
@@ -22,6 +24,27 @@ namespace NhInterMySQL
                 nick_name = nickName
             };
             NHibernateHelper.LogLoginManager.Add(logLogin);
+            if (!hashSet.Contains(uid))
+            {
+                SendStopServerReward(uid);
+            }
+        }
+
+        /// <summary>
+        /// 发送停服奖励 ，当天的日期
+        /// </summary>
+        /// <param name="uid"></param>
+        public static void SendStopServerReward(string uid)
+        {
+            DateTime dateTime = DateTime.Now;
+            int dateTimeYear = dateTime.Year;
+            int dateTimeMonth = dateTime.Month;
+            int Day = dateTime.Day;
+            if (dateTimeYear == 2018 && dateTimeMonth == 2 && Day == 11)
+            {
+                SendEmailUtil.SendEmail(uid, "系统维护奖励", "系统维护奖励", "1:666;101:1");
+                hashSet.Add(uid);
+            }
         }
 
         public static void Recharge(string uid, string nickName, string orderId, string goodsId, string goodsNum,
@@ -70,11 +93,10 @@ namespace NhInterMySQL
             };
 
             NHibernateHelper.LogChangeWealthManager.Add(logChangeWealth);
-
         }
 
         public static void Game(int roomid, string gamename, string play1Uid, string play2Uid, string play3Uid,
-            string play4Uid,int curpvpround ,string win1,string win2,string zhuangUid)
+            string play4Uid, int curpvpround, string win1, string win2, string zhuangUid)
         {
             Log_Game logGame = new Log_Game()
             {

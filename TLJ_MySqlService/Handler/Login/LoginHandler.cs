@@ -127,7 +127,6 @@ namespace TLJ_MySqlService.Handler
             StatisticsHelper.StatisticsLogin(user.Uid);
 
             StatictisLogUtil.Login(user.Uid, user.Username, ip, channelName, versionName, MyCommon.OpType.Login);
-
         }
 
         //数据库操作失败

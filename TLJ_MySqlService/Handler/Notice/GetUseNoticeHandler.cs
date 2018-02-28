@@ -81,10 +81,10 @@ namespace TLJ_MySqlService.Handler
                 {
                     UserNotice userNotice = userNotices[j];
                     
-//                    if (userNotice.NoticeId == 1)
-//                    {
-//                        continue;
-//                    }
+                    if (userNotice.NoticeId == 9)
+                    {
+                        continue;
+                    }
 
                     if (notice.NoticeId == userNotice.NoticeId)
                     {

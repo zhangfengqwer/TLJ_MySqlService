@@ -17,10 +17,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using Model;
+using NhInterMySQL.Manager;
 using NhInterMySQL.Model;
 using NhInterSqlServer;
 using NHibernate.Mapping;
+using TLJ_MySqlService.Handler;
 using TLJ_MySqlService.Utils;
 using Task = System.Threading.Tasks.Task;
 
@@ -65,38 +68,54 @@ namespace Test
 
         static void Main(string[] args)
         {
-            string path = "NhInterMySQL.dll";
-            byte[] bytes = new byte[] { };
-            if (File.Exists(path))
-            {
-                using (FileStream fs = new FileStream(path, FileMode.Open))
-                {
-                    bytes = new byte[fs.Length];
+            //            string path = "NhInterMySQL.dll";
+            //            byte[] bytes = new byte[] { };
+            //            if (File.Exists(path))
+            //            {
+            //                using (FileStream fs = new FileStream(path, FileMode.Open))
+            //                {
+            //                    bytes = new byte[fs.Length];
+            //
+            //                    fs.Read(bytes, 0, bytes.Length);
+            //                  
+            //
+            //                    MD5 md5 = MD5.Create();
+            //                    byte[] computeHash = md5.ComputeHash(bytes);
+            //                    StringBuilder sb = new StringBuilder();
+            //                    foreach (var b in computeHash)
+            //                    {
+            //                        sb.Append(b.ToString("x2"));
+            //                    }
+            //                    Console.WriteLine(sb.ToString());
+            //                }
+            //            }
+            //
+            //            using (FileStream fs = new FileStream("NhInterMySQL.dll", FileMode.Create))
+            //            {
+            //                fs.Seek(0, SeekOrigin.Begin);
+            //                fs.Write(bytes, 0, bytes.Length);
+            //
+            //                fs.Flush();
+            //            }
+            //
+            //            Console.WriteLine(MD5Helper.FileMD5(path));
+            //            string uid = UidUtil.createUID();
+            //            User user = new User()
+            //            {
+            //                Username = "??????",
+            //                Userpassword = "",
+            //                ChannelName = "ios",
+            //                ThirdId = "599FA421DDFB8BA42874BAAE74D92981",
+            //                Secondpassword = "",
+            //                Uid = uid,
+            //                IsRobot = 0
+            //            };
+            //
+            //            MySqlManager<User>.Instance.Add(user);
 
-                    fs.Read(bytes, 0, bytes.Length);
-                  
-
-                    MD5 md5 = MD5.Create();
-                    byte[] computeHash = md5.ComputeHash(bytes);
-                    StringBuilder sb = new StringBuilder();
-                    foreach (var b in computeHash)
-                    {
-                        sb.Append(b.ToString("x2"));
-                    }
-                    Console.WriteLine(sb.ToString());
-                }
-            }
-
-            using (FileStream fs = new FileStream("NhInterMySQL.dll", FileMode.Create))
-            {
-                fs.Seek(0, SeekOrigin.Begin);
-                fs.Write(bytes, 0, bytes.Length);
-
-                fs.Flush();
-            }
-
-            Console.WriteLine(MD5Helper.FileMD5(path));
-
+            string http = HttpUtil.GetHttp(
+                "http://mapi.javgame.com:14123/mNotify/notify_baidu?appid=134&orderid=tzqgEpl6luIxdwp&amount=100&unit=fen&jfd=478&status=success&paychannel=ct_sfdx&phone=15305000062&channel=CUCC&from=gsdk&sign=145d1821d9ac5d4381fd6f568034f65d&extchannel=17575&cpdefinepart=cporderinfo");
+            Console.WriteLine(http);
             Console.ReadLine();
         }
 
@@ -128,6 +147,7 @@ namespace Test
             dictionary.Add("orderDesc", "10元宝");
 
             string result = SortDictionary(dictionary, "signMethod", "signature");
+
             result += $"&{GetMD5("91958f99dd2c4b76543a2ea6c3496515").ToLower()}";
             string sign = GetMD5(result).ToLower();
             dictionary.Add("signature", sign);
@@ -158,6 +178,7 @@ namespace Test
             for (int i = 0; i < keys.Count; i++)
             {
                 string key = keys[i];
+                if (args.Contains(key)) continue;
                 dictionary.TryGetValue(key, out var value);
                 sb.Append(key);
                 sb.Append("=");
@@ -167,7 +188,6 @@ namespace Test
                     sb.Append("&");
                 }
             }
-
             return sb.ToString();
         }
 

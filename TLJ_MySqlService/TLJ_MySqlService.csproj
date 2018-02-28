@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\OpCode.cs" />
+    <Compile Include="Data\Sign30Data.cs" />
     <Compile Include="Handler\BaseHandler.cs" />
     <Compile Include="Handler\Email\DeleteEmailHandler.cs" />
     <Compile Include="Handler\Email\AddEmailHandler.cs" />
@@ -77,6 +78,9 @@
     <Compile Include="Handler\Game\GetGameOverHandler.cs" />
     <Compile Include="Handler\OldGame\BindOldPlayerHandler.cs" />
     <Compile Include="Handler\Shop\IOSPayHandler.cs" />
+    <Compile Include="Handler\Sign\GetSign30RecordHandler.cs" />
+    <Compile Include="Handler\Sign\GetSign30RewardHandler.cs" />
+    <Compile Include="Handler\Sign\Sign30Handler.cs" />
     <Compile Include="Handler\Statictis\StatictisGameHandler.cs" />
     <Compile Include="Handler\Statictis\StatictisOnlineHandler.cs" />
     <Compile Include="Handler\Statictis\StatictisLoginHandler.cs" />
@@ -179,6 +183,7 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ProjectInstaller.resx">

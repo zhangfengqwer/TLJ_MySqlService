@@ -10,7 +10,7 @@ using TLJ_MySqlService.Utils;
 namespace TLJ_MySqlService.Handler
 {
     [Handler(Consts.Tag_Third_Login)]
-    class ThirdLoginHandler : BaseHandler
+    public class ThirdLoginHandler : BaseHandler
     {
         public override string OnResponse(string data)
         {
@@ -86,7 +86,10 @@ namespace TLJ_MySqlService.Handler
                     for (int i = 0; i < 10; i++)
                     {
                         int next = random.Next(1, 100);
-                        user.Username.Remove(user.Username.Length - 1);
+                        if (user.Username.Length > 0)
+                        {
+                            user.Username.Remove(user.Username.Length - 1);
+                        }
                         user.Username += next;
                         if (NHibernateHelper.userManager.Add(user))
                         {

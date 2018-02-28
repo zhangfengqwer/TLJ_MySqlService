@@ -1,4 +1,5 @@
-﻿using NhInterMySQL.Manager;
+﻿using System;
+using NhInterMySQL.Manager;
 using NhInterMySQL.Model;
 using NHibernate;
 using NHibernate.Cfg;
@@ -38,8 +39,9 @@ namespace NhInterMySQL
         {
             if (_sessionFactory == null)
             {
-                 var configuration = new Configuration();    
-                 configuration.Configure();
+                 var configuration = new Configuration();
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                configuration.Configure(baseDirectory + "hibernate.cfg.xml");
                  configuration.AddAssembly("NhInterMySQL");
                  _sessionFactory = configuration.BuildSessionFactory();
             }
