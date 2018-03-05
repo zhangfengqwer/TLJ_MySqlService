@@ -66,6 +66,7 @@
     <Compile Include="Helper\IdGenerater.cs" />
     <Compile Include="Helper\MD5Helper.cs" />
     <Compile Include="Helper\NetHelper.cs" />
+    <Compile Include="Helper\RandomCharHelper.cs" />
     <Compile Include="Helper\RandomHelper.cs" />
     <Compile Include="Helper\StringHelper.cs" />
     <Compile Include="Helper\TimeHelper.cs" />

@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using NhInterMySQL;
+using NhInterMySQL.Manager;
 using NhInterMySQL.Model;
 using TLJCommon;
 using NhInterMySQL.Model;
@@ -115,6 +116,14 @@ namespace TLJ_MySqlService.Handler
                     commonConfig.first_recharge_gift = 1;
                     NHibernateHelper.commonConfigManager.Update(commonConfig);
                     SendEmailUtil.SendEmail(uid, "首充礼包", "恭喜你获得首充礼包", "1:30000;107:30;101:6;106:3;110:2");
+
+                    UserExtend userExtend = MySqlManager<UserExtend>.Instance.GetByUid(uid);
+
+                    if (userExtend?.task2 == 1)
+                    {
+                        userExtend.task2 = 2;
+                        MySqlManager<UserExtend>.Instance.Update(userExtend);
+                    }
                 }
             }
         }

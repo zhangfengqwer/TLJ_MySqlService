@@ -9,6 +9,8 @@ using NhInterMySQL;
 using NhInterMySQL.Manager;
 using TLJCommon;
 using NhInterMySQL.Model;
+using NHibernate;
+using NHibernate.Criterion;
 
 namespace TLJ_MySqlService.Handler
 {
@@ -27,15 +29,66 @@ namespace TLJ_MySqlService.Handler
                 MySqlService.log.Warn("传入的参数有误:" + e);
                 return null;
             }
+
             string Tag = defaultReq.tag;
             int connId = defaultReq.connId;
             string uid = defaultReq.uid;
             JObject responseData = new JObject();
             responseData.Add(MyCommon.TAG, Tag);
             responseData.Add(MyCommon.CONNID, connId);
-            responseData.Add("record", "1,5,6,10");
+
+            List<UserMonthSign> userMonthSigns = GetSign30RecordSql(uid);
+
+            StringBuilder sb = new StringBuilder();
+
+            if (userMonthSigns.Count > 0)
+            {
+                foreach (var sign in userMonthSigns)
+                {
+                    string signDate = sign.SignDate;
+                    sb.Append(signDate);
+                    sb.Append(",");
+                }
+                responseData.Add("record", sb.ToString().Remove(sb.ToString().Length - 1));
+            }
+            else
+            {
+                responseData.Add("record", "");
+            }
+
 
             return responseData.ToString();
+        }
+
+        public static List<UserMonthSign> GetSign30RecordSql(string uid)
+        {
+            var yearMonth = GetYearMonth();
+            var sql = $"SELECT * FROM new_tlj.user_month_sign where uid = '{uid}' and sign_year_month = '{yearMonth}'";
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    try
+                    {
+                        List<UserMonthSign> userMonthSigns = session.CreateSQLQuery(sql).AddEntity(typeof(UserMonthSign)).List<UserMonthSign>().ToList();
+                        transaction.Commit();
+                        return userMonthSigns;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        return null;
+                    }
+                }
+            }
+        }
+
+        public static string GetYearMonth()
+        {
+            int nowYear = DateTime.Now.Year;
+            int nowMonth = DateTime.Now.Month;
+            string yearMonth = $"{nowYear}-{nowMonth}";
+            return yearMonth;
         }
     }
 }

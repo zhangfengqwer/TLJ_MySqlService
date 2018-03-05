@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using NhInterMySQL;
 using NhInterMySQL.Manager;
 using TLJ_MySqlService.Utils;
@@ -21,102 +22,138 @@ namespace TLJ_MySqlService.Handler
             }
             catch (Exception e)
             {
-                MySqlService.log.Warn("传入的参数有误");
+                MySqlService.log.Warn("传入的参数有误:" + e);
                 return null;
             }
+
             string signTag = defaultReq.tag;
             int signConnId = defaultReq.connId;
             string signUid = defaultReq.uid;
             int id = defaultReq.id;
+            int type = defaultReq.type;
 
             if (string.IsNullOrWhiteSpace(signTag) || string.IsNullOrWhiteSpace(signUid))
             {
                 MySqlService.log.Warn("字段有空");
                 return null;
             }
+
             //传给客户端的数据
             JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, signTag);
             _responseData.Add(MyCommon.CONNID, signConnId);
             _responseData.Add("id", id);
+            _responseData.Add("type", type);
 
             //签到
-            Sign30Sql(signUid, _responseData);
+            Sign30Sql(signUid, id, type, _responseData);
             return _responseData.ToString();
         }
 
         /// <summary>
         /// 查询签到数据库
         /// </summary>
-        /// <param name="signUid"></param>
+        /// <param name="uid"></param>
+        /// <param name="id"></param>
+        /// <param name="signType"></param>
         /// <param name="responseData"></param>
-        private void Sign30Sql(string signUid, JObject responseData)
+        private void Sign30Sql(string uid, int id, int signType, JObject responseData)
         {
+            Sign30DataContent dataContent = Sign30Data.getInstance().getSign30DataById(id);
 
-            responseData.Add("reward_prop", Sign30Data.getInstance().getSign30DataContentList()[1].reward_prop);
-            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
-//            Sign signByUid = NHibernateHelper.signManager.GetByName(signUid);
-//            if (signByUid == null)
-//            {
-//                OperatorFail(responseData);
-//                MySqlService.log.Warn("传入的uid有误");
-//            }
-//            else
-//            {
-//                DateTime updateTime = signByUid.UpdateTime;
-//                int updateTimeYear = updateTime.Year;
-//                int updateTimeMonth = updateTime.Month;
-//                int updateTimeDay = updateTime.Day;
-//                int nowYear = DateTime.Now.Year;
-//                int nowMonth = DateTime.Now.Month;
-//                int nowDay = DateTime.Now.Day;
-//                //已经签到过了，不能签到
-//                if (updateTimeYear == nowYear && updateTimeMonth == nowMonth && updateTimeDay == nowDay &&
-//                    signByUid.SignWeekDays != 0)
-//                {
-//                    OperatorFail(responseData);
-//                    MySqlService.log.Warn("已签到:" + signUid);
-//                }
-//                //未签到，可以签到
-//                else
-//                {
-//                    SignConfig signConfig = MySqlService.SignConfigs[signByUid.SignWeekDays];
-//                    signByUid.SignWeekDays++;
-//                    signByUid.UpdateTime = DateTime.Now;
-//                    MySqlService.log.Info(signConfig.goods_prop);
-//
-//                    string reason = "";
-//                    if (signByUid.SignWeekDays == 7)
-//                    {
-//                        reason = "签到奖励_大礼包";
-//                    }
-//                    else
-//                    {
-//                        reason = "签到奖励";
-//                    }
-//
-//                    if (NHibernateHelper.signManager.Update(signByUid) && MySqlUtil.AddProp(signUid, signConfig.goods_prop, reason))
-//                    {
-//                        OperatorSuccess(responseData);
-//                    }
-//                    else
-//                    {
-//                        OperatorFail(responseData);
-//                    }
-//                }
-//            }
+            switch (signType)
+            {
+                case 1:
+                case 2:
+                    sign(uid, dataContent, responseData);
+                    break;
+                case 3:
+                    totalSign(uid, dataContent, responseData);
+                    break;
+            }
         }
 
-        //数据库操作成功
-        private void OperatorSuccess(JObject responseData)
+        private void totalSign(string uid, Sign30DataContent dataContent, JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
+            List<UserMonthSign> userMonthSigns = GetSign30RecordHandler.GetSign30RecordSql(uid);
+            int dataContentDay = dataContent.day;
+
+            for (int i = userMonthSigns.Count - 1; i <= 0; i++)
+            {
+                if (int.Parse(userMonthSigns[i].SignDate) > 31)
+                {
+                    userMonthSigns.RemoveAt(i);
+                }
+            }
+
+            if (userMonthSigns.Count >= dataContentDay)
+            {
+                UserMonthSign userMonthSign = new UserMonthSign()
+                {
+                    Uid = uid,
+                    SignYearMonth = GetSign30RecordHandler.GetYearMonth(),
+                    SignDate = dataContent.id + ""
+                };
+
+                if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
+                {
+                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+                    responseData.Add("msg", $"{dataContent.reward_name}领取成功");
+                    responseData.Add("reward_prop", dataContent.reward_prop);
+                    AddSignReward(uid, dataContent.reward_prop);
+                }
+                else
+                {
+                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                    responseData.Add("msg", $"{dataContent.reward_name}的奖励已领取,不可重复领取");
+                }
+            }
+            else
+            {
+                responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                responseData.Add("msg", $"未满足{dataContent.reward_name},当前签到累计{userMonthSigns.Count}");
+            }
         }
 
-        //数据库操作失败
-        private void OperatorFail(JObject responseData)
+        private void sign(string uid, Sign30DataContent dataContent, JObject responseData)
         {
-            responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
+            int dataContentDay = dataContent.day;
+            int nowYear = DateTime.Now.Year;
+            int nowMonth = DateTime.Now.Month;
+            string signYearMonth = $"{nowYear}-{nowMonth}";
+            UserMonthSign userMonthSign = MySqlManager<UserMonthSign>.Instance.GetUserMonthSign(uid, signYearMonth, dataContentDay + "");
+            if (userMonthSign == null)
+            {
+                userMonthSign = new UserMonthSign()
+                {
+                    Uid = uid,
+                    SignDate = dataContentDay + "",
+                    SignYearMonth = signYearMonth
+                };
+
+                if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
+                {
+                    responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_OK);
+                    responseData.Add("reward_prop", dataContent.reward_prop);
+                    responseData.Add("msg", "签到成功");
+                    AddSignReward(uid, dataContent.reward_prop);
+                }
+                else
+                {
+                    responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
+                    responseData.Add("msg", "已签到");
+                }
+            }
+            else
+            {
+                responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
+                responseData.Add("msg", "已签到");
+            }
+        }
+
+        private void AddSignReward(string uid, string dataContentRewardProp)
+        {
+            MySqlUtil.AddProp(uid, dataContentRewardProp, "每月签到奖励");
         }
     }
 }

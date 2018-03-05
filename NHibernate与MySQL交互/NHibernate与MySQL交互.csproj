@@ -74,6 +74,8 @@
     <Compile Include="Model\UserRealName.cs" />
     <Compile Include="Model\MyLog.cs" />
     <Compile Include="Model\UserRecharge.cs" />
+    <Compile Include="Model\UserMonthSign.cs" />
+    <Compile Include="Model\UserExtend.cs" />
     <Compile Include="Model\UserTask.cs" />
     <Compile Include="Model\Task.cs" />
     <Compile Include="Model\UserGame.cs" />
@@ -94,6 +96,12 @@
     <Compile Include="Utils\VipUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Mappings\UserExtend.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mappings\UserMonthSign.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mappings\Log_bind_oldplayer.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

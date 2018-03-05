@@ -18,6 +18,7 @@
     <property name="freeCount" column="freeCount" type="Int32"></property>
     <property name="huizhangCount" column="huizhangCount" type="Int32"></property>
     <property name="luckyValue" column="luckyValue" type="Int32"></property>
+    <property name="ExtendCode" column="extend_code" type="String"></property>
   </class>
 
 </hibernate-mapping>

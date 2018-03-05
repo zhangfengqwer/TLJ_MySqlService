@@ -13,5 +13,6 @@
         public virtual int huizhangCount { set; get; }
         public virtual int luckyValue { set; get; }
         public virtual string Phone { set; get; }
+        public virtual string ExtendCode { set; get; }
     }
 }

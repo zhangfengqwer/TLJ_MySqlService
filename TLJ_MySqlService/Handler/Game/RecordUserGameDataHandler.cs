@@ -4,6 +4,7 @@ using NhInterMySQL;
 using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
+using NhInterMySQL.Manager;
 using TLJCommon;
 
 namespace TLJ_MySqlService.Handler
@@ -89,6 +90,14 @@ namespace TLJ_MySqlService.Handler
                         break;
                     case (int) Consts.GameAction.GameAction_Win:
                         userGame.WinCount++;
+                        UserExtend userExtend = MySqlManager<UserExtend>.Instance.GetByUid(uid);
+
+                        if (userExtend?.task1 == 1)
+                        {
+                            userExtend.task1 = 2;
+                            MySqlManager<UserExtend>.Instance.Update(userExtend);
+                        }
+
                         break;
                     case (int) Consts.GameAction.GameAction_Run:
                         userGame.RunCount++;

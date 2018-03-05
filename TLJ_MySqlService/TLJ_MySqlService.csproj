@@ -38,12 +38,18 @@
     <Reference Include="HPSocketCS">
       <HintPath>Lib\HPSocketCS.dll</HintPath>
     </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Iesi.Collections.4.0.0.4000\lib\net40\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=4.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
@@ -75,6 +81,9 @@
     <Compile Include="Handler\Email\OneKeyReadEmailHandler.cs" />
     <Compile Include="Handler\Email\ReadEmailHandler.cs" />
     <Compile Include="Handler\Email\GetEmailHandler.cs" />
+    <Compile Include="Handler\Extend\OneKeyGetAllTuiGuangRewardHandler.cs" />
+    <Compile Include="Handler\Extend\MyTuiGuangYouLiDataHandler.cs" />
+    <Compile Include="Handler\Extend\BindExtendCodeHandler.cs" />
     <Compile Include="Handler\Game\GetGameOverHandler.cs" />
     <Compile Include="Handler\OldGame\BindOldPlayerHandler.cs" />
     <Compile Include="Handler\Shop\IOSPayHandler.cs" />
@@ -121,6 +130,7 @@
     <Compile Include="Model\Object\HandlerAttribute.cs" />
     <Compile Include="Model\Object\ServiceType.cs" />
     <Compile Include="Model\Object\UserInfo_Game.cs" />
+    <Compile Include="Model\Request\BindExtendCode.cs" />
     <Compile Include="Model\Request\OldPlayerReq.cs" />
     <Compile Include="Model\Request\BuyYuanBaoReq.cs" />
     <Compile Include="Model\Request\OtherUserInfoReq.cs" />
@@ -130,6 +140,7 @@
     <Compile Include="Model\Request\GetAIReq.cs" />
     <Compile Include="Model\Request\StatictisLoginReq.cs" />
     <Compile Include="Model\Request\UseHuaFeiReq.cs" />
+    <Compile Include="Model\Response\ExtendData.cs" />
     <Compile Include="Model\Response\TurnTableJsonObject.cs" />
     <Compile Include="Model\Response\AIJsonObject.cs" />
     <Compile Include="Model\Response\MedalRankJsonObject.cs" />
@@ -174,6 +185,7 @@
     <Compile Include="Utils\MyCommon.cs" />
     <Compile Include="Utils\MySqlUtil.cs" />
     <Compile Include="Utils\NetConfig.cs" />
+    <Compile Include="Utils\RandomCharHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config">

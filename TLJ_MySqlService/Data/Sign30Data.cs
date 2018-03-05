@@ -88,7 +88,7 @@ public class Sign30Data
 public class Sign30DataContent
 {
     public int id;
-    public int type;                  // 1:普通签到  2:累计签到
+    public int type;                  // 1:普通签到  2:累计领取奖励
     public int day;
     public string reward_name = "";
     public string reward_prop = "";

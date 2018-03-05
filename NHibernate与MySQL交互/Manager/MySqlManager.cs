@@ -491,5 +491,40 @@ namespace NhInterMySQL.Manager
                 }
             }
         }
+
+        public UserMonthSign GetUserMonthSign(string uid, string signYearMonth,string signDate)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var userMonthSign = Session.CreateCriteria(typeof(UserMonthSign))
+                    .Add(Restrictions.Eq("Uid", uid))
+                    .Add(Restrictions.Eq("SignDate", signDate))
+                    .Add(Restrictions.Eq("SignYearMonth", signYearMonth))
+                    .UniqueResult<UserMonthSign>();
+                return userMonthSign;
+            }
+        }
+
+        public UserInfo GetUserInfoByCode(string code)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var userInfo = Session.CreateCriteria(typeof(UserInfo))
+                    .Add(Restrictions.Eq("ExtendCode", code))
+                    .UniqueResult<UserInfo>();
+                return userInfo;
+            }
+        }
+
+        public IList<UserExtend> GetMyExtendDataByUid(string uid)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var userExtends = Session.CreateCriteria(typeof(UserExtend))
+                    .Add(Restrictions.Eq("extend_uid", uid))
+                    .List<UserExtend>();
+                return userExtends;
+            }
+        }
     }
 }

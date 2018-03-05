@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using NhInterMySQL;
+using NhInterMySQL.Manager;
 using TLJCommon;
 using NhInterMySQL.Model;
 
@@ -115,7 +116,7 @@ namespace TLJ_MySqlService.Handler
                 Medel = 0,
                 freeCount = 0,
                 huizhangCount = 3,
-                luckyValue = 0
+                luckyValue = 0,
             };
             return userInfo;
         }
@@ -197,6 +198,23 @@ namespace TLJ_MySqlService.Handler
             {
                 responseData.Add("hasShouChong", true);
             }
+
+            if (string.IsNullOrWhiteSpace(userInfo.ExtendCode))
+            {
+                while (true)
+                {
+                    userInfo.ExtendCode = RandomCharHelper.GetRandomNum(6);
+                    if(NHibernateHelper.userInfoManager.Update(userInfo))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            responseData.Add("myTuiGuangCode", userInfo.ExtendCode);
+
+
+
         }
 
         //数据库操作失败

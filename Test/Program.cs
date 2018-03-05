@@ -112,11 +112,36 @@ namespace Test
             //            };
             //
             //            MySqlManager<User>.Instance.Add(user);
+            string changePsw = ChangePsw("yy300830");
+            Console.WriteLine(changePsw);
 
-            string http = HttpUtil.GetHttp(
-                "http://mapi.javgame.com:14123/mNotify/notify_baidu?appid=134&orderid=tzqgEpl6luIxdwp&amount=100&unit=fen&jfd=478&status=success&paychannel=ct_sfdx&phone=15305000062&channel=CUCC&from=gsdk&sign=145d1821d9ac5d4381fd6f568034f65d&extchannel=17575&cpdefinepart=cporderinfo");
-            Console.WriteLine(http);
             Console.ReadLine();
+        }
+      
+
+        private static List<UserMonthSign> GetSign30RecordSql(string uid)
+        {
+            int nowYear = DateTime.Now.Year;
+            int nowMonth = DateTime.Now.Month;
+            string date = $"{nowYear}-{nowMonth}";
+            var sql = $"SELECT * FROM new_tlj.user_month_sign where uid = '{uid}' and sign_year_month = '{date}'";
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    try
+                    {
+                        List<UserMonthSign> userMonthSigns = session.CreateSQLQuery(sql).AddEntity(typeof(UserMonthSign)).List<UserMonthSign>().ToList();
+                        transaction.Commit();
+                        return userMonthSigns;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        return null;
+                    }
+                }
+            }
         }
 
         public static string FileMD5(string filePath)
@@ -202,7 +227,6 @@ namespace Test
                 Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":w");
 
                 new Task(() => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":e"); }).Start();
-
 
                 Console.WriteLine(1);
             }).Start();
