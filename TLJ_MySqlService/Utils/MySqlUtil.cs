@@ -1,10 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
-using NhInterMySQL;
-using NhInterMySQL.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using NhInterMySQL;
+using NhInterMySQL.Model;
 using TLJCommon;
+using TLJ_MySqlService.Handler;
 using Task = NhInterMySQL.Model.Task;
 
 namespace TLJ_MySqlService.Utils
@@ -253,14 +256,8 @@ namespace TLJ_MySqlService.Utils
                     }
                     else
                     {
-
-                        //记录玩家财富变化日志
-                        int after = propNum;
-                        int change = propNum;
-
-                        StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, propId+"", reason, after - change, change, after);
-                        //                        string msg = $"改变了{propId}道具,{propNum}个";
-                        //                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+//                        string msg = $"改变了{propId}道具,{propNum}个";
+//                        LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                     }
                 }
                 else
@@ -275,13 +272,8 @@ namespace TLJ_MySqlService.Utils
                         }
                         else
                         {
-                            //记录玩家财富变化日志
-                            int after = userProp.PropNum;
-                            int change = propNum;
-
-                            StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, propId + "", reason, after - change, change, after);
-                            //                            string msg = $"改变了{propId}道具,{propNum}个";
-                            //                            LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
+//                            string msg = $"改变了{propId}道具,{propNum}个";
+//                            LogUtil.Log(uid, MyCommon.OpType.CHANGE_WEALTH, msg);
                         }
                     }
                     else

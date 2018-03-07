@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TLJ_MySqlService", "TLJ_MySqlService\TLJ_MySqlService.csproj", "{74685689-ACA8-4087-B4A3-ACE58A62CE22}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{AC47E83E-C790-4CD1-8E4A-8F2CF0CBBD7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "计划任务", "计划任务\计划任务.csproj", "{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nhibernate与老手游SqlServer交互", "Nhibernate与老手游SqlServer交互\Nhibernate与老手游SqlServer交互.csproj", "{4706C449-0729-41AD-8CB6-54B2BE2740CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,18 +69,6 @@ Global
 		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Release|x64.Build.0 = Release|Any CPU
 		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Release|x86.ActiveCfg = Release|Any CPU
 		{918422A7-4C0E-4732-BB50-59D8EB3D2E0E}.Release|x86.Build.0 = Release|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Debug|x64.Build.0 = Debug|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Debug|x86.Build.0 = Debug|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Release|x64.ActiveCfg = Release|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Release|x64.Build.0 = Release|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Release|x86.ActiveCfg = Release|Any CPU
-		{4706C449-0729-41AD-8CB6-54B2BE2740CE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

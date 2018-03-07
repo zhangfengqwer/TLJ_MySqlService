@@ -12,7 +12,6 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using NhInterMySQL;
-using NhInterSqlServer.Model;
 using TLJCommon;
 using TLJ_MySqlService.Handler;
 using TLJ_MySqlService.Utils;
@@ -183,8 +182,6 @@ namespace TLJ_MySqlService
         public void InitLog()
         {
             log.Info("log启动");
-
-            UserSource userSource = NhInterSqlServer.NHibernaMsServerteHelper.GetById(115349033);
         }
 
         private void InitService()
