@@ -1,0 +1,11 @@
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\bin\Debug\Iesi.Collections.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\bin\Debug\NHibernate.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\bin\Debug\Iesi.Collections.xml
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\bin\Debug\NHibernate.xml
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\obj\Debug\Nhibernate与老手游SqlServer交互.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\obj\Debug\Nhibernate与老手游SqlServer交互.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\bin\Debug\NhInterSqlServer.pdb
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\obj\Debug\NhInterSqlServer.pdb
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\bin\Debug\hibernate_sqlserver.cfg.xml
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\bin\Debug\NhInterSqlServer.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Nhibernate与老手游SqlServer交互\obj\Debug\NhInterSqlServer.dll

@@ -13,6 +13,21 @@ namespace NhInterMySQL.Manager
         private static readonly object Locker = new object();
 
         private string tableName = null;
+
+        private static MySqlManager<T> instance;
+        public static MySqlManager<T> Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new MySqlManager<T>();
+                }
+
+                return instance;
+            }
+        }
+
         public MySqlManager()
         {
             if (typeof(T) == typeof(User))
