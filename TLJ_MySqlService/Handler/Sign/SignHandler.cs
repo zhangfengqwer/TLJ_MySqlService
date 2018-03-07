@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using System;
 using NhInterMySQL;
-using NhInterMySQL.Manager;
 using TLJ_MySqlService.Utils;
 using TLJCommon;
 using NhInterMySQL.Model;
@@ -80,18 +79,8 @@ namespace TLJ_MySqlService.Handler
                     signByUid.SignWeekDays++;
                     signByUid.UpdateTime = DateTime.Now;
                     MySqlService.log.Info(signConfig.goods_prop);
-
-                    string reason = "";
-                    if (signByUid.SignWeekDays == 7)
-                    {
-                        reason = "签到奖励_大礼包";
-                    }
-                    else
-                    {
-                        reason = "签到奖励";
-                    }
-
-                    if (NHibernateHelper.signManager.Update(signByUid) && MySqlUtil.AddProp(signUid, signConfig.goods_prop, reason))
+                    if (NHibernateHelper.signManager.Update(signByUid) &&
+                        MySqlUtil.AddProp(signUid, signConfig.goods_prop,"签到奖励"))
                     {
                         OperatorSuccess(responseData);
                     }

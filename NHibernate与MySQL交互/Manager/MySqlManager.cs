@@ -28,20 +28,6 @@ namespace NhInterMySQL.Manager
                 tableName = "Uid";
             }
         }
-
-        private static MySqlManager<T> instance;
-        public static MySqlManager<T> Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new MySqlManager<T>();
-                }
-
-                return instance;
-            }
-        }
         /// <summary>
         ///  增
         /// </summary>

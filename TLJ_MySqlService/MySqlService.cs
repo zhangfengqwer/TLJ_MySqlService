@@ -12,7 +12,6 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using NhInterMySQL;
-using NhInterSqlServer.Model;
 using TLJCommon;
 using TLJ_MySqlService.Handler;
 using TLJ_MySqlService.Utils;
