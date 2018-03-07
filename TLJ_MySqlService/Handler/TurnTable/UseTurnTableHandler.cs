@@ -25,6 +25,7 @@ namespace TLJ_MySqlService.Handler
                 MySqlService.log.Warn("传入的参数有误:" + e);
                 return null;
             }
+
             string Tag = defaultReq.tag;
             int connId = defaultReq.connId;
             var uid = defaultReq.uid;
@@ -36,6 +37,7 @@ namespace TLJ_MySqlService.Handler
                 MySqlService.log.Warn("字段有空:" + uid);
                 return null;
             }
+
             //传给客户端的数据
             JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, Tag);
@@ -43,7 +45,7 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.UID, uid);
             _responseData.Add("type", type);
 
-            UseTurnTableDataSql(uid, type, isIosCheck,_responseData);
+            UseTurnTableDataSql(uid, type, isIosCheck, _responseData);
             return _responseData.ToString();
         }
 
@@ -53,9 +55,11 @@ namespace TLJ_MySqlService.Handler
 
             bool isSuccess = false;
             int subHuiZhangNum = 0;
-            int reward = GetProbabilityReward();
+            int reward = 0;
             if (type == 1)
             {
+                reward = GetProbabilityReward(MySqlService.FreeTurnTables);
+
                 if (userInfo.freeCount <= 0)
                 {
                     MySqlService.log.Warn($"{uid},转盘免费使用次数不足,当前{userInfo.freeCount}");
@@ -68,21 +72,17 @@ namespace TLJ_MySqlService.Handler
                         reward = 10;
                         userInfo.luckyValue = 0;
                     }
+
                     userInfo.freeCount--;
                     userInfo.luckyValue++;
                     if (NHibernateHelper.userInfoManager.Update(userInfo))
                     {
                         TurnTable turnTable;
-                        if (isIosCheck)
-                        {
-                            turnTable = MySqlService.IosTurnTables[reward - 1];
-                        }
-                        else
-                        {
-                            turnTable = MySqlService.TurnTables[reward - 1];
-                        }
+
+                        turnTable = MySqlService.FreeTurnTables[reward - 1];
+
                         MySqlService.log.Info($"{uid} 增加转盘奖励{turnTable.reward}");
-                        bool addProp = MySqlUtil.AddProp(uid, turnTable.reward,"免费转盘抽奖");
+                        bool addProp = MySqlUtil.AddProp(uid, turnTable.reward, "免费转盘抽奖");
                         if (addProp)
                         {
                             isSuccess = true;
@@ -96,6 +96,7 @@ namespace TLJ_MySqlService.Handler
             }
             else if (type == 2)
             {
+                reward = GetProbabilityReward(MySqlService.MedalTurnTables);
                 if (userInfo.huizhangCount > 0)
                 {
                     if (userInfo.huizhangCount == 3)
@@ -110,33 +111,33 @@ namespace TLJ_MySqlService.Handler
                     {
                         subHuiZhangNum = 10;
                     }
+                    else
+                    {
+                        subHuiZhangNum = 10;
+                    }
 
                     if (userInfo.Medel >= subHuiZhangNum)
                     {
                         if (userInfo.luckyValue >= 98)
                         {
-                            reward = 10;
+                            reward = 1;
                             userInfo.luckyValue = 0;
                         }
+
                         userInfo.huizhangCount--;
                         userInfo.Medel -= subHuiZhangNum;
                         userInfo.luckyValue++;
                         if (NHibernateHelper.userInfoManager.Update(userInfo))
                         {
                             TurnTable turnTable;
-                            if (isIosCheck)
-                            {
-                                turnTable = MySqlService.IosTurnTables[reward - 1];
-                            }
-                            else
-                            {
-                                turnTable = MySqlService.TurnTables[reward - 1];
-                            }
+
+                            turnTable = MySqlService.MedalTurnTables[reward - 1];
                             MySqlService.log.Info($"{uid} 增加转盘奖励{turnTable.reward}");
                             bool addProp = MySqlUtil.AddProp(uid, turnTable.reward, "徽章转盘抽奖");
                             if (addProp)
                             {
                                 isSuccess = true;
+                                reward += 50;
                             }
                             else
                             {
@@ -183,54 +184,54 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
         }
 
-        private static int GetProbabilityReward()
+        private static int GetProbabilityReward(List<TurnTable> turnTables)
         {
-            var probability1 = 32.6 * 100;
-            var probability2 = 9.9 * 100;
-            var probability3 = 6.89 * 100;
-            var probability4 = 1 * 100;
-            var probability5 = 25.49 * 100;
-            var probability6 = 3 * 100;
-            var probability7 = 9.6 * 100;
-            var probability8 = 7.15 * 100;
-            var probability9 = 5.32 * 100;
-            var probability10 = 0.05 * 100;
+//            var probability1 = 32.6 * 100;
+//            var probability2 = 9.9 * 100;
+//            var probability3 = 6.89 * 100;
+//            var probability4 = 1 * 100;
+//            var probability5 = 25.49 * 100;
+//            var probability6 = 3 * 100;
+//            var probability7 = 9.6 * 100;
+//            var probability8 = 7.15 * 100;
+//            var probability9 = 5.32 * 100;
+//            var probability10 = 0.05 * 100;
             var doubles = new List<double>();
-
-            doubles.Add(probability1);
-            doubles.Add(probability2);
-            doubles.Add(probability3);
-            doubles.Add(probability4);
-            doubles.Add(probability5);
-            doubles.Add(probability6);
-            doubles.Add(probability7);
-            doubles.Add(probability8);
-            doubles.Add(probability9);
-            doubles.Add(probability10);
+            foreach (var turnTable in turnTables)
+            {
+                doubles.Add(turnTable.probability);
+            }
 
             var list = new List<double>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < doubles.Count; i++)
             {
                 double temp = 0;
                 for (int j = 0; j < i + 1; j++)
                 {
                     temp += doubles[j];
                 }
+
                 list.Add(temp);
             }
 
             int next = new Random(CommonUtil.GetRandomSeed()).Next(1, 10001);
             int num = 0;
             if (next <= list[0]) num = 1;
-            else if (next <= list[1]) num = 2;
-            else if (next <= list[2]) num = 3;
-            else if (next <= list[3]) num = 4;
-            else if (next <= list[4]) num = 5;
-            else if (next <= list[5]) num = 6;
-            else if (next <= list[6]) num = 7;
-            else if (next <= list[7]) num = 8;
-            else if (next <= list[8]) num = 9;
-            else if (next <= list[9]) num = 10;
+            else if (next <= list[1])
+                num = 2;
+            else if (next <= list[2])
+                num = 3;
+            else if (next <= list[3])
+                num = 4;
+            else if (next <= list[4])
+                num = 5;
+            else if (next <= list[5])
+                num = 6;
+            else if (next <= list[6])
+                num = 7;
+//            else if (next <= list[7]) num = 8;
+//            else if (next <= list[8]) num = 9;
+//            else if (next <= list[9]) num = 10;
 
             return num;
         }

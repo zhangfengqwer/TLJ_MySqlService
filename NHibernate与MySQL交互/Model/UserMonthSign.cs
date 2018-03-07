@@ -5,6 +5,7 @@
         public virtual string Uid { get; set; }
         public virtual string SignYearMonth { get; set; }
         public virtual string SignDate { get; set; }
+        public virtual int Type { get; set; }
 
         public override bool Equals(object obj)
         {

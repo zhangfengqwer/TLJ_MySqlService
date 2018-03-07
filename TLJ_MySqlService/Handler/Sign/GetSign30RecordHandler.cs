@@ -38,11 +38,18 @@ namespace TLJ_MySqlService.Handler
             responseData.Add(MyCommon.CONNID, connId);
 
             List<UserMonthSign> userMonthSigns = GetSign30RecordSql(uid);
-
-            StringBuilder sb = new StringBuilder();
-
+            int num = 0;
             if (userMonthSigns.Count > 0)
             {
+                StringBuilder sb = new StringBuilder();
+                for (int i = userMonthSigns.Count - 1; i >= 0; i--)
+                {
+                    if (userMonthSigns[i].Type == 2)
+                    {
+                        userMonthSigns.RemoveAt(i);
+                        num++;
+                    }
+                }
                 foreach (var sign in userMonthSigns)
                 {
                     string signDate = sign.SignDate;
@@ -56,6 +63,7 @@ namespace TLJ_MySqlService.Handler
                 responseData.Add("record", "");
             }
 
+            responseData.Add("curMonthBuQianCount", num);
 
             return responseData.ToString();
         }

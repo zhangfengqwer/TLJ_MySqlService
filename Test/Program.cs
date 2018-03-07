@@ -112,12 +112,85 @@ namespace Test
             //            };
             //
             //            MySqlManager<User>.Instance.Add(user);
-            string changePsw = ChangePsw("yy300830");
-            Console.WriteLine(changePsw);
+
+            TurnTables = NHibernateHelper.turnTableManager.GetAll().ToList();
+
+            MedalTurnTables = new List<TurnTable>();
+            FreeTurnTables = new List<TurnTable>();
+            foreach (var turnTable in TurnTables)
+            {
+                if (turnTable.id > 50)
+                {
+                    MedalTurnTables.Add(turnTable);
+                }
+                else
+                {
+                    FreeTurnTables.Add(turnTable);
+                }
+            }
+
+            int probabilityReward = GetProbabilityReward(MedalTurnTables);
+            Console.WriteLine(probabilityReward);
 
             Console.ReadLine();
         }
-      
+        public static List<TurnTable> TurnTables;
+        public static List<TurnTable> IosTurnTables;
+        public static List<TurnTable> FreeTurnTables;
+        public static List<TurnTable> MedalTurnTables;
+
+        private static int GetProbabilityReward(List<TurnTable> turnTables)
+        {
+            //            var probability1 = 32.6 * 100;
+            //            var probability2 = 9.9 * 100;
+            //            var probability3 = 6.89 * 100;
+            //            var probability4 = 1 * 100;
+            //            var probability5 = 25.49 * 100;
+            //            var probability6 = 3 * 100;
+            //            var probability7 = 9.6 * 100;
+            //            var probability8 = 7.15 * 100;
+            //            var probability9 = 5.32 * 100;
+            //            var probability10 = 0.05 * 100;
+            var doubles = new List<double>();
+            foreach (var turnTable in turnTables)
+            {
+                doubles.Add(turnTable.probability);
+            }
+
+            var list = new List<double>();
+            for (int i = 0; i < doubles.Count; i++)
+            {
+                double temp = 0;
+                for (int j = 0; j < i + 1; j++)
+                {
+                    temp += doubles[j];
+                }
+
+                list.Add(temp);
+            }
+
+            int next = new Random(CommonUtil.GetRandomSeed()).Next(1, 10001);
+            Console.WriteLine(next);
+            int num = 0;
+            if (next <= list[0]) num = 1;
+            else if (next <= list[1])
+                num = 2;
+            else if (next <= list[2])
+                num = 3;
+            else if (next <= list[3])
+                num = 4;
+            else if (next <= list[4])
+                num = 5;
+            else if (next <= list[5])
+                num = 6;
+            else if (next <= list[6])
+                num = 7;
+            //            else if (next <= list[7]) num = 8;
+            //            else if (next <= list[8]) num = 9;
+            //            else if (next <= list[9]) num = 10;
+
+            return num;
+        }
 
         private static List<UserMonthSign> GetSign30RecordSql(string uid)
         {

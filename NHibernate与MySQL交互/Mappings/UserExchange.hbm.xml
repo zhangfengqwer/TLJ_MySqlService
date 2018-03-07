@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NhInterMySQL"
+                   namespace="NhInterMySQL.Model">
+
+  <class name="UserExchange" table="user_exchange">
+    <id name="id" column="id" type="Int32">
+      <generator class="native"></generator>
+    </id>
+    <property name="Uid" column="uid" type="String"></property>
+    <property name="goods_id" column="goods_id" type="Int32"></property>
+    <property name="num" column="num" type="Int32"></property>
+    <property name="create_time" column="create_time" type="Timestamp"></property>
+  </class>
+</hibernate-mapping>

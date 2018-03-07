@@ -10,5 +10,6 @@
       <key-property  name="SignYearMonth" column="sign_year_month" type="String"></key-property>
       <key-property  name="SignDate" column="sign_date" type="String"></key-property>
     </composite-id>
+    <property name="Type" column="type" type="Int32"></property>
   </class>
 </hibernate-mapping>

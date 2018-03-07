@@ -55,7 +55,7 @@ namespace TLJ_MySqlService.Handler
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="id"></param>
-        /// <param name="signType"></param>
+        /// <param name="signType">1:签到,2:补签</param>
         /// <param name="responseData"></param>
         private void Sign30Sql(string uid, int id, int signType, JObject responseData)
         {
@@ -64,35 +64,107 @@ namespace TLJ_MySqlService.Handler
             switch (signType)
             {
                 case 1:
+                    Sign(uid, dataContent, responseData);
+                    break;
                 case 2:
-                    sign(uid, dataContent, responseData);
+                    AddSign(uid, dataContent, responseData);
                     break;
                 case 3:
-                    totalSign(uid, dataContent, responseData);
+                    TotalSign(uid, dataContent, responseData);
                     break;
             }
         }
 
-        private void totalSign(string uid, Sign30DataContent dataContent, JObject responseData)
+        private void AddSign(string uid, Sign30DataContent dataContent, JObject responseData)
+        {
+            int dataContentDay = dataContent.day;
+            int nowYear = DateTime.Now.Year;
+            int nowMonth = DateTime.Now.Month;
+            int nowDay = DateTime.Now.Day;
+
+            string signYearMonth = $"{nowYear}-{nowMonth}";
+
+            if (dataContentDay >= nowDay)
+            {
+                OperatorFail(responseData, $"当天不能补签:{dataContentDay}");
+                return;
+            }
+            List<UserMonthSign> userMonthSigns = GetSign30RecordHandler.GetSign30RecordSql(uid);
+            List<UserMonthSign> userAddSigns = new List<UserMonthSign>();
+
+            foreach (var userSigns in userMonthSigns)
+            {
+                if (userSigns.Type == 2)
+                {
+                    userAddSigns.Add(userSigns);
+                }
+            }
+
+            int cost = (userAddSigns.Count / 3 + 1) * 5000;
+
+            UserInfo userInfo = MySqlManager<UserInfo>.Instance.GetByUid(uid);
+            if (userInfo.Gold >= cost)
+            {
+                userInfo.Gold -= cost;
+                MySqlManager<UserInfo>.Instance.Update(userInfo);
+            }
+            else
+            {
+                OperatorFail(responseData, $"补签金币不足");
+                return;
+            }
+            UserMonthSign userMonthSign = MySqlManager<UserMonthSign>.Instance.GetUserMonthSign(uid, signYearMonth, dataContentDay + "");
+            if (userMonthSign == null)
+            {
+                userMonthSign = new UserMonthSign()
+                {
+                    Uid = uid,
+                    SignDate = dataContentDay + "",
+                    SignYearMonth = signYearMonth,
+                    Type = 2
+                };
+
+                if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
+                {
+                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+                    responseData.Add("reward_prop", dataContent.reward_prop);
+                    responseData.Add("msg", "补签成功");
+                    AddSignReward(uid, dataContent.reward_prop);
+                }
+                else
+                {
+                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                    responseData.Add("msg", "已补签");
+                }
+            }
+            else
+            {
+                responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                responseData.Add("msg", "已补签");
+            }
+        }
+
+        private void TotalSign(string uid, Sign30DataContent dataContent, JObject responseData)
         {
             List<UserMonthSign> userMonthSigns = GetSign30RecordHandler.GetSign30RecordSql(uid);
             int dataContentDay = dataContent.day;
 
-            for (int i = userMonthSigns.Count - 1; i <= 0; i++)
+            for (int i = userMonthSigns.Count - 1; i >= 0; i--)
             {
                 if (int.Parse(userMonthSigns[i].SignDate) > 31)
                 {
                     userMonthSigns.RemoveAt(i);
                 }
             }
-
+          
             if (userMonthSigns.Count >= dataContentDay)
             {
                 UserMonthSign userMonthSign = new UserMonthSign()
                 {
                     Uid = uid,
                     SignYearMonth = GetSign30RecordHandler.GetYearMonth(),
-                    SignDate = dataContent.id + ""
+                    SignDate = dataContent.id + "",
+                    Type = 3
                 };
 
                 if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
@@ -115,12 +187,21 @@ namespace TLJ_MySqlService.Handler
             }
         }
 
-        private void sign(string uid, Sign30DataContent dataContent, JObject responseData)
+        private void Sign(string uid, Sign30DataContent dataContent, JObject responseData)
         {
             int dataContentDay = dataContent.day;
             int nowYear = DateTime.Now.Year;
             int nowMonth = DateTime.Now.Month;
+            int nowDay = DateTime.Now.Day;
+
             string signYearMonth = $"{nowYear}-{nowMonth}";
+
+            if (dataContentDay != nowDay)
+            {
+                OperatorFail(responseData, $"不是当天签到:{dataContentDay}");
+                return;
+            }
+
             UserMonthSign userMonthSign = MySqlManager<UserMonthSign>.Instance.GetUserMonthSign(uid, signYearMonth, dataContentDay + "");
             if (userMonthSign == null)
             {
@@ -128,7 +209,8 @@ namespace TLJ_MySqlService.Handler
                 {
                     Uid = uid,
                     SignDate = dataContentDay + "",
-                    SignYearMonth = signYearMonth
+                    SignYearMonth = signYearMonth,
+                    Type = 1
                 };
 
                 if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
@@ -154,6 +236,20 @@ namespace TLJ_MySqlService.Handler
         private void AddSignReward(string uid, string dataContentRewardProp)
         {
             MySqlUtil.AddProp(uid, dataContentRewardProp, "每月签到奖励");
+        }
+
+
+        private void OperatorSuccess(JObject responseData, string msg)
+        {
+            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+            responseData.Add("msg", msg);
+        }
+
+        //数据库操作失败
+        private void OperatorFail(JObject responseData, string msg)
+        {
+            responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+            responseData.Add("msg", msg);
         }
     }
 }

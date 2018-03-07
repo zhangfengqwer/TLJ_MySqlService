@@ -46,8 +46,11 @@ namespace TLJ_MySqlService
         public static List<Goods> ShopData;
         public static List<SignConfig> SignConfigs;
         public static List<TurnTable> TurnTables;
-        public static List<TurnTable> IosTurnTables;
+        public static List<TurnTable> FreeTurnTables;
+        public static List<TurnTable> MedalTurnTables;
+
         public static List<VipData> VipDatas;
+        public static List<MedalExchargeRewardData> medalExchargeRewardDatas;
         public static string AdminAccount = "admin";
         public static string AdminPassWord = "jinyou123";
         public static bool IsTest = true;
@@ -117,11 +120,42 @@ namespace TLJ_MySqlService
             ShopData = NHibernateHelper.goodsManager.GetAll().ToList().ToList();
             SignConfigs = NHibernateHelper.signConfigManager.GetAll().ToList();
             TurnTables = NHibernateHelper.turnTableManager.GetAll().ToList();
+
+            MedalTurnTables = new List<TurnTable>();
+            FreeTurnTables = new List<TurnTable>();
+            foreach (var turnTable in TurnTables)
+            {
+                if (turnTable.id > 50)
+                {
+                    MedalTurnTables.Add(turnTable);
+                }
+                else
+                {
+                    FreeTurnTables.Add(turnTable);
+                }
+            }
+
+
+            InitVipRewardData();
+            InitMedalDuiHuanRewardData();
+
+            Sign30Data.getInstance().init();
+        }
+
+        private static void InitMedalDuiHuanRewardData()
+        {
+            StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "MedalDuiHuanReward.json");
+            string str = sr.ReadToEnd();
+            sr.Close();
+            medalExchargeRewardDatas = JsonConvert.DeserializeObject<List<MedalExchargeRewardData>>(str);
+        }
+
+        private static void InitVipRewardData()
+        {
             StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "VipRewardData.json");
             string str = sr.ReadToEnd();
             sr.Close();
             VipDatas = JsonConvert.DeserializeObject<List<VipData>>(str);
-            Sign30Data.getInstance().init();
         }
 
         /// <summary>

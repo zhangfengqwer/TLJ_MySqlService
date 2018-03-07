@@ -11,4 +11,6 @@ using System.Threading.Tasks;
         public string tuiguangcode;
         public string tag;
         public int connId;
+        public int goods_id;
+        public int num;
     }

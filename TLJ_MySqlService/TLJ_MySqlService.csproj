@@ -72,6 +72,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\MedalExchargeRewardData.cs" />
     <Compile Include="Data\OpCode.cs" />
     <Compile Include="Data\Sign30Data.cs" />
     <Compile Include="Handler\BaseHandler.cs" />
@@ -85,6 +86,9 @@
     <Compile Include="Handler\Extend\MyTuiGuangYouLiDataHandler.cs" />
     <Compile Include="Handler\Extend\BindExtendCodeHandler.cs" />
     <Compile Include="Handler\Game\GetGameOverHandler.cs" />
+    <Compile Include="Handler\MedalExchange\GetMedalDuiHuanRecordHandler.cs" />
+    <Compile Include="Handler\MedalExchange\MedalDuiHuanHandler.cs" />
+    <Compile Include="Handler\MedalExchange\GetMedalDuiHuanRewardHandler.cs" />
     <Compile Include="Handler\OldGame\BindOldPlayerHandler.cs" />
     <Compile Include="Handler\Shop\IOSPayHandler.cs" />
     <Compile Include="Handler\Sign\GetSign30RecordHandler.cs" />

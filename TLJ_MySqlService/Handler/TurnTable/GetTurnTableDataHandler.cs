@@ -23,6 +23,7 @@ namespace TLJ_MySqlService.Handler
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
             }
+
             string Tag = defaultReq.tag;
             int connId = defaultReq.connId;
             bool isIosCheck = defaultReq.isIosCheck;
@@ -31,6 +32,7 @@ namespace TLJ_MySqlService.Handler
                 MySqlService.log.Warn("字段有空");
                 return null;
             }
+
             //传给客户端的数据
             JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, Tag);
@@ -43,15 +45,7 @@ namespace TLJ_MySqlService.Handler
 
         private void GetTurnTableDataSql(JObject responseData, bool isIosCheck)
         {
-            if (isIosCheck)
-            {
-                OperatorSuccess(MySqlService.IosTurnTables, responseData);
-            }
-            else
-            {
-                MySqlService.log.Info("isIosCheck:" + 1);
-                OperatorSuccess(MySqlService.TurnTables, responseData);
-            }
+            OperatorSuccess(MySqlService.TurnTables, responseData);
         }
 
         //数据库操作成功
