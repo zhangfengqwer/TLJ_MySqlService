@@ -22,6 +22,31 @@ public class CommonUtil
         return directory;
     }
 
+    public static int GetLianXuSignDays(List<int> signRecordList)
+    {
+        signRecordList.Sort();
+        List<int> temp = new List<int>();
+
+        if (signRecordList.Count > 0)
+        {
+            temp.Add(signRecordList[signRecordList.Count - 1]);
+
+            for (int i = signRecordList.Count - 2; i >= 0; i--)
+            {
+                if ((temp[temp.Count - 1] - signRecordList[i]) == 1)
+                {
+                    temp.Add(signRecordList[i]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        return temp.Count;
+    }
+
+
     /// <summary>
     /// 32位MD5加密
     /// </summary>

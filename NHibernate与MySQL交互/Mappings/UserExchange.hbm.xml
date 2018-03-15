@@ -5,12 +5,13 @@
                    namespace="NhInterMySQL.Model">
 
   <class name="UserExchange" table="user_exchange">
-    <id name="id" column="id" type="Int32">
-      <generator class="native"></generator>
-    </id>
-    <property name="Uid" column="uid" type="String"></property>
-    <property name="goods_id" column="goods_id" type="Int32"></property>
+    <composite-id>
+      <key-property  name="Uid" column="uid" type="String"></key-property>
+      <key-property  name="day" column="day" type="String"></key-property>
+      <key-property  name="goods_id" column="goods_id" type="Int32"></key-property>
+    </composite-id>
     <property name="num" column="num" type="Int32"></property>
+    <property name="medal_cost" column="medal_cost" type="Int32"></property>
     <property name="create_time" column="create_time" type="Timestamp"></property>
   </class>
 </hibernate-mapping>

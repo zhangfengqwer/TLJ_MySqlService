@@ -1,0 +1,50 @@
+[
+	{
+        "goods_id": 1, 
+        "type": 1,
+		"name": "1元话费",
+		"reward_prop": "111:1",
+		"desc":"sdf",
+		"price": 10
+    },
+	{
+        "goods_id": 2, 
+        "type": 1,
+		"name": "5元话费",
+		"reward_prop": "110:1",
+		"desc":"123",
+		"price": 12
+    },
+    {
+        "goods_id": 3, 
+        "type": 1,
+		"name": "1元话费",
+		"reward_prop": "111:1",
+		"desc":"",
+		"price": 10
+    },
+    {
+        "goods_id": 4, 
+        "type": 1,
+		"name": "1元话费",
+		"reward_prop": "111:1",
+		"desc":"",
+		"price": 10
+    },
+    {
+        "goods_id": 5, 
+        "type": 1,
+		"name": "1元话费",
+		"reward_prop": "111:1",
+		"desc":"",
+		"price": 10
+    },
+    {
+        "goods_id": 6, 
+        "type": 1,
+		"name": "1元话费",
+		"reward_prop": "111:1",
+		"desc":"",
+		"price": 10
+    }
+]

@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using NhInterMySQL;
+using NhInterMySQL.Manager;
 using TLJ_MySqlService.Model;
 using TLJCommon;
 using TLJ_MySqlService.Utils;
@@ -12,6 +14,8 @@ namespace TLJ_MySqlService.Handler
     [Handler(Consts.Tag_UseProp)]
     class UsePropHandler : BaseHandler
     {
+        private static readonly object Locker = new object();
+
         public override string OnResponse(string data) 
         {
             UsePropReq defaultReqData;
@@ -40,7 +44,10 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.TAG, Tag);
             _responseData.Add(MyCommon.CONNID, ConnId);
 
-            UsePropSql(Uid, propId, _responseData);
+            lock (Locker)
+            {
+                UsePropSql(Uid, propId, _responseData);
+            }
             return _responseData.ToString();
         }
 
@@ -92,6 +99,58 @@ namespace TLJ_MySqlService.Handler
                         case 112:
                             
                             break;
+                        case 130:
+                            List<JDCard> tenJDCard = MySqlManager<JDCard>.Instance.GetByPorperty("price", "10", "state", "1");
+                            JDCard jDCard = null;
+                            foreach (var card in tenJDCard)
+                            {
+                                if (card.Uid == uid)
+                                {
+                                    jDCard = card;
+                                    break;
+                                }
+                            }
+
+                            if (jDCard == null)
+                            {
+                                OperatorFail(responseData);
+                                return;
+                            }
+                            else
+                            {
+                                jDCard.state = 2 + "";
+                                MySqlManager<JDCard>.Instance.Update(jDCard);
+
+                                SendEmailUtil.SendEmail(uid, "10元京东卡",
+                                    $"您的京东卡:\n卡号:{jDCard.card_number} \n卡密:{jDCard.card_secret} \n有效期:{jDCard.valid_time}","");
+                            }
+
+                            break;
+                        case 131:
+                            List<JDCard> twentyJDCard = MySqlManager<JDCard>.Instance.GetByPorperty("price", "20", "state", "1");
+                            JDCard jDCard2 = null;
+                            foreach (var card in twentyJDCard)
+                            {
+                                if (card.Uid == uid)
+                                {
+                                    jDCard2 = card;
+                                    break;
+                                }
+                            }
+
+                            if (jDCard2 == null)
+                            {
+                                OperatorFail(responseData);
+                                return;
+                            }
+                            else
+                            {
+                                jDCard2.state = 2 + "";
+                                MySqlManager<JDCard>.Instance.Update(jDCard2);
+                                SendEmailUtil.SendEmail(uid, "20元京东卡",
+                                    $"您的京东卡:\n卡号:{jDCard2.card_number} \n卡密:{jDCard2.card_secret} \n有效期:{jDCard2.valid_time}", "");
+                            }
+                            break;
                     }
                     OperatorSuccess(responseData);
                 }
@@ -102,8 +161,6 @@ namespace TLJ_MySqlService.Handler
                 }
             }
         }
-
-     
 
         //数据库操作成功
         private void OperatorSuccess(JObject responseData)

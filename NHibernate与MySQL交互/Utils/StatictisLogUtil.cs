@@ -89,7 +89,8 @@ namespace NhInterMySQL
                 reason = reason,
                 before_num = before,
                 change_num = change,
-                after_num = after
+                after_num = after,
+                create_time = DateTime.Now
             };
 
             NHibernateHelper.LogChangeWealthManager.Add(logChangeWealth);

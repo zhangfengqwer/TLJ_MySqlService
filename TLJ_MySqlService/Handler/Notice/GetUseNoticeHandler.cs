@@ -80,8 +80,13 @@ namespace TLJ_MySqlService.Handler
                 for (int j = 0; j < userNotices.Count; j++)
                 {
                     UserNotice userNotice = userNotices[j];
-                    
+
+                    //维护通知
                     if (userNotice.NoticeId == 9)
+                    {
+                        continue;
+                    }
+                    if (userNotice.NoticeId == 4)
                     {
                         continue;
                     }

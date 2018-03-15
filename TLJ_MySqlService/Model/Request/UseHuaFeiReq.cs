@@ -13,5 +13,6 @@ namespace TLJ_MySqlService.Model
         public string uid;
         public string phone;
         public int prop_id;
+        public int prop_num;
     }
 }

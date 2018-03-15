@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using NhInterMySQL;
 using NhInterMySQL.Model;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TLJCommon;
 using TLJ_MySqlService.Utils;
@@ -57,8 +58,9 @@ namespace TLJ_MySqlService.Handler
         {
 
             //通过第三方查询用户
-            User user = NHibernateHelper.userManager.GetUserByTid(thirdId);
-            if (user == null)
+            List<User> users = NHibernateHelper.userManager.GetUserByTid(thirdId);
+            User user;
+            if (users?.Count == 0)
             {
                 string uid = UidUtil.createUID();
                 user = new User()
@@ -69,7 +71,8 @@ namespace TLJ_MySqlService.Handler
                     ThirdId = thirdId,
                     Secondpassword = "",
                     Uid = uid,
-                    IsRobot = 0
+                    IsRobot = 0,
+                    CreateTime = DateTime.Now
                 };
 
                 Random random = new Random();
@@ -124,6 +127,7 @@ namespace TLJ_MySqlService.Handler
             else
             {
                 //第三方登陆
+                user = users?[0];
                 OperatorSuccess(user, responseData);
                 StatisticsHelper.StatisticsLogin(user.Uid);
             }

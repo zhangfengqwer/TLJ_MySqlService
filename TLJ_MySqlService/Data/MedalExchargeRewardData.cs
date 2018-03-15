@@ -6,4 +6,5 @@
     public string desc { get; set; }
     public string reward_prop { get; set; }
     public int price { get; set; }
+    public int vipLevel { get; set; }
 }

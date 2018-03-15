@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NhInterMySQL;
 using NhInterMySQL.Manager;
 using TLJCommon;
@@ -213,6 +214,31 @@ namespace TLJ_MySqlService.Handler
 
             responseData.Add("myTuiGuangCode", userInfo.ExtendCode);
 
+            List<UserInfo> allUserInfo = MySqlManager<UserInfo>.Instance.GetAllUserInfo();
+            int goldRank = 0;
+            int medelRank = 0;
+            allUserInfo = allUserInfo.OrderByDescending(u => u.Gold).ToList();
+            for (int i = 0; i < allUserInfo.Count; i++)
+            {
+                if (allUserInfo[i].Uid == userInfo.Uid)
+                {
+                    goldRank = i + 1;
+                    break;
+                }
+            }
+
+            allUserInfo = allUserInfo.OrderByDescending(u => u.Medel).ToList();
+            for (int i = 0; i < allUserInfo.Count; i++)
+            {
+                if (allUserInfo[i].Uid == userInfo.Uid)
+                {
+                    medelRank = i + 1;
+                    break;
+                }
+            }
+
+            responseData.Add("goldRank", goldRank);
+            responseData.Add("medelRank", medelRank);
 
 
         }

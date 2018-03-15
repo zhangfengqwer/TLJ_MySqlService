@@ -72,9 +72,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\ActivityData.cs" />
     <Compile Include="Data\MedalExchargeRewardData.cs" />
     <Compile Include="Data\OpCode.cs" />
     <Compile Include="Data\Sign30Data.cs" />
+    <Compile Include="Data\TeleFarePieceData.cs" />
     <Compile Include="Handler\BaseHandler.cs" />
     <Compile Include="Handler\Email\DeleteEmailHandler.cs" />
     <Compile Include="Handler\Email\AddEmailHandler.cs" />
@@ -86,17 +88,23 @@
     <Compile Include="Handler\Extend\MyTuiGuangYouLiDataHandler.cs" />
     <Compile Include="Handler\Extend\BindExtendCodeHandler.cs" />
     <Compile Include="Handler\Game\GetGameOverHandler.cs" />
+    <Compile Include="Handler\Manager\FileManagerHandler.cs" />
+    <Compile Include="Handler\Manager\SendMailManagerHandler.cs" />
     <Compile Include="Handler\MedalExchange\GetMedalDuiHuanRecordHandler.cs" />
     <Compile Include="Handler\MedalExchange\MedalDuiHuanHandler.cs" />
     <Compile Include="Handler\MedalExchange\GetMedalDuiHuanRewardHandler.cs" />
+    <Compile Include="Handler\Activity\GetActivityHandler.cs" />
     <Compile Include="Handler\OldGame\BindOldPlayerHandler.cs" />
     <Compile Include="Handler\Shop\IOSPayHandler.cs" />
     <Compile Include="Handler\Sign\GetSign30RecordHandler.cs" />
     <Compile Include="Handler\Sign\GetSign30RewardHandler.cs" />
     <Compile Include="Handler\Sign\Sign30Handler.cs" />
+    <Compile Include="Handler\Manager\SqlManagerHandler.cs" />
     <Compile Include="Handler\Statictis\StatictisGameHandler.cs" />
     <Compile Include="Handler\Statictis\StatictisOnlineHandler.cs" />
     <Compile Include="Handler\Statictis\StatictisLoginHandler.cs" />
+    <Compile Include="Handler\TeleFarePieceExchange\GetTeleFarePieceDataHandler.cs" />
+    <Compile Include="Handler\TeleFarePieceExchange\ExchangeTeleFarePieceHandler.cs" />
     <Compile Include="Handler\TurnTable\UseTurnTableHandler.cs" />
     <Compile Include="Handler\TurnTable\GetTurnTableDataHandler.cs" />
     <Compile Include="Handler\Game\RecordUserGameDataHandler.cs" />
@@ -130,6 +138,7 @@
     <Compile Include="Handler\Login\RegisterHandler.cs" />
     <Compile Include="Handler\Prop\GetUserBagHandler.cs" />
     <Compile Include="Handler\Prop\UseBuffPropHandler.cs" />
+    <Compile Include="Handler\Web\CheckWeChatRegisterHandler.cs" />
     <Compile Include="Handler\Web\GetWXUserInfoHandler.cs" />
     <Compile Include="Model\Object\HandlerAttribute.cs" />
     <Compile Include="Model\Object\ServiceType.cs" />
@@ -196,10 +205,25 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="ActivityData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MedalDuiHuanReward.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="VipRewardData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TeleFarePieceData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="SignReward_30.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ProjectInstaller.resx">

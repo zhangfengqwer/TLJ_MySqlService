@@ -29,3 +29,12 @@ C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NLog.dll
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\TLJCommon.dll
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\TLJ_MySqlService.pdb
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NLog.xml
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\ActivityData.json
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\MedalDuiHuanReward.json
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\VipRewardData.json
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\TeleFarePieceData.json
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NPOI.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NPOI.OOXML.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NPOI.OpenXml4Net.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NPOI.OpenXmlFormats.dll
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\ICSharpCode.SharpZipLib.dll

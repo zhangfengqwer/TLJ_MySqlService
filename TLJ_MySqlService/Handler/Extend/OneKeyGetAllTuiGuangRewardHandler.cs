@@ -65,12 +65,11 @@ namespace TLJ_MySqlService.Handler
 
                 if (userExtend.task2 == 2)
                 {
-                    MySqlUtil.AddProp(uid, "110:1", "领取{userExtend.Uid}的任务2奖励");
-                    sb.Append("110:1");
+                    MySqlUtil.AddProp(uid, "111:1", $"领取{userExtend.Uid}的任务2奖励");
+                    sb.Append("111:1");
                     sb.Append(";");
                     userExtend.task2 = 3;
                 }
-
                 MySqlManager<UserExtend>.Instance.Update(userExtend);
             }
 

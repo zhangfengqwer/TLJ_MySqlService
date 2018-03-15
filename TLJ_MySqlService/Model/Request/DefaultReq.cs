@@ -10,4 +10,6 @@
         public string gameroomtype;
         public string productId;
         public string data;
+        public string sql;
+        public string unionid;
     }

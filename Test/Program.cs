@@ -1,29 +1,22 @@
-﻿using Newtonsoft.Json;
+﻿using Model;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NhInterMySQL;
+using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data;
 using System.Data.OleDb;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Net.WebSockets;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
-using Model;
 using NhInterMySQL.Manager;
-using NhInterMySQL.Model;
-using NhInterSqlServer;
-using NHibernate.Mapping;
-using TLJ_MySqlService.Handler;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using TLJ_MySqlService.Utils;
 using Task = System.Threading.Tasks.Task;
 
@@ -65,9 +58,15 @@ namespace Test
         private static HttpListener listener;
         private static TcpListener tcpListenerV4;
         private static TcpListener tcpListenerV6;
-
+        public class ActivityData
+        {
+            public int ActivityId;
+            public string Title;
+            public string ImageUrl;
+        }
         static void Main(string[] args)
         {
+
             //            string path = "NhInterMySQL.dll";
             //            byte[] bytes = new byte[] { };
             //            if (File.Exists(path))
@@ -113,27 +112,40 @@ namespace Test
             //
             //            MySqlManager<User>.Instance.Add(user);
 
-            TurnTables = NHibernateHelper.turnTableManager.GetAll().ToList();
-
-            MedalTurnTables = new List<TurnTable>();
-            FreeTurnTables = new List<TurnTable>();
-            foreach (var turnTable in TurnTables)
-            {
-                if (turnTable.id > 50)
-                {
-                    MedalTurnTables.Add(turnTable);
-                }
-                else
-                {
-                    FreeTurnTables.Add(turnTable);
-                }
-            }
-
-            int probabilityReward = GetProbabilityReward(MedalTurnTables);
-            Console.WriteLine(probabilityReward);
-
+            initData();
             Console.ReadLine();
         }
+
+        private static void initData()
+        {
+            string[] paths = Directory.GetFiles(configPath);
+
+            foreach (var path in paths)
+            {
+                if (Path.GetExtension(path) != ".xlsx")
+                {
+                    continue;
+                }
+                if (Path.GetFileName(path).StartsWith("~"))
+                {
+                    continue;
+                }
+
+                XSSFWorkbook xssfWorkbook;
+                using (FileStream file = new FileStream(path, FileMode.Open))
+                {
+                    xssfWorkbook = new XSSFWorkbook(file);
+                    ISheet sheet = xssfWorkbook.GetSheetAt(0);
+                    int num = sheet.GetRow(0).LastCellNum;
+                    for (int i = 0; i < num; i++)
+                    {
+                        string s = sheet.GetRow(0).GetCell(i).ToString();
+                        Console.WriteLine(s);
+                    }
+                }
+            }
+        }
+        private static string configPath = AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\Config";
         public static List<TurnTable> TurnTables;
         public static List<TurnTable> IosTurnTables;
         public static List<TurnTable> FreeTurnTables;

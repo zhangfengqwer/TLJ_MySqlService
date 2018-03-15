@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using NhInterMySQL.Model;
 using NHibernate.Criterion;
-using NhInterMySQL;
-using NhInterMySQL.Model;
+using System.Linq;
 using Task = NhInterMySQL.Model.Task;
 
 namespace NhInterMySQL.Manager
@@ -15,6 +15,7 @@ namespace NhInterMySQL.Manager
         private string tableName = null;
 
         private static MySqlManager<T> instance;
+
         public static MySqlManager<T> Instance
         {
             get
@@ -33,8 +34,8 @@ namespace NhInterMySQL.Manager
             if (typeof(T) == typeof(User))
             {
                 tableName = "Username";
-
-            }else if (typeof(T) == typeof(UserInfo))
+            }
+            else if (typeof(T) == typeof(UserInfo))
             {
                 tableName = "NickName";
             }
@@ -43,12 +44,13 @@ namespace NhInterMySQL.Manager
                 tableName = "Uid";
             }
         }
+
         /// <summary>
         ///  增
         /// </summary>
         /// <param name="t"></param>
         /// <returns>是否操作成功</returns>
-        public  bool Add(T t)
+        public bool Add(T t)
         {
             using (var Session = NHibernateHelper.OpenSession())
             {
@@ -62,9 +64,8 @@ namespace NhInterMySQL.Manager
                             transaction.Commit();
                             return true;
                         }
-                       
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Console.WriteLine(e.Message);
                         return false;
@@ -125,7 +126,7 @@ namespace NhInterMySQL.Manager
                 }
             }
         }
-        
+
         /// <summary>
         /// 增改
         /// </summary>
@@ -153,6 +154,7 @@ namespace NhInterMySQL.Manager
                 }
             }
         }
+
         /// <summary>
         /// 根据id查询
         /// </summary>
@@ -179,7 +181,6 @@ namespace NhInterMySQL.Manager
         /// <returns></returns>
         public T GetByName(string name)
         {
-           
             using (var Session = NHibernateHelper.OpenSession())
             {
                 var criteria = Session.CreateCriteria(typeof(T));
@@ -195,7 +196,6 @@ namespace NhInterMySQL.Manager
         /// <returns></returns>
         public T GetByUid(string uid)
         {
-
             using (var Session = NHibernateHelper.OpenSession())
             {
                 var criteria = Session.CreateCriteria(typeof(T));
@@ -224,7 +224,6 @@ namespace NhInterMySQL.Manager
         /// </summary>
         public T GetGoods(int goodId)
         {
-
             using (var Session = NHibernateHelper.OpenSession())
             {
                 var criteria = Session.CreateCriteria(typeof(T));
@@ -240,17 +239,15 @@ namespace NhInterMySQL.Manager
         /// <returns></returns>
         public List<UserEmail> GetUnReadByUid(string uid)
         {
-
             using (var Session = NHibernateHelper.OpenSession())
             {
                 var criteria = Session.CreateCriteria(typeof(UserEmail));
                 var t = criteria.Add(Restrictions.Eq("Uid", uid))
-                                .Add(Restrictions.Eq("State", 0))
-                                .List<UserEmail>();
+                    .Add(Restrictions.Eq("State", 0))
+                    .List<UserEmail>();
                 return t as List<UserEmail>;
             }
         }
-
 
 
         /// <summary>
@@ -261,7 +258,23 @@ namespace NhInterMySQL.Manager
         {
             using (var Session = NHibernateHelper.OpenSession())
             {
-                var t = Session.CreateCriteria(typeof(T)).List<T>();
+                IList<T> t = Session.CreateCriteria(typeof(T))
+                    .List<T>();
+                return t;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="property">Gold;Medel</param>
+        /// <returns></returns>
+        public List<UserInfo> GetAllUserInfo()
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                List<UserInfo> t = (List<UserInfo>) Session.CreateCriteria(typeof(UserInfo))
+                    .List<UserInfo>();
                 return t;
             }
         }
@@ -280,7 +293,7 @@ namespace NhInterMySQL.Manager
                     .Add(Restrictions.Eq("Username", username))
                     .Add(Restrictions.Eq("Userpassword", password))
                     .UniqueResult<User>();
-               
+
                 return user;
             }
         }
@@ -299,7 +312,7 @@ namespace NhInterMySQL.Manager
                     .Add(Restrictions.Eq("Username", username))
                     .Add(Restrictions.Eq("Secondpassword", secondPassword))
                     .UniqueResult<User>();
-               
+
                 return user;
             }
         }
@@ -315,7 +328,6 @@ namespace NhInterMySQL.Manager
 
                 return userEmail;
             }
-
         }
 
         public UserProp GetUserProp(string uid, int propId)
@@ -416,13 +428,13 @@ namespace NhInterMySQL.Manager
             }
         }
 
-        public User GetUserByTid(string thirdId)
+        public List<User> GetUserByTid(string thirdId)
         {
             using (var Session = NHibernateHelper.OpenSession())
             {
                 var user = Session.CreateCriteria(typeof(User))
                     .Add(Restrictions.Eq("ThirdId", thirdId))
-                    .UniqueResult<User>();
+                    .List<User>().ToList();
                 return user;
             }
         }
@@ -493,7 +505,7 @@ namespace NhInterMySQL.Manager
             }
         }
 
-        public UserMonthSign GetUserMonthSign(string uid, string signYearMonth,string signDate)
+        public UserMonthSign GetUserMonthSign(string uid, string signYearMonth, string signDate)
         {
             using (var Session = NHibernateHelper.OpenSession())
             {
@@ -526,6 +538,77 @@ namespace NhInterMySQL.Manager
                     .List<UserExtend>();
                 return userExtends;
             }
+        }
+
+        public List<T> GetByPorpertyAndUid(string porperty, string value, string uid)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var t = Session.CreateCriteria(typeof(T))
+                    .Add(Restrictions.Eq(porperty, value))
+                    .Add(Restrictions.Eq("Uid", uid))
+                    .List<T>();
+                return (List<T>) t;
+            }
+        }
+
+        public List<T> GetByPorperty(string porperty, string value)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var t = Session.CreateCriteria(typeof(T))
+                    .Add(Restrictions.Eq(porperty, value))
+                    .List<T>();
+                return (List<T>) t;
+            }
+        }
+        public List<T> GetByPorperty(string porperty1, string value1, string porperty2, string value2)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var t = Session.CreateCriteria(typeof(T))
+                    .Add(Restrictions.Eq(porperty1, value1))
+                    .Add(Restrictions.Eq(porperty2, value2))
+                    .List<T>();
+                return (List<T>) t;
+            }
+        }
+
+        public List<UserExchange> GetMedalLimitMonth(string uid)
+        {
+            int nowYear = DateTime.Now.Year;
+            int nowMonth = DateTime.Now.Month;
+            string date;
+            if (nowMonth < 10)
+            {
+                date = $"{nowYear}-0{nowMonth}%";
+            }
+            else
+            {
+                date = $"{nowYear}-{nowMonth}%";
+            }
+
+            var sql = $"select * from user_exchange  where uid = '{uid}'  and create_time like '{date}'";
+
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    try
+                    {
+                        List<UserExchange> list = session.CreateSQLQuery(sql).AddEntity(typeof(UserExchange))
+                            .List<UserExchange>().ToList();
+                        transaction.Commit();
+                        return list;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

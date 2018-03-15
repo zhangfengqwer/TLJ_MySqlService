@@ -1,0 +1,27 @@
+﻿[
+  {
+    "ActivityId": 4,
+    "Title": "话费碎片",
+    "ImageUrl": "http://fwdown.hy51v.com/test/file/activity/activity_4.jpg"
+  },
+  {
+    "ActivityId": 1,
+    "Title": "大礼来袭",
+    "ImageUrl": "http://fwdown.hy51v.com/test/file/activity/activity_1.jpg"
+  },
+  {
+    "ActivityId": 2,
+    "Title": "限时话费赛",
+    "ImageUrl": "http://fwdown.hy51v.com/test/file/activity/activity_2.jpg"
+  },
+  {
+    "ActivityId": 3,
+    "Title": "老用户特权",
+    "ImageUrl": "http://fwdown.hy51v.com/test/file/activity/activity_3.jpg"
+  },
+  {
+    "ActivityId": 5,
+    "Title": "关注微信公众号",
+    "ImageUrl": "http://fwdown.hy51v.com/test/file/activity/activity_5.jpg"
+  }
+]

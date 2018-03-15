@@ -55,7 +55,8 @@ public class ModelFactory
             Secondpassword ="",
             ThirdId ="",
             Username = uid,
-            Userpassword = uid
+            Userpassword = uid,
+            CreateTime = DateTime.Now
         };
 
         NHibernateHelper.userManager.Add(user);

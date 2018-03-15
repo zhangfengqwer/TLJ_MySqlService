@@ -1,0 +1,23 @@
+﻿[
+  {
+    "duihuan_id": 0,
+    "material_id": 120,
+    "material_num": 19,
+    "Synthesis_id": 111,
+    "Synthesis_num": 1
+  },
+  {
+    "duihuan_id": 1,
+    "material_id": 121,
+    "material_num": 19,
+    "Synthesis_id": 112,
+    "Synthesis_num": 1
+  },
+  {
+    "duihuan_id": 2,
+    "material_id": 122,
+    "material_num": 49,
+    "Synthesis_id": 113,
+    "Synthesis_num": 1
+  }
+]

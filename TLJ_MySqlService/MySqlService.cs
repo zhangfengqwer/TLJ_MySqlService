@@ -12,6 +12,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using NhInterMySQL;
+using NhInterMySQL.Manager;
 using TLJCommon;
 using TLJ_MySqlService.Handler;
 using TLJ_MySqlService.Utils;
@@ -47,6 +48,10 @@ namespace TLJ_MySqlService
         public static List<TurnTable> TurnTables;
         public static List<TurnTable> FreeTurnTables;
         public static List<TurnTable> MedalTurnTables;
+        public static List<JDCard> twenTyjDCards;
+        public static List<JDCard> tenJdCards;
+        public static List<JDCard> dhTenJDCards = new List<JDCard>();
+        public static List<JDCard> dhTwnentyJDCards = new List<JDCard>();
 
         public static List<VipData> VipDatas;
         public static List<MedalExchargeRewardData> medalExchargeRewardDatas;
@@ -54,13 +59,16 @@ namespace TLJ_MySqlService
         public static string AdminPassWord = "jinyou123";
         public static bool IsTest = true;
 
-
         public MySqlService()
         {
             InitializeComponent();
         }
 
         private static MySqlService instance;
+        public static List<ActivityData> activityDatas;
+        public static List<TeleFarePieceData> teleFarePieceDatas;
+
+        private string configPath = AppDomain.CurrentDomain.BaseDirectory + "/../../../Config";
 
         public static MySqlService Instance()
         {
@@ -112,14 +120,30 @@ namespace TLJ_MySqlService
                 HttpUtil.clientip = "139.196.193.185";
             }
         }
-            
-        private void InitCommomData()
+
+
+        private void initData()
+        {
+            string[] strings = Directory.GetFiles(configPath);
+        }
+
+        public static void InitCommomData()
         {
             PvpGameRooms = NHibernateHelper.PVPGameRoomManager.GetAll().ToList();
             ShopData = NHibernateHelper.goodsManager.GetAll().ToList().ToList();
             SignConfigs = NHibernateHelper.signConfigManager.GetAll().ToList();
             TurnTables = NHibernateHelper.turnTableManager.GetAll().ToList();
+            InitJDCards();
 
+            //去除一元话费
+            for (int i = 0; i < ShopData.Count; i++)
+            {
+                if (ShopData[i].money_type == 3 && ShopData[i].price == 1)
+                {
+                    ShopData.RemoveAt(i);
+                    break;
+                }
+            }
             MedalTurnTables = new List<TurnTable>();
             FreeTurnTables = new List<TurnTable>();
             foreach (var turnTable in TurnTables)
@@ -134,11 +158,33 @@ namespace TLJ_MySqlService
                 }
             }
 
-
             InitVipRewardData();
             InitMedalDuiHuanRewardData();
-
+            InitActivityData();
+            InitTeleFarePieceData();
             Sign30Data.getInstance().init();
+        }
+
+        public static void InitJDCards()
+        {
+            twenTyjDCards = MySqlManager<JDCard>.Instance.GetAll().ToList();
+            tenJdCards = new List<JDCard>();
+
+//            //去除使用过的京东卡
+//            for (int i = twenTyjDCards.Count - 1; i >= 0; i--)
+//            {
+//                if (twenTyjDCards[i].state == 1)
+//                {
+//                    twenTyjDCards.RemoveAt(i);
+//                    continue;
+//                }
+//
+//                if (twenTyjDCards[i].price.Equals("10"))
+//                {
+//                    tenJdCards.Add(twenTyjDCards[i]);
+//                    twenTyjDCards.RemoveAt(i);
+//                }
+//            }
         }
 
         private static void InitMedalDuiHuanRewardData()
@@ -147,6 +193,22 @@ namespace TLJ_MySqlService
             string str = sr.ReadToEnd();
             sr.Close();
             medalExchargeRewardDatas = JsonConvert.DeserializeObject<List<MedalExchargeRewardData>>(str);
+        }
+
+        private static void InitActivityData()
+        {
+            StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "ActivityData.json");
+            string str = sr.ReadToEnd();
+            sr.Close();
+            activityDatas = JsonConvert.DeserializeObject<List<ActivityData>>(str);
+        }
+
+        private static void InitTeleFarePieceData()
+        {
+            StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "TeleFarePieceData.json");
+            string str = sr.ReadToEnd();
+            sr.Close();
+            teleFarePieceDatas = JsonConvert.DeserializeObject<List<TeleFarePieceData>>(str);
         }
 
         private static void InitVipRewardData()
@@ -219,8 +281,6 @@ namespace TLJ_MySqlService
             m_tcpServer.MaxPackSize = Consts.MaxPackSize;
         }
 
-        
-
         private void StartService()
         {
             try
@@ -255,7 +315,6 @@ namespace TLJ_MySqlService
             return HandleResult.Ok;
         }
 
-
         // 客户进入了
         HandleResult OnAccept(IntPtr connId, IntPtr pClient)
         {
@@ -273,7 +332,6 @@ namespace TLJ_MySqlService
 
             return HandleResult.Ok;
         }
-
 
         HandleResult OnPointerDataReceive(IntPtr connId, IntPtr pData, int length)
         { 

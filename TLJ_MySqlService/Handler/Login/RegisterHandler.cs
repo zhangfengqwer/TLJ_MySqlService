@@ -66,6 +66,7 @@ namespace TLJ_MySqlService.Handler
                 user.Secondpassword = "";
                 user.IsRobot = 0;
                 user.Userpassword = CommonUtil.CheckPsw(user.Userpassword);
+                user.CreateTime = DateTime.Now;
 
                 var userEmail = new UserEmail()
                 {

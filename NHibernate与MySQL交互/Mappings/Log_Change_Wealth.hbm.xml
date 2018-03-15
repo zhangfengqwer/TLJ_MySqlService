@@ -15,5 +15,6 @@
     <property name="before_num" column="before_num" type="Int32"></property>
     <property name="change_num" column="change_num" type="Int32"></property>
     <property name="after_num" column="after_num" type="Int32"></property>
+    <property name="create_time" column="create_time" type="Timestamp"></property>
   </class>
 </hibernate-mapping>

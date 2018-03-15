@@ -67,7 +67,7 @@ namespace TLJ_MySqlService.Handler
                     Sign(uid, dataContent, responseData);
                     break;
                 case 2:
-                    AddSign(uid, dataContent, responseData);
+//                    AddSign(uid, dataContent, responseData);
                     break;
                 case 3:
                     TotalSign(uid, dataContent, responseData);
@@ -148,24 +148,65 @@ namespace TLJ_MySqlService.Handler
         {
             List<UserMonthSign> userMonthSigns = GetSign30RecordHandler.GetSign30RecordSql(uid);
             int dataContentDay = dataContent.day;
+            List<int> list = new List<int>();
 
             for (int i = userMonthSigns.Count - 1; i >= 0; i--)
             {
-                if (int.Parse(userMonthSigns[i].SignDate) > 31)
+                if (userMonthSigns[i].Type == 3)
                 {
                     userMonthSigns.RemoveAt(i);
                 }
             }
-          
-            if (userMonthSigns.Count >= dataContentDay)
+
+            foreach (var userSign in userMonthSigns)
+            {
+                list.Add(int.Parse(userSign.SignDate));
+            }
+
+            int lianXuSignDays = CommonUtil.GetLianXuSignDays(list);
+
+            if (lianXuSignDays == DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))
             {
                 UserMonthSign userMonthSign = new UserMonthSign()
                 {
                     Uid = uid,
                     SignYearMonth = GetSign30RecordHandler.GetYearMonth(),
-                    SignDate = dataContent.id + "",
+                    SignDate = DateTime.Now.Day + ":" + dataContent.id + "",
                     Type = 3
                 };
+
+                MySqlService.log.Warn($"```````````{JsonConvert.SerializeObject(userMonthSign)}");
+
+                if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
+                {
+                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+                    responseData.Add("msg", $"{dataContent.reward_name}领取成功");
+                    responseData.Add("reward_prop", dataContent.reward_prop);
+                    AddSignReward(uid, dataContent.reward_prop);
+                }
+                else
+                {
+                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                    responseData.Add("msg", $"{dataContent.reward_name}的奖励已领取,不可重复领取");
+                }
+
+                return;
+            }
+
+
+
+            //连续签到大于需要的天数
+            if (lianXuSignDays >= dataContent.day)
+            {
+                UserMonthSign userMonthSign = new UserMonthSign()
+                {
+                    Uid = uid,
+                    SignYearMonth = GetSign30RecordHandler.GetYearMonth(),
+                    SignDate = DateTime.Now.Day +":"+ dataContent.id + "",
+                    Type = 3
+                };
+
+                MySqlService.log.Warn($"```````````{JsonConvert.SerializeObject(userMonthSign)}");
 
                 if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
                 {
@@ -185,6 +226,36 @@ namespace TLJ_MySqlService.Handler
                 responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
                 responseData.Add("msg", $"未满足{dataContent.reward_name},当前签到累计{userMonthSigns.Count}");
             }
+
+            //
+            //            if (userMonthSigns.Count >= dataContentDay)
+            //            {
+            //                UserMonthSign userMonthSign = new UserMonthSign()
+            //                {
+            //                    Uid = uid,
+            //                    SignYearMonth = GetSign30RecordHandler.GetYearMonth(),
+            //                    SignDate = dataContent.id + "",
+            //                    Type = 3
+            //                };
+            //
+            //                if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
+            //                {
+            //                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+            //                    responseData.Add("msg", $"{dataContent.reward_name}领取成功");
+            //                    responseData.Add("reward_prop", dataContent.reward_prop);
+            //                    AddSignReward(uid, dataContent.reward_prop);
+            //                }
+            //                else
+            //                {
+            //                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+            //                    responseData.Add("msg", $"{dataContent.reward_name}的奖励已领取,不可重复领取");
+            //                }
+            //            }
+            //            else
+            //            {
+            //                responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+            //                responseData.Add("msg", $"未满足{dataContent.reward_name},当前签到累计{userMonthSigns.Count}");
+            //            }
         }
 
         private void Sign(string uid, Sign30DataContent dataContent, JObject responseData)
@@ -237,7 +308,6 @@ namespace TLJ_MySqlService.Handler
         {
             MySqlUtil.AddProp(uid, dataContentRewardProp, "每月签到奖励");
         }
-
 
         private void OperatorSuccess(JObject responseData, string msg)
         {

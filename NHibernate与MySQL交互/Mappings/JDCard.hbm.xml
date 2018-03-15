@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NhInterMySQL"
+                   namespace="NhInterMySQL.Model">
+
+  <class name="JDCard" table="jdcard">
+    <id name="id" column="id" type="Int32">
+      <generator class="native"></generator>
+    </id>
+    <property name="name" column="name" type="String"></property>
+    <property name="Uid" column="uid" type="String"></property>
+    <property name="price" column="price" type="String"></property>
+    <property name="card_number" column="card_number" type="String"></property>
+    <property name="card_secret" column="card_secret" type="String"></property>
+    <property name="valid_time" column="valid_time" type="String"></property>
+    <property name="state" column="state" type="String"></property>
+  </class>
+
+</hibernate-mapping>

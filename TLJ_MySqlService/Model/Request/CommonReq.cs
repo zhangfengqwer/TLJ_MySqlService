@@ -13,5 +13,6 @@ namespace TLJ_MySqlService.Model
         public int connId;
         public int type;
         public bool isIosCheck = false;
+        public int duihuan_id;
     }
 }

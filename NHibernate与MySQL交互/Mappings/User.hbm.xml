@@ -15,6 +15,7 @@
     <property name="ThirdId" column="third_id" type="String"></property>
     <property name="ChannelName" column="channel_name" type="String"></property>
     <property name="IsRobot" column="is_robot" type="Int32"></property>
+    <property name="CreateTime" column="create_time" type="Timestamp"></property>
   </class>
 
 </hibernate-mapping>

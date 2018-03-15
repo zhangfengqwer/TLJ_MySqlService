@@ -46,16 +46,33 @@ namespace TLJ_MySqlService.Handler
                 {
                     if (userMonthSigns[i].Type == 2)
                     {
-                        userMonthSigns.RemoveAt(i);
                         num++;
                     }
                 }
                 foreach (var sign in userMonthSigns)
                 {
+                    if (sign.Type == 3) continue;
                     string signDate = sign.SignDate;
                     sb.Append(signDate);
                     sb.Append(",");
                 }
+
+                foreach (var userSign in userMonthSigns)
+                {
+                    // 连续签到
+                    if (userSign.Type == 3)
+                    {
+                        string[] strings = userSign.SignDate.Split(':');
+
+                        if (strings[0].Equals(DateTime.Now.Day+""))
+                        {
+                            sb.Append(strings[1]);
+                            sb.Append(",");
+                            break;
+                        }
+                    }
+                }
+
                 responseData.Add("record", sb.ToString().Remove(sb.ToString().Length - 1));
             }
             else

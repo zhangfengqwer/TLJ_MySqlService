@@ -33,16 +33,29 @@ namespace TLJ_MySqlService.Handler
             string Uid = defaultReqData.uid;
             int propId = defaultReqData.prop_id;
             string phone = defaultReqData.phone;
+            int prop_num = defaultReqData.prop_num;
 
-            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(Uid) || string.IsNullOrWhiteSpace(phone))
+
+            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(Uid) || string.IsNullOrWhiteSpace(phone) || prop_num < 1)
             {
-                MySqlService.log.Warn("字段有空");
+                MySqlService.log.Warn("字段有空:" + data);
                 return null;
             }
+
             //传给客户端的数据
             JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, Tag);
             _responseData.Add(MyCommon.CONNID, ConnId);
+
+            if (prop_num % 5 != 0 && prop_num != 1)
+            {
+                OperatorFail(_responseData, $"道具数量不正确:{prop_num}");
+                return _responseData.ToString();
+            }
+            else
+            {
+                MySqlService.log.Info($"兑换话费:{propId},{prop_num}");
+            }
 
             //当天充值金额已超过100元
             CommonConfig commonConfig = NHibernateHelper.commonConfigManager.GetByUid(Uid);
@@ -55,22 +68,23 @@ namespace TLJ_MySqlService.Handler
 
             lock (Locker)
             {
-                UseHuaFeiSql(Uid, propId, phone, _responseData);
+                UseHuaFeiSql(Uid, propId, phone, prop_num, _responseData);
             }
+
             return _responseData.ToString();
         }
 
-        private void UseHuaFeiSql(string uid, int propId, string phone, JObject responseData)
+        private void UseHuaFeiSql(string uid, int propId, string phone, int num, JObject responseData)
         {
             UserProp userProp = NHibernateHelper.userPropManager.GetUserProp(uid, propId);
-            if (userProp == null || userProp.PropNum <= 0)
+            if (userProp == null || userProp.PropNum < num)
             {
-                MySqlService.log.Warn($"没有该道具或者不能使用该道具:{uid}");
+                MySqlService.log.Warn($"没有该道具或者不能使用该道具:{uid},{propId},{num}");
                 OperatorFail(responseData, "没有该道具或者不能使用该道具");
             }
             else
             {
-                userProp.PropNum--;
+                userProp.PropNum -= num;
                 bool isPhoneFee = true;
                 switch (userProp.PropId)
                 {
@@ -83,10 +97,12 @@ namespace TLJ_MySqlService.Handler
                         //测试环境不需要到账
                         if (!MySqlService.IsTest)
                         {
-                            isPhoneFee = PhoneFeeRecharge(uid, propId, phone);
+                            isPhoneFee = PhoneFeeRecharge(uid, propId, phone, num);
                         }
+
                         break;
                 }
+
                 if (isPhoneFee)
                 {
                     if (NHibernateHelper.userPropManager.Update(userProp))
@@ -96,7 +112,7 @@ namespace TLJ_MySqlService.Handler
                     }
                     else
                     {
-                        MySqlService.log.Warn("更新话费道具失败："+uid+" "+userProp.PropId);
+                        MySqlService.log.Warn("更新话费道具失败：" + uid + " " + userProp.PropId);
                         OperatorFail(responseData, "更新话费道具失败");
                     }
                 }
@@ -106,20 +122,21 @@ namespace TLJ_MySqlService.Handler
                     OperatorFail(responseData, "充值话费失败");
                 }
             }
-        }   
+        }
 
-        private bool PhoneFeeRecharge(string uid, int propId, string phone)
+        private bool PhoneFeeRecharge(string uid, int propId, string phone, int num)
         {
             var prop = NHibernateHelper.propManager.GetProp(propId);
             string amount = "0";
             if (propId == 111)
             {
-                amount = "1";
+                amount = 1 * num + "";
             }
             else if (propId == 112)
             {
                 amount = "5";
-            }else if (propId == 113)
+            }
+            else if (propId == 113)
             {
                 amount = "10";
             }
@@ -127,6 +144,7 @@ namespace TLJ_MySqlService.Handler
             {
                 return false;
             }
+
             uid = uid.Substring(1, uid.Length - 1);
             string phoneFeeRecharge = HttpUtil.PhoneFeeRecharge(uid, prop.prop_name, amount, phone, propId + "", "1");
             uid = "6" + uid;
@@ -157,6 +175,7 @@ namespace TLJ_MySqlService.Handler
                         {
                             commonConfig = ModelFactory.CreateConfig(uid);
                         }
+
                         //限制充值数量
                         commonConfig.recharge_phonefee_amount += Convert.ToInt32(amount);
 
@@ -167,6 +186,7 @@ namespace TLJ_MySqlService.Handler
                     }
                 }
             }
+
             return false;
         }
 

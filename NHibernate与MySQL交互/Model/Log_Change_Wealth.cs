@@ -1,4 +1,6 @@
-﻿namespace NhInterMySQL.Model
+﻿using System;
+
+namespace NhInterMySQL.Model
 {
     public class Log_Change_Wealth
     {
@@ -10,5 +12,6 @@
         public virtual int change_num { get; set; }
         public virtual int after_num { get; set; }
         public virtual string reason { get; set; }
+        public virtual DateTime create_time { get; set; }
     }
 }

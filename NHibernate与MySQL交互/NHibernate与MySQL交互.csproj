@@ -71,6 +71,7 @@
     <Compile Include="Model\SignConfig.cs" />
     <Compile Include="Model\TurnTable.cs" />
     <Compile Include="Model\Statistics.cs" />
+    <Compile Include="Model\JDCard.cs" />
     <Compile Include="Model\UserRealName.cs" />
     <Compile Include="Model\MyLog.cs" />
     <Compile Include="Model\UserExchange.cs" />
@@ -97,6 +98,9 @@
     <Compile Include="Utils\VipUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Mappings\JDCard.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mappings\UserExchange.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -184,13 +188,15 @@
     <EmbeddedResource Include="Mappings\Sign.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Content Include="hibernate.cfg.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="hibernate.cfg.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
