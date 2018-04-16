@@ -7,17 +7,22 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using NhInterMySQL.Manager;
+using NhInterSqlServer;
+using NhInterSqlServer.Model;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using TLJ_MySqlService.Utils;
+using Util;
 using Task = System.Threading.Tasks.Task;
 
 
@@ -58,62 +63,125 @@ namespace Test
         private static HttpListener listener;
         private static TcpListener tcpListenerV4;
         private static TcpListener tcpListenerV6;
+
         public class ActivityData
         {
             public int ActivityId;
             public string Title;
             public string ImageUrl;
         }
+
         static void Main(string[] args)
         {
-
-            //            string path = "NhInterMySQL.dll";
-            //            byte[] bytes = new byte[] { };
-            //            if (File.Exists(path))
+            //            List<UserBindPhone> userBindPhones = NHiMsServerteHelper.GetAll<UserBindPhone>();
+            //            List<UserBindPhone> bindPhones270 = new List<UserBindPhone>();
+            //            List<UserBindPhone> bindPhones218 = new List<UserBindPhone>();
+            //            foreach (var phone in userBindPhones)
             //            {
-            //                using (FileStream fs = new FileStream(path, FileMode.Open))
+            //                UserSource userSource = NHiMsServerteHelper.GetById<UserSource>(phone.UserId);
+            //                if (userSource?.GameID == 270)
             //                {
-            //                    bytes = new byte[fs.Length];
+            //                    bindPhones270.Add(phone);
+            //                }
             //
-            //                    fs.Read(bytes, 0, bytes.Length);
-            //                  
-            //
-            //                    MD5 md5 = MD5.Create();
-            //                    byte[] computeHash = md5.ComputeHash(bytes);
-            //                    StringBuilder sb = new StringBuilder();
-            //                    foreach (var b in computeHash)
-            //                    {
-            //                        sb.Append(b.ToString("x2"));
-            //                    }
-            //                    Console.WriteLine(sb.ToString());
+            //                if (userSource?.GameID == 218)
+            //                {
+            //                    bindPhones218.Add(phone);
             //                }
             //            }
+            //            Console.WriteLine(userBindPhones.Count);
+            //            Console.WriteLine(bindPhones270.Count);
+            //            Console.WriteLine(bindPhones218.Count);
             //
-            //            using (FileStream fs = new FileStream("NhInterMySQL.dll", FileMode.Create))
+            //            using (FileStream fs = new FileStream("/../../OldGameUserPhone_218_2107_now.txt", FileMode.Create))
             //            {
-            //                fs.Seek(0, SeekOrigin.Begin);
+            //                string serializeObject = JsonConvert.SerializeObject(bindPhones218);
+            //                byte[] bytes = Encoding.ASCII.GetBytes(serializeObject);
             //                fs.Write(bytes, 0, bytes.Length);
-            //
-            //                fs.Flush();
             //            }
             //
-            //            Console.WriteLine(MD5Helper.FileMD5(path));
-            //            string uid = UidUtil.createUID();
-            //            User user = new User()
+            //            using (FileStream fs = new FileStream("/../../OldGameUserPhone_270_2107_now.txt", FileMode.Create))
             //            {
-            //                Username = "??????",
-            //                Userpassword = "",
-            //                ChannelName = "ios",
-            //                ThirdId = "599FA421DDFB8BA42874BAAE74D92981",
-            //                Secondpassword = "",
-            //                Uid = uid,
-            //                IsRobot = 0
-            //            };
-            //
-            //            MySqlManager<User>.Instance.Add(user);
+            //                string serializeObject = JsonConvert.SerializeObject(bindPhones270);
+            //                byte[] bytes = Encoding.ASCII.GetBytes(serializeObject);
+            //                fs.Write(bytes, 0, bytes.Length);
+            //            }
 
-            initData();
+            //            Console.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
+
+            List<Log_Game> gameCountByMonth = MySqlManager<UserGame>.Instance.GetGameCountByMonth("6516134079");
+            Console.WriteLine(gameCountByMonth.Count);
             Console.ReadLine();
+        }
+
+        private static void BubblingSort()
+        {
+            int[] intArray = {10, 0, 20, 50, 12, 32, 89, 10, 21};
+            for (int i = 0; i < intArray.Length - 1; i++)
+            {
+                for (int j = i + 1; j < intArray.Length; j++)
+                {
+                    if (intArray[i] > intArray[j])
+                    {
+                        int temp = intArray[i];
+
+                        intArray[i] = intArray[j];
+                        intArray[j] = temp;
+                    }
+                }
+            }
+
+            for (int i = 0; i < intArray.Length; i++)
+            {
+                Console.WriteLine(intArray[i]);
+            }
+        }
+
+        private static void NewMethod()
+        {
+            int i = 2;
+            int j = i;
+            j = 3;
+
+            string s = "123";
+            string s1 = s;
+            s1 += "1";
+            Console.WriteLine(i);
+            Console.WriteLine(j);
+
+            Console.WriteLine(s);
+            Console.WriteLine(s1);
+        }
+
+        private static async void StartTest()
+        {
+//            HttpUtil.PostHttp("http://139.199.21.143/mLogin/WechatLogin", "123");
+
+            AccountInfo accountInfo = new AccountInfo() {name = "13", pwd = "1231"};
+            string s = await HttpUtil.PostHttp("http://127.0.0.1/mLogin/WechatLogin",
+                "sdfsfsdf");
+
+            Console.WriteLine(s);
+        }
+
+        public class AccountInfo
+        {
+            public string name;
+            public string pwd;
+        }
+
+        private static void AddHttps()
+        {
+            X509Certificate2 cert =
+                new X509Certificate2(AppDomain.CurrentDomain.BaseDirectory + "/yybcer.pfx", "uaZRox1g");
+            X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+            store.Open(OpenFlags.ReadWrite);
+            if (!store.Certificates.Contains(cert))
+            {
+                store.Add(cert);
+            }
+
+            store.Close();
         }
 
         private static void initData()
@@ -126,6 +194,7 @@ namespace Test
                 {
                     continue;
                 }
+
                 if (Path.GetFileName(path).StartsWith("~"))
                 {
                     continue;
@@ -145,6 +214,7 @@ namespace Test
                 }
             }
         }
+
         private static string configPath = AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\Config";
         public static List<TurnTable> TurnTables;
         public static List<TurnTable> IosTurnTables;
@@ -182,7 +252,9 @@ namespace Test
             }
 
             int next = new Random(CommonUtil.GetRandomSeed()).Next(1, 10001);
+
             Console.WriteLine(next);
+
             int num = 0;
             if (next <= list[0]) num = 1;
             else if (next <= list[1])
@@ -216,7 +288,8 @@ namespace Test
                 {
                     try
                     {
-                        List<UserMonthSign> userMonthSigns = session.CreateSQLQuery(sql).AddEntity(typeof(UserMonthSign)).List<UserMonthSign>().ToList();
+                        List<UserMonthSign> userMonthSigns = session.CreateSQLQuery(sql)
+                            .AddEntity(typeof(UserMonthSign)).List<UserMonthSign>().ToList();
                         transaction.Commit();
                         return userMonthSigns;
                     }
@@ -244,7 +317,6 @@ namespace Test
         private static void GetVivoOrder()
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
-
             dictionary.Add("version", "1.0.0");
             dictionary.Add("signMethod", "MD5");
             dictionary.Add("storeId", "9fb92f5a285056d48c38");
@@ -265,9 +337,9 @@ namespace Test
             string body = SortDictionary(dictionary);
             Console.WriteLine(body);
 
-            string http = HttpUtil.PostHttp("https://pay.vivo.com.cn/vivoPay/getVivoOrderNum", body);
+//            string http = HttpUtil.PostHttp("https://pay.vivo.com.cn/vivoPay/getVivoOrderNum", body);
 
-            Console.WriteLine(http);
+//            Console.WriteLine(http);
         }
 
 
@@ -298,6 +370,7 @@ namespace Test
                     sb.Append("&");
                 }
             }
+
             return sb.ToString();
         }
 
@@ -382,10 +455,7 @@ namespace Test
         private static void StartHttp()
         {
             listener = new HttpListener();
-            AuthenticationSchemes authenticationSchemes = listener.AuthenticationSchemes;
-            listener.Prefixes.Add("http://fksq.javgame.com/pay/chargeinfo/");
-            listener.Prefixes.Add("http://fksq.javgame.com/notify/vivo_notify/");
-
+            listener.Prefixes.Add("http://127.0.0.1/");
             listener.Start();
 
             Accept();
@@ -401,7 +471,10 @@ namespace Test
                 HttpListenerContext context = await listener.GetContextAsync();
                 string absoluteUri = context.Request.Url.AbsoluteUri;
                 string LocalPath = context.Request.Url.LocalPath;
-                Console.WriteLine($"absoluteUri:{absoluteUri}\nLocalPath:{LocalPath}");
+                string AbsolutePath = context.Request.Url.AbsolutePath;
+                Console.WriteLine($"absoluteUri:{absoluteUri}\nLocalPath:{LocalPath}\nAbsolutePath:{AbsolutePath}");
+                string s = context.Request.RemoteEndPoint.Address.ToString();
+                Console.WriteLine($"ip:{s}");
                 //                string rawUrl = context.Request.RawUrl;
                 //                string contentType = context.Request.ContentType;
                 //                Encoding contentEncoding = context.Request.ContentEncoding;
@@ -432,7 +505,6 @@ namespace Test
                     offset += i;
                 }
 
-
                 string data = Encoding.UTF8.GetString(bytes1);
 
                 Order order = JsonConvert.DeserializeObject<Order>(data);
@@ -448,7 +520,6 @@ namespace Test
                 await outputStream.WriteAsync(bytes, 0, bytes.Length);
             }
         }
-
 
         public class Order
         {
@@ -466,7 +537,6 @@ namespace Test
             public string ProductId { get; set; }
             public string PhoneModel { get; set; }
         }
-
 
         public static void IpConfig()
         {

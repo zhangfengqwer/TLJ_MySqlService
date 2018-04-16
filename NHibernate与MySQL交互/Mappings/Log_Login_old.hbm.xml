@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NhInterMySQL"
+                   namespace="NhInterMySQL.Model">
+
+  <class name="Log_Login_old" table="log_login_old">
+    <composite-id>
+      <key-property  name="uid_old" column="uid_old" type="String"></key-property>
+      <key-property  name="game_id" column="game_id" type="Int32"></key-property>
+      <key-property  name="machine_id" column="machine_id" type="String"></key-property>
+      <key-property  name="channel_name" column="channel_name" type="String"></key-property>
+      <key-property  name="version_name" column="version_name" type="String"></key-property>
+    </composite-id>
+
+  </class>
+
+</hibernate-mapping>

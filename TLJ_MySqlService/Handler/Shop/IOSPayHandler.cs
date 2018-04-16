@@ -47,6 +47,7 @@ namespace TLJ_MySqlService.Handler
             Goods goods = NhInterMySQL.NHibernateHelper.goodsManager.GetGoods(int.Parse(productId));
 
             string response = null;
+
             if (VerifyReceipt(reqData) && goods != null)
             {
                 BuyYuanBaoReq baoReq = new BuyYuanBaoReq()

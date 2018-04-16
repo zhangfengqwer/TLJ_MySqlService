@@ -1,0 +1,247 @@
+[
+  {
+    "id": 1,
+    "type": 1,
+    "day": 1,
+    "reward_name": "五元话费碎片*1",
+    "reward_prop": "121:1"
+  },
+  {
+    "id": 2,
+    "type": 1,
+    "day": 2,
+    "reward_name": "金币*188",
+    "reward_prop": "1:188"
+  },
+  {
+    "id": 3,
+    "type": 1,
+    "day": 3,
+    "reward_name": "蓝钻石*1",
+    "reward_prop": "107:1"
+  },
+  {
+    "id": 4,
+    "type": 1,
+    "day": 4,
+    "reward_name": "金币*288",
+    "reward_prop": "1:288"
+  },
+  {
+    "id": 5,
+    "type": 1,
+    "day": 5,
+    "reward_name": "记牌器*1",
+    "reward_prop": "101:1"
+  },
+  {
+    "id": 6,
+    "type": 1,
+    "day": 6,
+    "reward_name": "金币*188",
+    "reward_prop": "1:188"
+  },
+  {
+    "id": 7,
+    "type": 1,
+    "day": 7,
+    "reward_name": "喇叭*1",
+    "reward_prop": "106:1"
+  },
+  {
+    "id": 8,
+    "type": 1,
+    "day": 8,
+    "reward_name": "金币*188",
+    "reward_prop": "1:188"
+  },
+  {
+    "id": 9,
+    "type": 1,
+    "day": 9,
+    "reward_name": "蓝钻石*1",
+    "reward_prop": "107:1"
+  },
+  {
+    "id": 10,
+    "type": 1,
+    "day": 10,
+    "reward_name": "五元话费碎片*1",
+    "reward_prop": "121:1"
+  },
+  {
+    "id": 11,
+    "type": 1,
+    "day": 11,
+    "reward_name": "金币*288",
+    "reward_prop": "1:288"
+  },
+  {
+    "id": 12,
+    "type": 1,
+    "day": 12,
+    "reward_name": "喇叭*1",
+    "reward_prop": "106:1"
+  },
+  {
+    "id": 13,
+    "type": 1,
+    "day": 13,
+    "reward_name": "金币*188",
+    "reward_prop": "1:188"
+  },
+  {
+    "id": 14,
+    "type": 1,
+    "day": 14,
+    "reward_name": "记牌器*1",
+    "reward_prop": "101:1"
+  },
+  {
+    "id": 15,
+    "type": 1,
+    "day": 15,
+    "reward_name": "金币*188",
+    "reward_prop": "1:188"
+  },
+  {
+    "id": 16,
+    "type": 1,
+    "day": 16,
+    "reward_name": "徽章*1",
+    "reward_prop": "110:1"
+  },
+  {
+    "id": 17,
+    "type": 1,
+    "day": 17,
+    "reward_name": "金币*188",
+    "reward_prop": "1:188"
+  },
+  {
+    "id": 18,
+    "type": 1,
+    "day": 18,
+    "reward_name": "蓝钻石*1",
+    "reward_prop": "107:1"
+  },
+  {
+    "id": 19,
+    "type": 1,
+    "day": 19,
+    "reward_name": "金币*288",
+    "reward_prop": "1:288"
+  },
+  {
+    "id": 20,
+    "type": 1,
+    "day": 20,
+    "reward_name": "五元话费碎片*1",
+    "reward_prop": "121:1"
+  },
+  {
+    "id": 21,
+    "type": 1,
+    "day": 21,
+    "reward_name": "金币*288",
+    "reward_prop": "1:288"
+  },
+  {
+    "id": 22,
+    "type": 1,
+    "day": 22,
+    "reward_name": "记牌器*1",
+    "reward_prop": "101:1"
+  },
+  {
+    "id": 23,
+    "type": 1,
+    "day": 23,
+    "reward_name": "金币*188",
+    "reward_prop": "1:188"
+  },
+  {
+    "id": 24,
+    "type": 1,
+    "day": 24,
+    "reward_name": "喇叭*1",
+    "reward_prop": "106:1"
+  },
+  {
+    "id": 25,
+    "type": 1,
+    "day": 25,
+    "reward_name": "1元话费",
+    "reward_prop": "111:1"
+  },
+  {
+    "id": 26,
+    "type": 1,
+    "day": 26,
+    "reward_name": "1元话费",
+    "reward_prop": "111:1"
+  },
+  {
+    "id": 27,
+    "type": 1,
+    "day": 27,
+    "reward_name": "1元话费",
+    "reward_prop": "111:1"
+  },
+  {
+    "id": 28,
+    "type": 1,
+    "day": 28,
+    "reward_name": "1元话费",
+    "reward_prop": "111:1"
+  },
+  {
+    "id": 29,
+    "type": 1,
+    "day": 29,
+    "reward_name": "1元话费",
+    "reward_prop": "111:1"
+  },
+  {
+    "id": 30,
+    "type": 1,
+    "day": 30,
+    "reward_name": "1元话费",
+    "reward_prop": "111:1"
+  },
+  {
+    "id": 31,
+    "type": 1,
+    "day": 31,
+    "reward_name": "1元话费",
+    "reward_prop": "111:1"
+  },
+  {
+    "id": 32,
+    "type": 2,
+    "day": 3,
+    "reward_name": "连续签到3天",
+    "reward_prop": "1:500"
+  },
+  {
+    "id": 33,
+    "type": 2,
+    "day": 7,
+    "reward_name": "连续签到7天",
+    "reward_prop": "120:1"
+  },
+  {
+    "id": 34,
+    "type": 2,
+    "day": 20,
+    "reward_name": "连续签到20天",
+    "reward_prop": "122:1"
+  },
+  {
+    "id": 35,
+    "type": 2,
+    "day": 31,
+    "reward_name": "全勤奖励",
+    "reward_prop": "112:1"
+  }
+]

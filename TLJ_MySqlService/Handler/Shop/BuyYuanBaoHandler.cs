@@ -60,7 +60,7 @@ namespace TLJ_MySqlService.Handler
             if (!hashSet.Add(orderid))
             {
                 MySqlService.log.Warn($"有订单重复,{orderid}");
-                OperatorFail(_responseData);
+                OperatorFail(_responseData, $"有订单重复,{orderid}");
                 return _responseData.ToString();
             }
 
@@ -101,7 +101,7 @@ namespace TLJ_MySqlService.Handler
                 string msg = $"购买元宝失败，uid: {uid},goodid: {goodId},num: {num},price：{price},goodsprice:{goods?.price * num},orderid: {orderid}";
                 MySqlService.log.Warn(msg);
                 LogUtil.Log(uid, MyCommon.OpType.BUYYUANBAO, msg);
-                OperatorFail(responseData);
+                OperatorFail(responseData, $"购买元宝失败,商品价格:{goods?.price*num},支付的价格:{price}");
             }
         }
 
@@ -148,8 +148,7 @@ namespace TLJ_MySqlService.Handler
                 {
                     if (MySqlUtil.AddProp(uid, goods.extra_reward,"元宝加赠"))
                     {
-                        LogUtil.Log(uid, MyCommon.OpType.EXTRA_YUANBAO,
-                            $"购买了{goods.goods_id},{goods.goods_name},加赠了{goods.extra_reward}");
+                        LogUtil.Log(uid, MyCommon.OpType.EXTRA_YUANBAO,$"购买了{goods.goods_id},{goods.goods_name},加赠了{goods.extra_reward}");
                     }
                     else
                     {
@@ -210,6 +209,7 @@ namespace TLJ_MySqlService.Handler
                     LogUtil.Log(userInfo.Uid, MyCommon.OpType.BUYYUANBAO, format);
 
                     var result = vipLevel - vipFirstLevel;
+
                     //vip等级发生
                     if (result > 0)
                     {
@@ -267,9 +267,10 @@ namespace TLJ_MySqlService.Handler
         }
 
         //数据库操作失败
-        private void OperatorFail(JObject responseData)
+        private void OperatorFail(JObject responseData,string msg)
         {
             responseData.Add(MyCommon.CODE, (int) Consts.Code.Code_CommonFail);
+            responseData.Add("msg", msg);
         }
     }
 }

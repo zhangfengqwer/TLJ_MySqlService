@@ -61,6 +61,7 @@
     <Compile Include="Model\Log_bind_oldplayer.cs" />
     <Compile Include="Model\Log_Change_Wealth.cs" />
     <Compile Include="Model\Log_Game.cs" />
+    <Compile Include="Model\Log_Login_old.cs" />
     <Compile Include="Model\Log_Online_Player.cs" />
     <Compile Include="Model\Log_Recharge.cs" />
     <Compile Include="Model\Log_Login.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Model\TurnTable.cs" />
     <Compile Include="Model\Statistics.cs" />
     <Compile Include="Model\JDCard.cs" />
+    <Compile Include="Model\UserPhoneExchange.cs" />
     <Compile Include="Model\UserRealName.cs" />
     <Compile Include="Model\MyLog.cs" />
     <Compile Include="Model\UserExchange.cs" />
@@ -197,6 +199,12 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Mappings\Log_Login_old.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mappings\UserPhoneExchange.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

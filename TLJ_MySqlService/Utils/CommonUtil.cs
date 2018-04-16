@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using NHibernate.Mapping;
 using TLJ_MySqlService;
 
 public class CommonUtil
@@ -74,11 +75,37 @@ public class CommonUtil
         return md5;
     }
 
-//    public static string ChangePsw(string password)
-//    {
-//        var md5 = GetMD5(MySqlService.AdminPassWord + GetMD5(password));
-//        return md5;
-//    }
+    /// <summary>
+    /// 随机排列数组元素
+    /// </summary>
+    /// <param name="myList"></param>
+    /// <returns></returns>
+    public static List<T> ListRandom<T>(List<T> myList)
+    {
+
+        Random ran = new Random();
+        List<T> newList = new List<T>();
+        int index = 0;
+        T temp;
+        for (int i = 0; i < myList.Count; i++)
+        {
+
+            index = ran.Next(0, myList.Count - 1);
+            if (index != i)
+            {
+                temp = myList[i];
+                myList[i] = myList[index];
+                myList[index] = temp;
+            }
+        }
+        return myList;
+    }
+
+    //    public static string ChangePsw(string password)
+    //    {
+    //        var md5 = GetMD5(MySqlService.AdminPassWord + GetMD5(password));
+    //        return md5;
+    //    }
     // 格式2017/7/12 15:05:03
     static public string getCurTime()
     {

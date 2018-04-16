@@ -71,6 +71,7 @@ namespace TLJ_MySqlService.Handler
                     userExtend.task2 = 3;
                 }
                 MySqlManager<UserExtend>.Instance.Update(userExtend);
+                
             }
 
             jObject.Add("reward", sb.ToString());

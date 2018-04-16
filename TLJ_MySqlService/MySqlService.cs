@@ -7,12 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using NhInterMySQL;
 using NhInterMySQL.Manager;
+using NHibernate.Criterion;
 using TLJCommon;
 using TLJ_MySqlService.Handler;
 using TLJ_MySqlService.Utils;
@@ -40,6 +42,9 @@ namespace TLJ_MySqlService
         public static Logger log = LogManager.GetLogger("MySqlService");
         public static Logger DBLog = LogManager.GetLogger("DBLog");
         public static Dictionary<string, BaseHandler> handlerDic = new Dictionary<string, BaseHandler>();
+
+
+
         public static Dictionary<TljServiceType, IntPtr> serviceDic = new Dictionary<TljServiceType, IntPtr>();
 
         public static List<PVPGameRoom> PvpGameRooms;
@@ -69,6 +74,7 @@ namespace TLJ_MySqlService
         public static List<TeleFarePieceData> teleFarePieceDatas;
 
         private string configPath = AppDomain.CurrentDomain.BaseDirectory + "/../../../Config";
+        public static HttpListener httpListener;
 
         public static MySqlService Instance()
         {
@@ -91,10 +97,104 @@ namespace TLJ_MySqlService
                 InitData();
                 InitService();
                 StartService();
+                StartHttp();
             }
             catch (Exception e)
             {
                 log.Error("OnStart:" + e);
+            }
+        }
+
+        public static void StartHttp()
+        {
+            httpListener = new HttpListener();
+            httpListener.Prefixes.Add("http://fksq.javgame.com/");
+            httpListener.Prefixes.Add("http://fksq.hy51v.com/");
+
+            httpListener.Start();
+            log.Info($"http start");
+            Accept();
+        }
+
+        public class WebResponse
+        {
+            public string msg { set; get; }
+            public int code { set; get; }
+        }
+
+        public static async void Accept()
+        {
+            while (true)
+            {
+                HttpListenerContext context = await httpListener.GetContextAsync();
+
+                HttpListenerRequest request = context.Request;
+                HttpListenerResponse response = context.Response;
+                string urlAbsolutePath = context.Request.Url.AbsolutePath;
+                WebResponse webResponse = new WebResponse();
+
+                if ("/extend_code".Equals(urlAbsolutePath))
+                {
+                    string extendCode = request.QueryString["extendCode"];
+                    if (string.IsNullOrEmpty(extendCode))
+                    {
+                        log.Warn($"extendCode:{extendCode}");
+                        webResponse.code = -1;
+                        webResponse.msg = "参数有空";
+                    }
+                    else
+                    {
+                        UserInfo userInfo = MySqlManager<UserInfo>.Instance.GetUserByExtendCode(extendCode);
+                        if (userInfo == null)
+                        {
+                            webResponse.code = -2;
+                            log.Warn("推广码不存在");
+                            webResponse.msg = "推广码不存在";
+                        }
+                        else
+                        {
+                            log.Info("推广码不存在");
+                            webResponse.msg = "推广码存在";
+                        }
+                    }
+                }else if ("/login_old".Equals(urlAbsolutePath))
+                {
+                    string uid_old = request.QueryString["uid_old"];
+                    string game_id = request.QueryString["game_id"];
+                    string channe_name = request.QueryString["channe_name"];
+                    string version_name = request.QueryString["version_name"];
+                    string machine_id = request.QueryString["machine_id"];
+
+                    if (!string.IsNullOrWhiteSpace(uid_old) && !string.IsNullOrWhiteSpace(game_id)
+                        && !string.IsNullOrWhiteSpace(channe_name) && !string.IsNullOrWhiteSpace(machine_id) && !string.IsNullOrWhiteSpace(version_name))
+                    {
+                        if (!MySqlManager<Log_Login_old>.Instance.Add(new Log_Login_old()
+                        {
+                            uid_old = uid_old,
+                            channel_name = channe_name,
+                            game_id = Convert.ToInt32(game_id),
+                            machine_id = machine_id,
+                            version_name = version_name
+                        }))
+                        {
+//                            webResponse.code = -1;
+//                            webResponse.msg = "服务器内部错误";
+//                            log.Warn($"插入数据库错误:uid_old:{uid_old},game_id:{game_id},channe_name:{channe_name},machine_id:{machine_id}");
+                        }
+                    }
+                    else
+                    {
+                        webResponse.code = -2;
+                        webResponse.msg = "参数有空";
+                        log.Warn($"参数有空:uid_old:{uid_old},game_id:{game_id},channe_name:{channe_name},machine_id:{machine_id}");
+                    }
+                }
+
+                string serializeObject = JsonConvert.SerializeObject(webResponse);
+                byte[] bytes = Encoding.UTF8.GetBytes(serializeObject);
+                context.Response.ContentLength64 = bytes.Length;
+                context.Response.ContentEncoding = Encoding.UTF8;
+                await response.OutputStream.WriteAsync(bytes, 0, bytes.Length);
             }
         }
 
@@ -121,7 +221,6 @@ namespace TLJ_MySqlService
             }
         }
 
-
         private void initData()
         {
             string[] strings = Directory.GetFiles(configPath);
@@ -133,6 +232,7 @@ namespace TLJ_MySqlService
             ShopData = NHibernateHelper.goodsManager.GetAll().ToList().ToList();
             SignConfigs = NHibernateHelper.signConfigManager.GetAll().ToList();
             TurnTables = NHibernateHelper.turnTableManager.GetAll().ToList();
+
             InitJDCards();
 
             //去除一元话费
@@ -157,6 +257,16 @@ namespace TLJ_MySqlService
                     FreeTurnTables.Add(turnTable);
                 }
             }
+            //打乱排序
+            TurnTables = CommonUtil.ListRandom(TurnTables);
+            TurnTables.Clear();
+            for (int i = 0; i < MedalTurnTables.Count; i++)
+            {
+                TurnTables.Add(FreeTurnTables[i]);
+                TurnTables.Add(MedalTurnTables[i]);
+            }
+
+
 
             InitVipRewardData();
             InitMedalDuiHuanRewardData();
@@ -234,7 +344,7 @@ namespace TLJ_MySqlService
 
                 foreach (var attr in attributes)
                 {
-                    HandlerAttribute handlerAttribute = (HandlerAttribute) attr;
+                    HandlerAttribute handlerAttribute = (HandlerAttribute)attr;
                     object obj = Activator.CreateInstance(type);
 
                     BaseHandler baseHandler = obj as BaseHandler;
@@ -255,6 +365,44 @@ namespace TLJ_MySqlService
                 }
             }
             log.Info($"handlerCount:{handlerDic.Count}");
+        }
+        private void InitHttpHandler()
+        {
+            Assembly assembly = typeof(MySqlService).Assembly;
+
+            Type[] types = assembly.GetTypes();
+
+            foreach (var type in types)
+            {
+                var attributes = type.GetCustomAttributes(typeof(HttpHandlerAttribute), false);
+
+                foreach (var attr in attributes)
+                {
+                    HttpHandlerAttribute handlerAttribute = (HttpHandlerAttribute)attr;
+                    object obj = Activator.CreateInstance(type);
+
+                    BaseHandler baseHandler = obj as BaseHandler;
+                    if (baseHandler == null)
+                    {
+                        log.Warn($"没有继承BaseHandler:{type.Name}");
+                        continue;
+                    }
+
+                    if (!handlerDic.ContainsKey(handlerAttribute.Tag))
+                    {
+                        handlerDic.Add(handlerAttribute.Tag, baseHandler);
+                    }
+                    else
+                    {
+                        log.Warn($"key值重复:{handlerAttribute.Tag}");
+                    }
+                }
+            }
+            log.Info($"handlerCount:{handlerDic.Count}");
+
+
+
+
         }
 
         public void InitLog()

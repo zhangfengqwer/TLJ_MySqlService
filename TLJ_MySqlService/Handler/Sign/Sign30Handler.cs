@@ -165,8 +165,23 @@ namespace TLJ_MySqlService.Handler
 
             int lianXuSignDays = CommonUtil.GetLianXuSignDays(list);
 
+            //全勤奖
+            //TODO V1以上 
             if (lianXuSignDays == DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))
             {
+                UserInfo userInfo = MySqlManager<UserInfo>.Instance.GetByUid(uid);
+                List<Log_Game> gameCountByMonth = MySqlManager<UserGame>.Instance.GetGameCountByMonth(uid);
+
+
+                int vipLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
+
+                if (vipLevel < 1 || gameCountByMonth.Count < 30)
+                {
+                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                    responseData.Add("msg", $"每月游戏对局数满30局且贵族等级为V1方可领取");
+                    return;
+                }
+
                 UserMonthSign userMonthSign = new UserMonthSign()
                 {
                     Uid = uid,
@@ -175,7 +190,7 @@ namespace TLJ_MySqlService.Handler
                     Type = 3
                 };
 
-                MySqlService.log.Warn($"```````````{JsonConvert.SerializeObject(userMonthSign)}");
+                MySqlService.log.Info($"```````````{JsonConvert.SerializeObject(userMonthSign)}");
 
                 if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
                 {
@@ -189,11 +204,8 @@ namespace TLJ_MySqlService.Handler
                     responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
                     responseData.Add("msg", $"{dataContent.reward_name}的奖励已领取,不可重复领取");
                 }
-
                 return;
             }
-
-
 
             //连续签到大于需要的天数
             if (lianXuSignDays >= dataContent.day)
@@ -206,7 +218,7 @@ namespace TLJ_MySqlService.Handler
                     Type = 3
                 };
 
-                MySqlService.log.Warn($"```````````{JsonConvert.SerializeObject(userMonthSign)}");
+                MySqlService.log.Info($"```````````{JsonConvert.SerializeObject(userMonthSign)}");
 
                 if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
                 {

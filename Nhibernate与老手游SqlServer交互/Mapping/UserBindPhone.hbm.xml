@@ -4,12 +4,11 @@
                    assembly="NhInterSqlServer"
                    namespace="NhInterSqlServer.Model">
 
-  <class name="UserSource" table="User_Source">
-  
+  <class name="UserBindPhone" table="USER_MOBILE_BIND">
     <id name="UserId" column="USERID" type="Int32">
       <generator class="native"></generator>
     </id>
-    <property name="SourceCode" column="SourceCode" type="String"></property>
-    <property name="GameID" column="GameID" type="Int32"></property>
+    <property name="Mobile" column="MOBILE" type="String"></property>
+    <property name="ModifyTime" column="MODIFYDT" type="Timestamp"></property>
   </class>
 </hibernate-mapping>

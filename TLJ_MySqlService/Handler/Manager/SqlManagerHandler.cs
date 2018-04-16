@@ -45,6 +45,7 @@ namespace TLJ_MySqlService.Handler
                     {
                         transaction.Rollback();
                         _responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                        MySqlService.log.Warn($"执行sql失败:" + e);
                     }
                 }
             }

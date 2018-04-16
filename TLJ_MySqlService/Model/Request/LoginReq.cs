@@ -7,6 +7,7 @@
     public string channelname;
     public string ip;
     public string apkVersion;
+    public string mac;
 
     public int passwordtype;
 }

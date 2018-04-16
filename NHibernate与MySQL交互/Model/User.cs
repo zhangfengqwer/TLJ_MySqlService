@@ -13,5 +13,6 @@ namespace NhInterMySQL.Model
         public virtual string ChannelName { set; get; }
         public virtual DateTime CreateTime { set; get; }
         public virtual int IsRobot { set; get; }
+        public virtual string MachineId { set; get; }
     }
 }

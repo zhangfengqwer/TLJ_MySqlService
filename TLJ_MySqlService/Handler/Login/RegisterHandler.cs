@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NhInterMySQL;
+using NhInterMySQL.Manager;
 using TLJCommon;
 using NhInterMySQL.Model;
 using TLJ_MySqlService.Utils;
@@ -33,8 +34,9 @@ namespace TLJ_MySqlService.Handler
             string _username = login.account;
             string _userpassword = login.password;
             string channelname = login.channelname;
+            string machineId = login.mac;
             if (string.IsNullOrWhiteSpace(_tag) || string.IsNullOrWhiteSpace(_username) || string.IsNullOrWhiteSpace(_userpassword) ||
-                string.IsNullOrWhiteSpace(channelname))
+                string.IsNullOrWhiteSpace(channelname) || string.IsNullOrWhiteSpace(machineId))
             {
                 MySqlService.log.Warn("字段有空:" + data);
                 return null;
@@ -45,14 +47,22 @@ namespace TLJ_MySqlService.Handler
             _responseData.Add(MyCommon.TAG, _tag);
             _responseData.Add(MyCommon.CONNID, _connId);
             User _user = new User() {Username = _username, Userpassword = _userpassword};
-            RegisterSQL(_user, channelname, _responseData);
+            RegisterSQL(_user, channelname, machineId, _responseData);
             return _responseData.ToString();
         }
 
         //注册 数据库操作
-        private void RegisterSQL(User user, string channelname, JObject responseData)
+        private void RegisterSQL(User user, string channelname, string machineId, JObject responseData)
         {
             User userByName = NHibernateHelper.userManager.GetByName(user.Username);
+
+            List<User> users = MySqlManager<User>.Instance.GetByPorperty("MachineId", machineId);
+            if (users?.Count >= 10)
+            {
+                OperatorFail(responseData, "每台手机最多注册十个账号");
+                return;
+            }
+
             if (userByName != null)
             {
                 OperatorFail(responseData, "用户已存在");
@@ -67,6 +77,7 @@ namespace TLJ_MySqlService.Handler
                 user.IsRobot = 0;
                 user.Userpassword = CommonUtil.CheckPsw(user.Userpassword);
                 user.CreateTime = DateTime.Now;
+                user.MachineId = machineId;
 
                 var userEmail = new UserEmail()
                 {
@@ -78,17 +89,11 @@ namespace TLJ_MySqlService.Handler
                     CreateTime = DateTime.Now,
                 };
 
+
                 //注册用户数据 并 注册新手邮箱
                 if (NHibernateHelper.userManager.Add(user) && NHibernateHelper.userEmailManager.Add(userEmail))
                 {
                     OperatorSuccess(user, responseData);
-
-//                    SendEmailUtil.SendEmail(uid, "“疯狂升级”新手指引",
-//                        @"欢迎来到疯狂升级，本游戏有多种玩法供您选择，更有比赛场可以获取丰厚大奖噢！详细规则可在“关于-游戏规则”中查看，祝您游戏愉快~",
-//                        "");
-//                    SendEmailUtil.SendEmail(uid, "“疯狂升级”游戏福利",
-//                        @"每日登陆可领取签到奖励，通过游戏可获得抽奖机会，完成任务以达成成就，比赛场中获得胜利有丰厚大礼，更多精彩内容等你来玩噢~",
-//                        "");
                 }
                 else
                 {

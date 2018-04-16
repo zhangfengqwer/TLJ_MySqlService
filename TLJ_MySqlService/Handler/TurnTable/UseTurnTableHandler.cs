@@ -4,6 +4,7 @@ using NhInterMySQL;
 using NhInterMySQL.Model;
 using System;
 using System.Collections.Generic;
+using NhInterMySQL.Manager;
 using TLJ_MySqlService.Model;
 using TLJCommon;
 using TLJ_MySqlService.Utils;
@@ -79,7 +80,47 @@ namespace TLJ_MySqlService.Handler
                     {
                         TurnTable turnTable;
 
-                        turnTable = MySqlService.FreeTurnTables[reward - 1];
+                        MySqlService.log.Info($"{uid} 增加：{reward}");
+
+                        List<Log_Change_Wealth> logChangeWealths = MySqlManager<Log_Change_Wealth>.Instance.GetLogByReason(uid,"免费转盘抽奖");
+
+                        //TODO 转盘概率和第一次得，以后不得
+                        bool isFirst = false;
+                        foreach (var logWealth in logChangeWealths)
+                        {
+                            if (logWealth.type == "120")
+                            {
+                                isFirst = true;
+                                break;
+                            }
+                        }
+                        MySqlService.log.Info($"isfirst:{isFirst},reward:{reward}");
+                        while (isFirst && reward == 6)
+                        {
+                            MySqlService.log.Info($"我循环···");
+                            reward = GetProbabilityReward(MySqlService.FreeTurnTables);
+                        }
+                        MySqlService.log.Info($"isfirst:{isFirst},reward:{reward}");
+
+                        //第三次不得
+                        //                        if (logChangeWealths?.Count == 2)
+                        //                        {
+                        //                            if (logChangeWealths[0].type != "120" && logChangeWealths[1].type != "120")
+                        //                            {
+                        //                                reward = 6;
+                        //                            }
+                        //                        }
+
+                        if (reward == 10)
+                        {
+                            reward = 1;
+                            turnTable = MySqlService.MedalTurnTables[reward - 1];
+                            reward = 51;
+                        }
+                        else
+                        {
+                            turnTable = MySqlService.FreeTurnTables[reward - 1];
+                        }
 
                         MySqlService.log.Info($"{uid} 增加转盘奖励{turnTable.reward}");
                         bool addProp = MySqlUtil.AddProp(uid, turnTable.reward, "免费转盘抽奖");
@@ -232,7 +273,6 @@ namespace TLJ_MySqlService.Handler
 //            else if (next <= list[7]) num = 8;
 //            else if (next <= list[8]) num = 9;
 //            else if (next <= list[9]) num = 10;
-
             return num;
         }
     }

@@ -13,6 +13,8 @@ namespace TLJ_MySqlService.Handler
     [Handler(Consts.Tag_Third_Login)]
     public class ThirdLoginHandler : BaseHandler
     {
+        private static readonly Object locker = new object();
+
         public override string OnResponse(string data)
         {
             ThirdLoginReq login = null;
@@ -33,11 +35,13 @@ namespace TLJ_MySqlService.Handler
             string channelname = login.channelname;
             string ip = login.ip;
             if (string.IsNullOrWhiteSpace(tag) || string.IsNullOrWhiteSpace(third_id)
-                || string.IsNullOrWhiteSpace(nickname) || string.IsNullOrWhiteSpace(channelname) || "null".Equals(third_id))
+                                               || string.IsNullOrWhiteSpace(nickname) ||
+                                               string.IsNullOrWhiteSpace(channelname) || "null".Equals(third_id))
             {
                 MySqlService.log.Warn("字段有空:" + data);
                 return null;
             }
+
             //传给客户端的数据
             JObject responseData = new JObject();
             responseData.Add(MyCommon.TAG, tag);
@@ -49,14 +53,15 @@ namespace TLJ_MySqlService.Handler
             }
 
             nickname = Regex.Replace(nickname, @"\p{Cs}", "");
-
-            ThirdLoginSQL(third_id, nickname, channelname, ip, responseData);
+            lock (locker)
+            {
+                ThirdLoginSQL(third_id, nickname, channelname, ip, responseData);
+            }
             return responseData.ToString();
         }
 
         private void ThirdLoginSQL(string thirdId, string nickname, string channelname, string ip, JObject responseData)
         {
-
             //通过第三方查询用户
             List<User> users = NHibernateHelper.userManager.GetUserByTid(thirdId);
             User user;
@@ -72,7 +77,8 @@ namespace TLJ_MySqlService.Handler
                     Secondpassword = "",
                     Uid = uid,
                     IsRobot = 0,
-                    CreateTime = DateTime.Now
+                    CreateTime = DateTime.Now,
+                    MachineId = ""
                 };
 
                 Random random = new Random();
@@ -93,6 +99,7 @@ namespace TLJ_MySqlService.Handler
                         {
                             user.Username.Remove(user.Username.Length - 1);
                         }
+
                         user.Username += next;
                         if (NHibernateHelper.userManager.Add(user))
                         {
@@ -100,6 +107,7 @@ namespace TLJ_MySqlService.Handler
                             break;
                         }
                     }
+
                     if (flag)
                     {
                         MySqlService.log.Info("第三方重复注册成功 user.Username:" + user.Username + "\nuser.Uid" + user.Uid);

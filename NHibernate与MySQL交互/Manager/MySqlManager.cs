@@ -610,5 +610,97 @@ namespace NhInterMySQL.Manager
 
             return null;
         }
+
+        public UserInfo GetUserByExtendCode(string extendCode)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var t = Session.CreateCriteria(typeof(UserInfo))
+                    .Add(Restrictions.Eq("ExtendCode", extendCode))
+                    .UniqueResult<UserInfo>();
+                return t;
+            }
+        }
+
+        public List<UserPhoneExchange> GetByCurrentDay(string phone)
+        {
+            string date = DateTime.Now.ToString("yyyy-MM-dd") + "%";
+            var sql = $"select * from user_phone_exchange  where phone = '{phone}'  and create_time like '{date}'";
+
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    try
+                    {
+                        List<UserPhoneExchange> list = session.CreateSQLQuery(sql).AddEntity(typeof(UserPhoneExchange))
+                            .List<UserPhoneExchange>().ToList();
+                        transaction.Commit();
+                        return list;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return null;
+
+        }
+
+        public List<Log_Change_Wealth> GetLogByReason(string uid ,string reason)
+        {
+            string date = DateTime.Now.ToString("yyyy-MM-dd") + "%";
+            var sql = $"select * from log_change_wealth  where uid = '{uid}' and reason = '{reason}'  and create_time like '{date}'";
+
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    try
+                    {
+                        List<Log_Change_Wealth> list = session.CreateSQLQuery(sql).AddEntity(typeof(Log_Change_Wealth))
+                            .List<Log_Change_Wealth>().ToList();
+                        transaction.Commit();
+                        return list;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return null;
+
+        }
+
+        public List<Log_Game> GetGameCountByMonth(string uid)
+        {
+            string date = DateTime.Now.ToString("yyyy-MM") + "%";
+            var sql = $"select * from log_game  where player1_uid = '{uid}' or player2_uid = '{uid}' or " +
+                      $"player3_uid = '{uid}' or player4_uid = '{uid}' and create_time like '{date}'";
+
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    try
+                    {
+                        List<Log_Game> list = session.CreateSQLQuery(sql).AddEntity(typeof(Log_Game))
+                            .List<Log_Game>().ToList();
+                        transaction.Commit();
+                        return list;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return null;
+        }
     }
 }

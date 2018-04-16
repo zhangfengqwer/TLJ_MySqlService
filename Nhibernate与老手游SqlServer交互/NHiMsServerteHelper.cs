@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using NhInterSqlServer.Model;
 using NHibernate;
 using NHibernate.Cfg;
+using System.Linq;
+using NHibernate.Criterion;
 
 namespace NhInterSqlServer
 {
@@ -46,5 +49,48 @@ namespace NhInterSqlServer
                 }
             }
         }
+
+        public static T GetById<T>(int id)
+        {
+            using (var Session = NHiMsServerteHelper.OpenSession())
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    var t = Session.Get<T>(id);
+                    transaction.Commit();
+                    return t;
+                }
+            }
+        }
+
+        public static List<T> GetAll<T>()
+        {
+            using (var Session = NHiMsServerteHelper.OpenSession())
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    var t = Session.CreateCriteria(typeof(T))
+                        .Add(Restrictions.Gt("ModifyTime",DateTime.Parse("2017-01-01 00:00:00")))
+                        .List<T>().ToList();
+                    transaction.Commit();
+                    return t;
+                }
+            }
+        }
+        public static List<T> GetAll2<T>()
+        {
+            using (var Session = NHiMsServerteHelper.OpenSession())
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    var t = Session.CreateCriteria(typeof(T))
+                        .AddOrder(Order.Desc("ModifyTime"))
+                        .List<T>().ToList();
+                    transaction.Commit();
+                    return t;
+                }
+            }
+        }
+
     }
 }

@@ -43,6 +43,7 @@ namespace TLJ_MySqlService.Handler
             List<User> users = MySqlManager<User>.Instance.GetUserByTid(unionid);
             string time = "";
             string uid = "";
+            string extendCode = "";
             if (users.Count > 0)
             {
                 var user = users[0];
@@ -51,6 +52,7 @@ namespace TLJ_MySqlService.Handler
             }
             responseData.Add("uid", uid);
             responseData.Add("time", time);
+            responseData.Add("extendCode", time);
             return responseData.ToString();
         }
 

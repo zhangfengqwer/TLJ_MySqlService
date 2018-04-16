@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TLJ_MySqlService.Utils
 {
@@ -22,7 +23,7 @@ namespace TLJ_MySqlService.Utils
         //post的cotentType填写:
         //"application/x-www-form-urlencoded"
         //soap填写:"text/xml; charset=utf-8"
-        public static string PostHttp(string url, string body)
+        public static async Task<string> PostHttp(string url, string body)
         {
             HttpWebRequest httpWebRequest = (HttpWebRequest) WebRequest.Create(url);
 
@@ -34,7 +35,7 @@ namespace TLJ_MySqlService.Utils
             httpWebRequest.ContentLength = btBodys.Length;
             httpWebRequest.GetRequestStream().Write(btBodys, 0, btBodys.Length);
 
-            HttpWebResponse httpWebResponse = (HttpWebResponse) httpWebRequest.GetResponse();
+            HttpWebResponse httpWebResponse = (HttpWebResponse)await httpWebRequest.GetResponseAsync();
             StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string responseContent = streamReader.ReadToEnd();
 
@@ -46,7 +47,7 @@ namespace TLJ_MySqlService.Utils
             return responseContent;
         }
 
-        public static string GetHttp(string url)
+        public static async Task<string> GetHttp(string url)
         {
             HttpWebRequest httpWebRequest = (HttpWebRequest) WebRequest.Create(url);
 
@@ -54,7 +55,7 @@ namespace TLJ_MySqlService.Utils
             httpWebRequest.Method = "GET";
             httpWebRequest.Timeout = 10000;
 
-            HttpWebResponse httpWebResponse = (HttpWebResponse) httpWebRequest.GetResponse();
+            HttpWebResponse httpWebResponse = (HttpWebResponse)await httpWebRequest.GetResponseAsync();
             StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string responseContent = streamReader.ReadToEnd();
 
@@ -65,32 +66,5 @@ namespace TLJ_MySqlService.Utils
 
             return responseContent;
         }
-
-        public static string SendSms(string uid, string phoneNum)
-        {
-            string url = "http://servicesy.51v.cn/partnerws/SmsService.asmx/SendSms";
-            string getBody = "?userId=" + uid + "&cellPhoneNum=" + phoneNum + "&keyStr="+sendKey;
-            return GetHttp(url + getBody);
-        }
-
-        public static string CheckSms(string uid, string phoneNum, string verificationCode)
-        {
-            string url = "http://servicesy.51v.cn/partnerws/SmsService.asmx/CheckSmsToJson";
-            string getBody = "?userId=" + uid + "&cellPhoneNum=" + phoneNum + "&verificationCode=" + verificationCode +
-                             "&keyStr="+ sendKey;
-            return GetHttp(url + getBody);
-        }
-
-        public static string PhoneFeeRecharge(string uid, string goodsName, string amount, string mobile,
-            string propId, string propnum)
-        {
-            string url = "http://service.51v.cn/partnerws/phonefeeservice.asmx/PhoneFeeExChange";
-            string getBody = string.Format("?userid={0}&gameid={1}&goodsName={2}&amount={3}&mobile={4}"+
-                                       "&propid={5}&propnum={6}&clientip={7}&flatFrom={8}&key={9}",
-                uid, gameid, goodsName, amount, mobile, propId, propnum, clientip, flatFrom, phoneFeeKey);
-
-            return GetHttp(url + getBody);
-        }
-
     }
 }

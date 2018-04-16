@@ -140,6 +140,7 @@
     <Compile Include="Handler\Prop\UseBuffPropHandler.cs" />
     <Compile Include="Handler\Web\CheckWeChatRegisterHandler.cs" />
     <Compile Include="Handler\Web\GetWXUserInfoHandler.cs" />
+    <Compile Include="Model\Object\HttpHandlerAttribute.cs" />
     <Compile Include="Model\Object\HandlerAttribute.cs" />
     <Compile Include="Model\Object\ServiceType.cs" />
     <Compile Include="Model\Object\UserInfo_Game.cs" />
@@ -240,6 +241,8 @@
       <Name>Nhibernate与老手游SqlServer交互</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Handler\Http\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

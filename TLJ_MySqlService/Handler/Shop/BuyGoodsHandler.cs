@@ -24,6 +24,7 @@ namespace TLJ_MySqlService.Handler
                 MySqlService.log.Warn("传入的参数有误");
                 return null;
             }
+
             string Tag = defaultReqData.tag;
             int ConnId = defaultReqData.connId;
             string uid = defaultReqData.uid;
@@ -36,12 +37,13 @@ namespace TLJ_MySqlService.Handler
                 MySqlService.log.Warn("字段有空");
                 return null;
             }
+
             //传给客户端的数据
             JObject _responseData = new JObject();
             _responseData.Add(MyCommon.TAG, Tag);
             _responseData.Add(MyCommon.CONNID, ConnId);
 
-            BuyGoodsSql(goodId, num, uid,money_type, _responseData);
+            BuyGoodsSql(goodId, num, uid, money_type, _responseData);
             return _responseData.ToString();
         }
 
@@ -69,6 +71,7 @@ namespace TLJ_MySqlService.Handler
                         break;
                 }
             }
+
             if (IsSuccess)
             {
                 OperatorSuccess(responseData);
@@ -115,19 +118,21 @@ namespace TLJ_MySqlService.Handler
                         //先扣钱,添加金币
                         MySqlService.log.Info("先扣钱,添加金币");
                         string temp = "";
-                        if (NHibernateHelper.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, "元宝购买金币", out temp))
+                        if (NHibernateHelper.userInfoManager.Update(userInfo) &&
+                            AddJinbi(goods, userInfo, num, "元宝购买金币", out temp))
                         {
                             //记录玩家财富变化日志
                             int after = userInfo.YuanBao;
                             int change = -sumPrice;
                             StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.YUANBAO, "元宝购买金币", after - change, change, after);
 
-                           
+
                             string s = string.Format("花费{0}元宝，购买了{1}个{2}", sumPrice, num, goods.goods_name);
                             LogUtil.Log(uid, MyCommon.OpType.BUYGOLD, s);
                             IsSuccess = true;
                         }
                     }
+
                     break;
                 case 4:
                     sumPrice = goods.price2 * num;
@@ -138,22 +143,23 @@ namespace TLJ_MySqlService.Handler
                         //先扣钱,添加金币
                         MySqlService.log.Info("先扣徽章,添加金币");
                         string temp = "";
-                        if (NHibernateHelper.userInfoManager.Update(userInfo) && AddJinbi(goods, userInfo, num, "徽章购买金币", out temp))
+                        if (NHibernateHelper.userInfoManager.Update(userInfo) &&AddJinbi(goods, userInfo, num, "徽章购买金币", out temp))
                         {
                             //记录玩家财富变化日志
                             int after = userInfo.Medel;
                             int change = -sumPrice;
                             StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.Medal, "徽章购买金币", after - change, change, after);
+
                             string s = string.Format("花费{0}徽章，购买了{1}个{2}", sumPrice, num, goods.goods_name);
                             LogUtil.Log(uid, MyCommon.OpType.BUYGOLD, s);
                             IsSuccess = true;
                         }
                     }
+
                     break;
             }
 
 
-        
             return IsSuccess;
         }
 
@@ -171,10 +177,12 @@ namespace TLJ_MySqlService.Handler
                     //记录玩家财富变化日志
                     int after = userInfo.Gold;
                     int change = propNum * num;
-                    StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.GOLD, reason, after - change, change, after);
+                    StatictisLogUtil.ChangeWealth(userInfo.Uid, userInfo.NickName, MyCommon.GOLD, reason,
+                        after - change, change, after);
                     return true;
                 }
             }
+
             temp = null;
             return false;
         }
@@ -192,6 +200,7 @@ namespace TLJ_MySqlService.Handler
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -201,7 +210,7 @@ namespace TLJ_MySqlService.Handler
             //需要付的价格
             int sumPrice = goods.price * num;
             UserInfo userInfo = NHibernateHelper.userInfoManager.GetByUid(uid);
-           
+
             switch (moneyType)
             {
                 //金币付款
@@ -213,20 +222,37 @@ namespace TLJ_MySqlService.Handler
                         userInfo.Gold -= sumPrice;
 
                         //先扣钱,添加道具
-                        if (NHibernateHelper.userInfoManager.Update(userInfo))
+                        string cost = $"1:{-sumPrice}";
+                        if (MySqlUtil.AddProp(uid, cost, "金币购买道具"))
                         {
-                            for (int i = 0; i < num; i++)
+                            string[] strings = goods.props.Split(':');
+
+                            string props = strings[0] + ":" + int.Parse(strings[1]) * num;
+
+                            if (!MySqlUtil.AddProp(uid, props, "金币购买道具"))
                             {
-                                if (!AddProp(goods, uid))
-                                {
-                                    return false;
-                                }
+                                return false;
                             }
                             string s = string.Format("花费{0}金币，购买了{1}个{2}", sumPrice, num, goods.goods_name);
                             LogUtil.Log(uid, MyCommon.OpType.BUYPROP, s);
                             IsSuccess = true;
                         }
+
+//                        if (NHibernateHelper.userInfoManager.Update(userInfo))
+//                        {
+//                            for (int i = 0; i < num; i++)
+//                            {
+//                                if (!AddProp(goods, uid))
+//                                {
+//                                    return false;
+//                                }
+//                            }
+//                            string s = string.Format("花费{0}金币，购买了{1}个{2}", sumPrice, num, goods.goods_name);
+//                            LogUtil.Log(uid, MyCommon.OpType.BUYPROP, s);
+//                            IsSuccess = true;
+//                        }
                     }
+
                     break;
                 //元宝付款
                 case 2:
@@ -234,20 +260,24 @@ namespace TLJ_MySqlService.Handler
                     {
                         userInfo.YuanBao -= sumPrice;
                         //先扣钱,添加道具
-                        if (NHibernateHelper.userInfoManager.Update(userInfo))
+                        string cost = $"2:{-sumPrice}";
+                        if (MySqlUtil.AddProp(uid, cost, "元宝购买道具"))
                         {
-                            for (int i = 0; i < num; i++)
+                            string[] strings = goods.props.Split(':');
+
+                            string props = strings[0] + ":" + int.Parse(strings[1]) * num;
+
+                            if (!MySqlUtil.AddProp(uid, props, "元宝购买道具"))
                             {
-                                if (!AddProp(goods, uid))
-                                {
-                                    return false;
-                                }
+                                return false;
                             }
+
                             string s = string.Format("花费{0}元宝，购买了{1}个{2}", sumPrice, num, goods.goods_name);
                             LogUtil.Log(uid, MyCommon.OpType.BUYPROP, s);
                             IsSuccess = true;
                         }
                     }
+
                     break;
                 //徽章付款
                 case 4:
@@ -257,16 +287,20 @@ namespace TLJ_MySqlService.Handler
                     {
                         userInfo.Medel -= sumPrice;
                         //先扣钱,添加道具
-                        if (NHibernateHelper.userInfoManager.Update(userInfo))
+
+                        string cost = $"110:{-sumPrice}";
+                        if (MySqlUtil.AddProp(uid, cost, "徽章购买道具"))
                         {
-                            for (int i = 0; i < num; i++)
+                            string[] strings = goods.props.Split(':');
+
+                            string props = strings[0] + ":" + int.Parse(strings[1]) * num;
+
+                            if (!MySqlUtil.AddProp(uid, props, "徽章购买道具"))
                             {
-                                if (!AddProp(goods, uid))
-                                {
-                                    return false;
-                                }
+                                return false;
                             }
-                            string s = string.Format("花费{0}徽章，购买了{1}个{2}", sumPrice, num, goods.goods_name);
+
+                            string s = string.Format("花费{0}元宝，购买了{1}个{2}", sumPrice, num, goods.goods_name);
                             LogUtil.Log(uid, MyCommon.OpType.BUYPROP, s);
                             IsSuccess = true;
                         }
@@ -274,6 +308,7 @@ namespace TLJ_MySqlService.Handler
 
                     break;
             }
+
             return IsSuccess;
         }
 
@@ -312,6 +347,7 @@ namespace TLJ_MySqlService.Handler
                     }
                 }
             }
+
             return true;
         }
 

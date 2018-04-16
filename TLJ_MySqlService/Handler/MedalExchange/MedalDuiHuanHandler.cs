@@ -171,12 +171,12 @@ namespace TLJ_MySqlService.Handler
                         }
                         else
                         {
-                            OperatorFail(responseData, "该道具已兑换");
+                            OperatorFail(responseData, "该道具已兑换,当天只能兑换一次");
                         }
                     }
                     else
                     {
-                        OperatorFail(responseData, "该道具已兑换");
+                        OperatorFail(responseData, "该道具已兑换,当天只能兑换一次");
                     }
                 }
             }

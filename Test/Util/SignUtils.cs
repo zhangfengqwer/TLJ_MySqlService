@@ -10,7 +10,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 
-namespace Test.Util
+namespace Util
 {
     class SignUtils
     {

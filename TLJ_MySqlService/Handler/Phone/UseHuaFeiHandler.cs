@@ -3,7 +3,9 @@ using Newtonsoft.Json.Linq;
 using NhInterMySQL;
 using NhInterMySQL.Model;
 using System;
+using System.Collections.Generic;
 using System.Xml;
+using NhInterMySQL.Manager;
 using TLJ_MySqlService.Model;
 using TLJ_MySqlService.Utils;
 using TLJCommon;
@@ -35,8 +37,8 @@ namespace TLJ_MySqlService.Handler
             string phone = defaultReqData.phone;
             int prop_num = defaultReqData.prop_num;
 
-
-            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(Uid) || string.IsNullOrWhiteSpace(phone) || prop_num < 1)
+            if (string.IsNullOrWhiteSpace(Tag) || string.IsNullOrWhiteSpace(Uid) || string.IsNullOrWhiteSpace(phone) ||
+                prop_num < 1)
             {
                 MySqlService.log.Warn("字段有空:" + data);
                 return null;
@@ -66,6 +68,20 @@ namespace TLJ_MySqlService.Handler
                 return _responseData.ToString();
             }
 
+            //当天每个手机30限额
+            List<UserPhoneExchange> userPhoneExchanges = MySqlManager<UserPhoneExchange>.Instance.GetByCurrentDay(phone);
+            int totalMoney = 0;
+            foreach (var userPhoneExchange in userPhoneExchanges)
+            {
+                totalMoney += userPhoneExchange.Money;
+            }
+
+            if (totalMoney >= 30)
+            {
+                OperatorFail(_responseData, $"该手机充值已达限制");
+                return _responseData.ToString();
+            }
+
             lock (Locker)
             {
                 UseHuaFeiSql(Uid, propId, phone, prop_num, _responseData);
@@ -77,6 +93,25 @@ namespace TLJ_MySqlService.Handler
         private void UseHuaFeiSql(string uid, int propId, string phone, int num, JObject responseData)
         {
             UserProp userProp = NHibernateHelper.userPropManager.GetUserProp(uid, propId);
+            UserGame userGame = MySqlManager<UserGame>.Instance.GetByUid(uid);
+
+            //限制话费使用
+            if (userGame == null)
+            {
+                MySqlService.log.Warn($"没有该道具或者不能使用该道具:{uid},{propId},{num}");
+                OperatorFail(responseData, "没有该道具或者不能使用该道具");
+                return;
+            }
+            else
+            {
+                if (userGame.DailyGameCount < 1)
+                {
+                    MySqlService.log.Info($"{uid}:当天未完成一次对局");
+                    OperatorFail(responseData, "充值话费失败:完成一次对局方可使用");
+                    return;
+                }
+            }
+
             if (userProp == null || userProp.PropNum < num)
             {
                 MySqlService.log.Warn($"没有该道具或者不能使用该道具:{uid},{propId},{num}");
@@ -108,6 +143,31 @@ namespace TLJ_MySqlService.Handler
                     if (NHibernateHelper.userPropManager.Update(userProp))
                     {
                         MySqlService.log.Info($"成功充值,还剩{userProp.BuffNum}");
+
+                        //记录充值记录
+                        int amount = 0;
+                        if (propId == 111)
+                        {
+                            amount = 1 * num;
+                        }
+                        else if (propId == 112)
+                        {
+                            amount = 5;
+                        }
+                        else if (propId == 113)
+                        {
+                            amount = 10;
+                        }
+
+                        
+                        UserPhoneExchange userPhoneExchange = new UserPhoneExchange()
+                        {
+                            Uid = uid,
+                            Money = amount,
+                            Phone = phone,
+                            CreateTime = DateTime.Now
+                        };
+                        MySqlManager<UserPhoneExchange>.Instance.Add(userPhoneExchange);
                         OperatorSuccess(responseData);
                     }
                     else
