@@ -67,7 +67,7 @@ namespace TLJ_MySqlService.Handler
                     Sign(uid, dataContent, responseData);
                     break;
                 case 2:
-//                    AddSign(uid, dataContent, responseData);
+                    AddSign(uid, dataContent, responseData);
                     break;
                 case 3:
                     TotalSign(uid, dataContent, responseData);
@@ -101,7 +101,7 @@ namespace TLJ_MySqlService.Handler
             }
 
             int cost = (userAddSigns.Count / 3 + 1) * 5000;
-
+//            int cost = 2000;
             UserInfo userInfo = MySqlManager<UserInfo>.Instance.GetByUid(uid);
             if (userInfo.Gold >= cost)
             {
@@ -166,60 +166,94 @@ namespace TLJ_MySqlService.Handler
             int lianXuSignDays = CommonUtil.GetLianXuSignDays(list);
 
             //全勤奖
-            //TODO V1以上 
-            if (lianXuSignDays == DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))
+            if (dataContent.id == 35)
             {
-                UserInfo userInfo = MySqlManager<UserInfo>.Instance.GetByUid(uid);
-                List<Log_Game> gameCountByMonth = MySqlManager<UserGame>.Instance.GetGameCountByMonth(uid);
-
-
-                int vipLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
-
-                if (vipLevel < 1 || gameCountByMonth.Count < 30)
+                if (lianXuSignDays == DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))
                 {
-                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
-                    responseData.Add("msg", $"每月游戏对局数满30局且贵族等级为V1方可领取");
+                    UserInfo userInfo = MySqlManager<UserInfo>.Instance.GetByUid(uid);
+                    List<Log_Game> gameCountByMonth = MySqlManager<UserGame>.Instance.GetGameCountByMonth(uid);
+
+
+                    int vipLevel = VipUtil.GetVipLevel(userInfo.RechargeVip);
+
+                    if (vipLevel < 1 || gameCountByMonth.Count < 30)
+                    {
+                        responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                        responseData.Add("msg", $"每月游戏对局数满30局且贵族等级为V1方可领取");
+                        return;
+                    }
+
+                    UserMonthSign userMonthSign = new UserMonthSign()
+                    {
+                        Uid = uid,
+                        SignYearMonth = GetSign30RecordHandler.GetYearMonth(),
+                        SignDate = DateTime.Now.Day + ":" + dataContent.id + "",
+                        Type = 3
+                    };
+
+                    MySqlService.log.Info($"```````````{JsonConvert.SerializeObject(userMonthSign)}");
+
+                    if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
+                    {
+                        responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+                        responseData.Add("msg", $"{dataContent.reward_name}领取成功");
+                        responseData.Add("reward_prop", dataContent.reward_prop);
+                        AddSignReward(uid, dataContent.reward_prop);
+                    }
+                    else
+                    {
+                        responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+                        responseData.Add("msg", $"{dataContent.reward_name}的奖励已领取,不可重复领取");
+                    }
                     return;
                 }
-
-                UserMonthSign userMonthSign = new UserMonthSign()
-                {
-                    Uid = uid,
-                    SignYearMonth = GetSign30RecordHandler.GetYearMonth(),
-                    SignDate = DateTime.Now.Day + ":" + dataContent.id + "",
-                    Type = 3
-                };
-
-                MySqlService.log.Info($"```````````{JsonConvert.SerializeObject(userMonthSign)}");
-
-                if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
-                {
-                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
-                    responseData.Add("msg", $"{dataContent.reward_name}领取成功");
-                    responseData.Add("reward_prop", dataContent.reward_prop);
-                    AddSignReward(uid, dataContent.reward_prop);
-                }
-                else
-                {
-                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
-                    responseData.Add("msg", $"{dataContent.reward_name}的奖励已领取,不可重复领取");
-                }
-                return;
             }
+           
 
             //连续签到大于需要的天数
-            if (lianXuSignDays >= dataContent.day)
+//            if (lianXuSignDays >= dataContent.day)
+//            {
+//                UserMonthSign userMonthSign = new UserMonthSign()
+//                {
+//                    Uid = uid,
+//                    SignYearMonth = GetSign30RecordHandler.GetYearMonth(),
+//                    SignDate = DateTime.Now.Day +":"+ dataContent.id + "",
+//                    Type = 3
+//                };
+//
+//                MySqlService.log.Info($"```````````{JsonConvert.SerializeObject(userMonthSign)}");
+//
+//                if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
+//                {
+//                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
+//                    responseData.Add("msg", $"{dataContent.reward_name}领取成功");
+//                    responseData.Add("reward_prop", dataContent.reward_prop);
+//                    AddSignReward(uid, dataContent.reward_prop);
+//                }
+//                else
+//                {
+//                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+//                    responseData.Add("msg", $"{dataContent.reward_name}的奖励已领取,不可重复领取");
+//                }
+//            }
+//            else
+//            {
+//                responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
+//                responseData.Add("msg", $"未满足{dataContent.reward_name},当前签到累计{userMonthSigns.Count}");
+//            }
+
+            
+            //不可重复领取
+            if (userMonthSigns.Count >= dataContentDay)
             {
                 UserMonthSign userMonthSign = new UserMonthSign()
                 {
                     Uid = uid,
                     SignYearMonth = GetSign30RecordHandler.GetYearMonth(),
-                    SignDate = DateTime.Now.Day +":"+ dataContent.id + "",
+                    SignDate = dataContent.id + "",
                     Type = 3
                 };
-
-                MySqlService.log.Info($"```````````{JsonConvert.SerializeObject(userMonthSign)}");
-
+            
                 if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
                 {
                     responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
@@ -238,36 +272,6 @@ namespace TLJ_MySqlService.Handler
                 responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
                 responseData.Add("msg", $"未满足{dataContent.reward_name},当前签到累计{userMonthSigns.Count}");
             }
-
-            //
-            //            if (userMonthSigns.Count >= dataContentDay)
-            //            {
-            //                UserMonthSign userMonthSign = new UserMonthSign()
-            //                {
-            //                    Uid = uid,
-            //                    SignYearMonth = GetSign30RecordHandler.GetYearMonth(),
-            //                    SignDate = dataContent.id + "",
-            //                    Type = 3
-            //                };
-            //
-            //                if (MySqlManager<UserMonthSign>.Instance.Add(userMonthSign))
-            //                {
-            //                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_OK);
-            //                    responseData.Add("msg", $"{dataContent.reward_name}领取成功");
-            //                    responseData.Add("reward_prop", dataContent.reward_prop);
-            //                    AddSignReward(uid, dataContent.reward_prop);
-            //                }
-            //                else
-            //                {
-            //                    responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
-            //                    responseData.Add("msg", $"{dataContent.reward_name}的奖励已领取,不可重复领取");
-            //                }
-            //            }
-            //            else
-            //            {
-            //                responseData.Add(MyCommon.CODE, (int)Consts.Code.Code_CommonFail);
-            //                responseData.Add("msg", $"未满足{dataContent.reward_name},当前签到累计{userMonthSigns.Count}");
-            //            }
         }
 
         private void Sign(string uid, Sign30DataContent dataContent, JObject responseData)

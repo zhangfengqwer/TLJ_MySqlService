@@ -70,7 +70,8 @@ namespace TLJ_MySqlService.Handler
                 string uid = UidUtil.createUID();
                 user = new User()
                 {
-                    Username = nickname,
+                    //去除开头的空白
+                    Username = nickname.TrimStart(),
                     Userpassword = "",
                     ChannelName = channelname,
                     ThirdId = thirdId,

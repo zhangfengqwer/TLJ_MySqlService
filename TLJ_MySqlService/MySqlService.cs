@@ -71,6 +71,7 @@ namespace TLJ_MySqlService
 
         private static MySqlService instance;
         public static List<ActivityData> activityDatas;
+        public static List<Activity51Data> activity51Datas;
         public static List<TeleFarePieceData> teleFarePieceDatas;
 
         private string configPath = AppDomain.CurrentDomain.BaseDirectory + "/../../../Config";
@@ -165,8 +166,7 @@ namespace TLJ_MySqlService
                     string version_name = request.QueryString["version_name"];
                     string machine_id = request.QueryString["machine_id"];
 
-                    if (!string.IsNullOrWhiteSpace(uid_old) && !string.IsNullOrWhiteSpace(game_id)
-                        && !string.IsNullOrWhiteSpace(channe_name) && !string.IsNullOrWhiteSpace(machine_id) && !string.IsNullOrWhiteSpace(version_name))
+                    if (!string.IsNullOrWhiteSpace(uid_old) && !string.IsNullOrWhiteSpace(game_id) && !string.IsNullOrWhiteSpace(channe_name) && !string.IsNullOrWhiteSpace(machine_id) && !string.IsNullOrWhiteSpace(version_name))
                     {
                         if (!MySqlManager<Log_Login_old>.Instance.Add(new Log_Login_old()
                         {
@@ -266,8 +266,6 @@ namespace TLJ_MySqlService
                 TurnTables.Add(MedalTurnTables[i]);
             }
 
-
-
             InitVipRewardData();
             InitMedalDuiHuanRewardData();
             InitActivityData();
@@ -311,6 +309,11 @@ namespace TLJ_MySqlService
             string str = sr.ReadToEnd();
             sr.Close();
             activityDatas = JsonConvert.DeserializeObject<List<ActivityData>>(str);
+
+            StreamReader sr2 = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + "Activity51Data.json");
+            string str2 = sr2.ReadToEnd();
+            sr2.Close();
+            activity51Datas = JsonConvert.DeserializeObject<List<Activity51Data>>(str2);
         }
 
         private static void InitTeleFarePieceData()
@@ -366,6 +369,7 @@ namespace TLJ_MySqlService
             }
             log.Info($"handlerCount:{handlerDic.Count}");
         }
+
         private void InitHttpHandler()
         {
             Assembly assembly = typeof(MySqlService).Assembly;

@@ -37,3 +37,4 @@ C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NPOI.OpenXml4Net.
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\NPOI.OpenXmlFormats.dll
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\ICSharpCode.SharpZipLib.dll
 C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\SignReward_30.json
+C:\Users\Administrator\Desktop\TLJ_MySqlService\Test\bin\Debug\Activity51Data.json

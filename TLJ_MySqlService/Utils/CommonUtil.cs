@@ -11,7 +11,8 @@ public class CommonUtil
     public static int GetRandomSeed()
     {
         byte[] bytes = new byte[4];
-        System.Security.Cryptography.RNGCryptoServiceProvider rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
+        System.Security.Cryptography.RNGCryptoServiceProvider rng =
+            new System.Security.Cryptography.RNGCryptoServiceProvider();
         rng.GetBytes(bytes);
         return BitConverter.ToInt32(bytes, 0);
     }
@@ -44,6 +45,7 @@ public class CommonUtil
                 }
             }
         }
+
         return temp.Count;
     }
 
@@ -66,6 +68,7 @@ public class CommonUtil
             // 将得到的字符串使用十六进制类型格式。格式后的字符是小写的字母，如果使用大写（X）则格式后的字符是大写字符 
             pwd = pwd + s[i].ToString("X2");
         }
+
         return pwd;
     }
 
@@ -82,14 +85,12 @@ public class CommonUtil
     /// <returns></returns>
     public static List<T> ListRandom<T>(List<T> myList)
     {
-
         Random ran = new Random();
         List<T> newList = new List<T>();
         int index = 0;
         T temp;
         for (int i = 0; i < myList.Count; i++)
         {
-
             index = ran.Next(0, myList.Count - 1);
             if (index != i)
             {
@@ -98,14 +99,16 @@ public class CommonUtil
                 myList[index] = temp;
             }
         }
+
         return myList;
     }
 
-    //    public static string ChangePsw(string password)
-    //    {
-    //        var md5 = GetMD5(MySqlService.AdminPassWord + GetMD5(password));
-    //        return md5;
-    //    }
+    public static string ChangePsw(string password)
+    {
+        var md5 = GetMD5("jinyou123" + GetMD5(password));
+        return md5;
+    }
+
     // 格式2017/7/12 15:05:03
     static public string getCurTime()
     {

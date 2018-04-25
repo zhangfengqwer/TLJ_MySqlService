@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="NhInterMySQL"
+                   namespace="NhInterMySQL.Model">
+
+  <class name="UserActivity51" table="user_activity_51">
+    <composite-id>
+      <key-property  name="Uid" column="uid" type="String"></key-property>
+      <key-property  name="activity_id" column="activity_id" type="Int32"></key-property>
+    </composite-id>
+  </class>
+
+</hibernate-mapping>

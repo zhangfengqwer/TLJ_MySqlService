@@ -21,6 +21,7 @@ using NhInterSqlServer;
 using NhInterSqlServer.Model;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using TLJ_MySqlService.Handler;
 using TLJ_MySqlService.Utils;
 using Util;
 using Task = System.Threading.Tasks.Task;
@@ -109,8 +110,9 @@ namespace Test
 
             //            Console.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
 
-            List<Log_Game> gameCountByMonth = MySqlManager<UserGame>.Instance.GetGameCountByMonth("6516134079");
-            Console.WriteLine(gameCountByMonth.Count);
+            List<UserMonthSign> userMonthSigns = GetSign30RecordHandler.GetSign30RecordSql("6515448709");
+            Console.WriteLine(userMonthSigns.Count);
+
             Console.ReadLine();
         }
 
@@ -276,32 +278,6 @@ namespace Test
             return num;
         }
 
-        private static List<UserMonthSign> GetSign30RecordSql(string uid)
-        {
-            int nowYear = DateTime.Now.Year;
-            int nowMonth = DateTime.Now.Month;
-            string date = $"{nowYear}-{nowMonth}";
-            var sql = $"SELECT * FROM new_tlj.user_month_sign where uid = '{uid}' and sign_year_month = '{date}'";
-            using (var session = NHibernateHelper.OpenSession())
-            {
-                using (var transaction = session.BeginTransaction())
-                {
-                    try
-                    {
-                        List<UserMonthSign> userMonthSigns = session.CreateSQLQuery(sql)
-                            .AddEntity(typeof(UserMonthSign)).List<UserMonthSign>().ToList();
-                        transaction.Commit();
-                        return userMonthSigns;
-                    }
-                    catch (Exception e)
-                    {
-                        transaction.Rollback();
-                        return null;
-                    }
-                }
-            }
-        }
-
         public static string FileMD5(string filePath)
         {
             byte[] retVal;
@@ -313,35 +289,6 @@ namespace Test
 
             return retVal.ToHex("x2");
         }
-
-        private static void GetVivoOrder()
-        {
-            Dictionary<string, string> dictionary = new Dictionary<string, string>();
-            dictionary.Add("version", "1.0.0");
-            dictionary.Add("signMethod", "MD5");
-            dictionary.Add("storeId", "9fb92f5a285056d48c38");
-            dictionary.Add("appId", "4164d42da1fa0deaa27ca8cb4727b618");
-            dictionary.Add("storeOrder", DateTime.Now.ToString("yyMMddHHmmss"));
-            dictionary.Add("orderTime", DateTime.Now.ToString("yyyyMMddHHmmss"));
-            dictionary.Add("notifyUrl", "http://fksq.javgame.com/notify/vivo_notify");
-            dictionary.Add("orderAmount", "1.00");
-            dictionary.Add("orderTitle", "10元宝");
-            dictionary.Add("orderDesc", "10元宝");
-
-            string result = SortDictionary(dictionary, "signMethod", "signature");
-
-            result += $"&{GetMD5("91958f99dd2c4b76543a2ea6c3496515").ToLower()}";
-            string sign = GetMD5(result).ToLower();
-            dictionary.Add("signature", sign);
-
-            string body = SortDictionary(dictionary);
-            Console.WriteLine(body);
-
-//            string http = HttpUtil.PostHttp("https://pay.vivo.com.cn/vivoPay/getVivoOrderNum", body);
-
-//            Console.WriteLine(http);
-        }
-
 
         /// <summary>
         /// 对字典进行排序 appid=xxx&secret=xxx
@@ -374,28 +321,6 @@ namespace Test
             return sb.ToString();
         }
 
-        private static void Test4()
-        {
-            int threadId = Thread.CurrentThread.ManagedThreadId;
-
-            Console.WriteLine(threadId + ":q");
-
-            new Task(() =>
-            {
-                Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":w");
-
-                new Task(() => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":e"); }).Start();
-
-                Console.WriteLine(1);
-            }).Start();
-
-            Console.WriteLine(threadId + ":e");
-        }
-
-        public class Test5
-        {
-            private string test1;
-        }
 
         private static IPAddress GetIpFromHost(string host)
         {

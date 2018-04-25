@@ -72,11 +72,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Activity51Data.cs" />
     <Compile Include="Data\ActivityData.cs" />
     <Compile Include="Data\MedalExchargeRewardData.cs" />
     <Compile Include="Data\OpCode.cs" />
     <Compile Include="Data\Sign30Data.cs" />
     <Compile Include="Data\TeleFarePieceData.cs" />
+    <Compile Include="Handler\Activity\Get51ActivityRewardHandler.cs" />
+    <Compile Include="Handler\Activity\Get51ActivitySateHandler.cs" />
     <Compile Include="Handler\BaseHandler.cs" />
     <Compile Include="Handler\Email\DeleteEmailHandler.cs" />
     <Compile Include="Handler\Email\AddEmailHandler.cs" />
@@ -155,6 +158,7 @@
     <Compile Include="Model\Request\StatictisLoginReq.cs" />
     <Compile Include="Model\Request\UseHuaFeiReq.cs" />
     <Compile Include="Model\Response\ExtendData.cs" />
+    <Compile Include="Model\Response\Activity51JsonObject.cs" />
     <Compile Include="Model\Response\TurnTableJsonObject.cs" />
     <Compile Include="Model\Response\AIJsonObject.cs" />
     <Compile Include="Model\Response\MedalRankJsonObject.cs" />
@@ -216,6 +220,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="TeleFarePieceData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Activity51Data.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="NLog.xsd">

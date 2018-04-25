@@ -15,7 +15,7 @@ using NHibernate.Criterion;
 namespace TLJ_MySqlService.Handler
 {
     [Handler(Consts.Tag_GetSignRecord_30)]
-    class GetSign30RecordHandler : BaseHandler
+    public class GetSign30RecordHandler : BaseHandler
     {
         public override string OnResponse(string data)
         {
@@ -51,7 +51,7 @@ namespace TLJ_MySqlService.Handler
                 }
                 foreach (var sign in userMonthSigns)
                 {
-                    if (sign.Type == 3) continue;
+//                    if (sign.Type == 3) continue;
                     string signDate = sign.SignDate;
                     sb.Append(signDate);
                     sb.Append(",");
@@ -72,6 +72,12 @@ namespace TLJ_MySqlService.Handler
                         }
                     }
                 }
+
+//                for (int i = 1; i < 31; i++)
+//                {
+//                    sb.Append(i);
+//                    sb.Append(",");
+//                }
 
                 responseData.Add("record", sb.ToString().Remove(sb.ToString().Length - 1));
             }

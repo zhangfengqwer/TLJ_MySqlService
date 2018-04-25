@@ -552,6 +552,18 @@ namespace NhInterMySQL.Manager
             }
         }
 
+        public List<T> GetByPorpertyAndUid(string porperty, int value, string uid)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var t = Session.CreateCriteria(typeof(T))
+                    .Add(Restrictions.Eq(porperty, value))
+                    .Add(Restrictions.Eq("Uid", uid))
+                    .List<T>();
+                return (List<T>) t;
+            }
+        }
+
         public List<T> GetByPorperty(string porperty, string value)
         {
             using (var Session = NHibernateHelper.OpenSession())
@@ -569,6 +581,17 @@ namespace NhInterMySQL.Manager
                 var t = Session.CreateCriteria(typeof(T))
                     .Add(Restrictions.Eq(porperty1, value1))
                     .Add(Restrictions.Eq(porperty2, value2))
+                    .List<T>();
+                return (List<T>) t;
+            }
+        }
+
+        public List<T> GetByDate(string porperty1, string value1, string porperty2, string value2)
+        {
+            using (var Session = NHibernateHelper.OpenSession())
+            {
+                var t = Session.CreateCriteria(typeof(T))
+                    .Add(Restrictions.Like("Create_Time",value1))
                     .List<T>();
                 return (List<T>) t;
             }
@@ -690,6 +713,31 @@ namespace NhInterMySQL.Manager
                     {
                         List<Log_Game> list = session.CreateSQLQuery(sql).AddEntity(typeof(Log_Game))
                             .List<Log_Game>().ToList();
+                        transaction.Commit();
+                        return list;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public List<Log_Login> GetLoginByDate(string uid,string date)
+        {
+            var sql = $"select * from log_login  where uid = '{uid}' and login_type = 'login'  and create_time like '{date}%'";
+
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    try
+                    {
+                        List<Log_Login> list = session.CreateSQLQuery(sql).AddEntity(typeof(Log_Login))
+                            .List<Log_Login>().ToList();
                         transaction.Commit();
                         return list;
                     }

@@ -1,6 +1,6 @@
-﻿public class ActivityData
+﻿public class Activity51Data
 {
-    public int ActivityId;
-    public string Title;
-    public string ImageUrl;
+    public int Id;
+    public string Time;
+    public string Reward;
 }
